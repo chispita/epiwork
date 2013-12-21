@@ -1,0 +1,532 @@
+﻿‘Gold Standard’ Questionnaires (Deliverable of Task 2)
+ KULeuven
+
+Case definitions:
+
+Influenza-like-illness (ECDC case definition)
+
+Sudden onset of symptoms 
+AND at least one of the following four systemic symptoms:
+Fever and/or chills
+Feeling tired or exhausted
+Headache
+Muscle pain
+AND at least one of the following three respiratory symptoms: 
+Cough
+Sore throat
+Shortness of breath (dyspnoea)
+
+
+Common cold
+
+AT LEAST ONE of the following symptoms:
+Runny or blocked nose
+Sneezing
+Sore throat
+Cough
+AND NOT Fever OR Low grade fever (if measured)
+
+
+Allergy/hay fever
+
+No fever
+AND AT LEAST ONE of the following symptoms:
+Sneezing
+Runny or blocked nose
+Watery, bloodshot eyes
+
+
+Gastroenteritis or ‘gastric flu’
+
+No respiratory symptoms, i.e. NOT: watery or bloodshot eyes; sneezing; runny or blocked nose; sore throat; cough; coloured sputum; chest pain; 
+AT LEAST TWO of the following symptoms:
+Diarrhoea
+Nausea 
+Vomiting
+Loss of appetite
+Stomach ache
+
+Other symptoms
+
+Note: IF AT LEAST ONE SYMPTOM CHECKED, BUT THE COMBINATION OF SYMPTOMS IS SUCH THAT THEY ARE NOT DEFINED IN ANY OF THE ABOVE CATEGORIES, THEN DEFINE AS “Other symptoms”.
+
+
+1) New user registration: intake questions
+
+Intake Q1
+What is your gender?
+Male
+Female
+
+Intake Q2
+What is your birth month and birth year ? 
+Birth month: XX
+Year of birth: XXXX
+
+Intake Q3
+What is your home postcode ?
+XXXX
+Note: a country code can be attached to this postcode in the database
+
+Intake Q4
+What is your school/workplace postcode ?
+Country-specific format: e.g. XXXX
+Don’t know
+Note: this is a core question, but the content, phrasing, and analysis of this question might be different in the different countries
+
+Intake Q5
+In your daily life, do you come into frequent contact with any of the following? (Tick all that apply)
+Groups of children or teenagers (under the age of 18)
+Groups of the elderly (more than 65 years of age)
+Patients
+Crowds of people (more than 10 individuals on one and the same occasion)
+No
+
+Intake Q6
+
+Not counting you, how many people in each of the following age groups live in your household?
+
+
+0-4 years
+5-18 years
+19-44 years
+45-64 years
+65+ years
+
+Drop down menu
+
+
+
+
+
+
+Intake Q6b
+(If any in household are aged 0-4, including participant):
+How many of the children aged 0-4 in your household go to school or day-care ?
+X
+
+Intake Q7
+What is your daily main means of transport?
+Walking
+Bike
+Motorbike/scooter
+Car
+Public transport (Bus, train, …)
+Other
+
+Intake Q7b
+On a normal day, how much time do you spend on public transport (bus, train, underground)?
+No time at all
+0-30 minutes
+30 minutes – 1.5 hours
+1.5 hours – 4 hours
+>4 hours
+
+Intake Q8
+Were you vaccinated against swine flu last winter ?
+Yes
+No
+Don’t know
+
+Intake Q8b: follow-up question
+When were you vaccinated against swine flu ?
+Date of the first dose ?  XX/XX/XXXX
+If you received two doses: date of the second dose ? XX/XX/XXXX
+
+Intake Q9
+Did you receive seasonal flu vaccine last autumn/winter (i.e. 2009-2010)?
+Yes
+No
+Don’t know
+
+Intake Q10
+Have you had a flu vaccine this  season (2010-2011) ?
+Yes, go to questions Q10b and Q10c
+No, go to question Q10d
+Don’t know
+
+Intake Q10b: Follow-up question
+When did you receive a flu vaccine this season (2010-2011) ?
+Date of the seasonal flu vaccination ?  XX/XX/XXXX
+If you received two doses: date of the second dose XX/XX/XXXX
+
+Intake Q10c: Follow-up question
+What were your reasons for getting a flu vaccine this season (2010-2011) ? (Tick all that apply)
+Because I belong to a risk group
+Because vaccination decreases the risk of me getting influenza
+Because vaccination decreases the risk of spreading influenza to others
+Because my general practitioner recommended influenza vaccination
+Because it was recommended in my workplace/school
+Because thevaccine was readily available and vaccine administration was convenient
+Because the vaccine was free
+Because I don’t want to miss work/school
+Because I believe that the vaccine is effective
+Other reason(s)
+
+Intake Q10d: Follow-up question
+What are your reasons for NOT getting a flu vaccine this season (2010-2011) ? (Tick all that apply)
+I am still (planning to) get a vaccine
+
+Because I don’t belong to a risk group
+Because it is better to build your own natural immunity against the flu
+Because I doubt that the influenza vaccine is effective
+Because influenza is a minor illness
+Because influenza vaccine can cause influenza
+Because I am worried that the vaccine is not safe or will cause illness or other adverse events
+Because the vaccine is not readily available to me
+Because the vaccine is not free of charge
+Because I dislike injections
+No particular reason
+Other reason(s)
+
+Intake Q11: Follow-up question
+Did you get an invitation from your doctor to receive flu vaccine this fall/winter season ?
+Yes
+No
+
+Intake Q12
+Do you take medication because of any of the following conditions? (tick all that apply)
+No
+Yes, I am taking medication because of asthma
+Yes, I am taking medication because of  diabetes
+Yes, I am taking medication because of a lung disorder (COPD, emphysema, …)
+Yes, I am taking medication because of a heart disorder
+Yes, I am taking medication because of a kidney disorder
+Yes, I am taking medication because of an immunocompromising condition (e.g. splenectomy, organ transplant, aquired immune deficiency, cancer treatment)
+
+Intake Q13
+Are you currently pregnant ?
+No
+Yes, go to question Q13b
+Don’t know
+
+
+Intake Q13b: follow-up question
+If you are currently pregnant, in which trimester of the pregnancy are you
+First trimester (week 1-12)
+Second trimester (week 13-28)
+Third trimester (week 29-delivery)
+Don’t know
+
+Intake Q14
+Do you smoke ?
+No
+Yes, less than 10 cigarettes a day
+Yes, 10 cigarettes or more a day
+Yes, but exclusively pipe or cigars
+Don’t know
+
+Intake Q15 
+Do you have one of the following allergies that can cause respiratory symptoms? (Multiple answers possible)
+No
+Pollen (hay fever)
+House dust mite
+Domestic animals/pets
+Other allergies that cause respiratory symptoms (e.g. sneezing, runny eyes)
+
+
+
+Intake Q8 (not a core question)
+On average over the past 5 years, how many times per year did you have common colds or flu-like diseases?
+Never
+One or two times a year
+Between 3 and 5 times a year
+Between 6 and 10 times a year
+More than 10 times a year
+
+
+
+Intake Q16 (not a core question)
+Do you follow a special diet?
+No special diet
+Vegetarian
+Veganism
+Low-calorie
+Other
+
+Intake Q17 (not a core question)
+Do you have pets at home? (Multiple answers possible)
+No
+Yes, one or more dogs
+Yes, one or more cats
+Yes, one or more birds
+Yes, one or more other animals
+
+
+
+2) Weekly evaluation of disease symptoms
+
+
+Weekly Q1
+Did you have one or more of the following other symptoms since your last visit?
+(Tick all that apply)
+
+Fever
+Chills
+Runny or blocked nose
+Sneezing 
+Sore throat
+Cough
+Shortness of breath
+Headache
+Muscle pain
+Chest pain
+Feeling tired or exhausted
+Loss of appetite
+Coloured sputum
+Watery, bloodshot eyes
+Nausea
+Vomiting
+Diarrhoea
+Stomach ache
+Other
+
+None of these symptoms
+
+
+
+Weekly Q1b (if symptoms)
+Did your symptoms develop suddenly ?
+No
+Yes
+I don’t know
+
+
+
+Weekly Q2
+Did you take your temperature ?
+No
+Yes (go to Q2b)
+I don’t know
+
+
+Weekly Q2b (if symptoms) and (if: Yes, I checked my temperature): follow-up question
+When you measured your temperature, what was the highest temperature measured? 
+Below 37°C
+37° - 37.4°C
+37.5° - 37.9°C
+38° – 38.9°C
+39° - 39.9°C
+40°C or more
+
+
+Weekly Q2c (if fever is a symptom) or if Q2b temperature >37.5°C): follow-up question
+When did the fever start ? 
+Choose date XX/XX/XXXX
+I don’t remember
+
+
+CHECK DATABASE
+Was the participant STILL ILL at the time of their last visit (i.e. they said “I am still ill” in response to Q5 below last time?)
+Yes: If the participant reported symptoms during the current visit, continue with Q3
+No: Then this could potentially be the start of a “new” illness, continue with Q4
+
+
+Weekly Q3
+If the participant was STILL ILL on their last visit and has reported symptoms this time:
+“On DATE OF LAST VISIT you reported that you were still ill with symptoms that began on DATE OF FIRST SYMPTOMS. Are the symptoms you reported today part of the same bout of illness?
+No
+Yes
+
+“To save you time, we have filled in the information you gave us previously about your illness. Please check that it is still correct, and make any changes – for instance, if you have visited a doctor since you last completed the survey.”
+
+
+
+Weekly Q4 (if symptoms)
+When did the first symptoms appear?
+Choose date XX/XX/XXXX
+
+
+Weekly Q5 (if symptoms)
+When did your symptoms end?
+Choose date XX/XX/XXXX
+I don’t remember, but they have stopped
+I am still ill
+
+Weekly Q6 (if symptoms)
+Because of your symptoms, did you seek medical attention by visiting (seeing face to face) any of the following (tick all that apply)?
+Yes: general practitioner (GP) or GP’s practice nurse
+Yes: Hospital admission
+Yes: Hospital accident & emergency department/out of hours service
+Yes: Other
+No
+No, but I have an appointment scheduled in the future
+Note: the responses to this question might differ in the different countries as the organisation of health care is (very) different in the different countries
+
+
+Weekly Q6b (if symptoms) – this should be asked for each option ticked in the previous question
+How soon after your symptoms appeared did you seek medical attention ?
+<12 hours
+12-24 hours (1 day)
+2 days
+3 days
+4 days
+5-7 days
+>7 days
+
+
+Weekly Q6c (if symptoms)
+Because of your symptoms, did you seek medical attention by telephone with any of the following (tick all that apply)?
+No 
+Yes: GP – spoke to receptionist only
+Yes: GP – spoke to GP/practice nurse
+Yes: NHS Direct or NHS24
+Yes: NPFS
+Yes: Other
+Note: this is an example adapted to the UK situation. Other countries will need to adapt this question
+
+Weekly Q7 (if symptoms)
+Did you take medication for these symptoms?
+No medication
+Pain killers or antipyretics (e.g. paracetamol, lemsip, ibuprofen, aspirin, etc)
+Expectorants (cough medicine)
+Antivirals (Tamiflu, Relenza)
+Antibiotics
+Other
+Note: this isan example  adapted to the UK situation. Other countries will need to adapt the brand names of the commonly used pain killers or antipyretics
+
+Weekly Q7b (if antivirals were taken): follow-up question
+How long after the beginning of your symptoms did you start taking antiviral medication
+Same day (within 24 hours)
+1 day later
+2 days later
+3 days later 
+4 days later
+5-7 days later
+>7 days later
+
+Weekly Q8 (if symptoms)
+Did you change your daily routine because of your illness ?
+No
+Yes, but I did not take time off work/school
+Yes, I took time off work/school
+
+Weekly Q8b (if symptoms) & (if taken time off work/school): follow-up question
+Are you still off work/school ?
+Yes
+No
+
+Weekly Q8c (if symptoms) & (if taken time off work/school): follow-up question
+How long were you off work/school ?
+1 day
+2 days
+3 days 
+4 days
+5 days
+6 days
+1 to 2 weeks
+2 to 3 weeks
+>3 weeks
+
+Weekly Q9 (ask everyone) : Note: this question should not be prefilled !!
+How many people did you meet  inside or outside your household that had flu-like symptoms in the past week?
+Inside your household:
+0
+1
+2
+3
+4
+5
+>5
+Don’t know
+
+Outside  your household:
+0
+1
+2
+3
+4
+5
+>5
+Don’t know
+
+
+
+Weekly Q10 (if no seasonal flu vaccination yet reported)
+According to our data you did not receive a seasonal flu vaccination ?
+Meanwhile I have received a seasonal flu vaccination: go to Intake Q10c
+I did not receive a seasonal flu vaccination
+
+Weekly Q11 (upon confrontation with their ‘likely’ diagnosis)
+What do you think yourself  is causing your symptoms?
+Influenza or influenza-like illness
+Common cold
+Allergy/hay fever
+Gastroenteritis/gastric flu
+I don’t have an idea
+3) Contact questionnaire 
+
+
+Contact Q1 
+How many people did you have face-to-face conversational contact with yesterday?
+
+0-4 years
+5-18 years
+19-44 years
+45-64 years
+65+ years
+Home
+
+
+
+
+
+Work
+
+
+
+
+
+Other
+
+
+
+
+
+
+Contact Q2 
+How many people did you have physical contact with yesterday?
+
+0-4 years
+5-18 years
+19-44 years
+45-64 years
+65+ years
+Home
+
+
+
+
+
+Work
+
+
+
+
+
+Other
+
+
+
+
+
+
+
+Contact Q3
+Yesterday, how much time did you spend on public transport (bus, train, undergound)?
+No time at all
+Less than 30 minutes
+30 minutes or more but less than 1.5 hours
+1.5 hours or more but less than 4 hours
+4 hours or more
+
+
+Contact Q4
+Not including public transport, how long did you spend in an enclosed indoor space (e.g. office, classroom, bar, cinema) with more than 10 other people yesterday ?
+No time at all
+Less than 30 minutes
+30 minutes or more but less than 1.5 hours
+1.5 hours or more but less than 4 hours
+4 hours or more
+
+
