@@ -14,6 +14,8 @@ from django.conf import settings
 
 from apps.survey.models import SurveyUser
 
+import logging
+logger = logging.getLogger(__name__)
 
 DEG_TO_RAD = pi/180
 RAD_TO_DEG = 180/pi
@@ -1003,7 +1005,8 @@ class Chart(models.Model):
             try:
                 shortname = settings.POLLSTER_USER_PROFILE_SURVEY
                 survey = Survey.objects.get(shortname=shortname, status='PUBLISHED')
-                lpd = survey.get_last_participation_data(user_id, global_id)
+
+                lpd = survey.get_last_participation_data(survey.user, global_id)
                 if lpd and hasattr(settings, 'POLLSTER_USER_ZIP_CODE_DATA_NAME'):
                     zip_code = lpd.get(settings.POLLSTER_USER_ZIP_CODE_DATA_NAME)
                     if zip_code is not None:
@@ -1299,10 +1302,7 @@ class GoogleProjection:
 
 
 class ResultsIntake(models.Model):
-    #user =  models.TextField(blank=True, default='')
-    user = models.ForeignKey(SurveyUser, db_column='id')
-    #surveyuser = models.ForeignKey(SurveyUser, to_field='id')
-
+    user = models.ForeignKey(SurveyUser, db_column='user')
     global_id = models.CharField(max_length=36, unique=True)
 
     channel = models.CharField(max_length=36, blank=True, default='')
