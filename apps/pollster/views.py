@@ -195,25 +195,17 @@ def survey_run(request, shortname, next=None, clean_template=False):
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
     survey_user = _get_active_survey_user(request)
+
     form = None
-    user_id = request.user.id
+    #user_id = request.user.id
+    user_id = survey_user.id
     global_id = survey_user and survey_user.global_id
     last_participation_data = survey.get_last_participation_data(user_id, global_id)
 
+    logger.info('last_participation_data: %s' % last_participation_data)
     if request.method == 'POST':
-
-        logger.info('Survey post')
-        logger.info('User_id: %d' % user_id)
-        #logger.info('Survey_user: %d' % survey_user)
-        logger.info('global_id: %s' % global_id)
-        logger.info('last: %s' % last_participation_data)
-
-
         data = request.POST.copy()
-        data['user'] = user_id
-        data['user_id'] = user_id
-        data['surveyuser_id'] = user_id
-
+        data['user'] = survey_user.id
         data['global_id'] = global_id
         data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
