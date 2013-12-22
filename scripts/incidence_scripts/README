@@ -1,0 +1,6 @@
+- run the sql file "incidence_daily.sql" to create the incidence function into the database. You can do it with the command: 
+psql -U username -d myDataBase -a -f incidence_daily.sql
+
+- set the dates in the file "call_incidence.sh"
+- execute the file "call_incidence.sh" redirecting the output in a csv file. Youcan use the command: ./call_incidence.sh > daily_active_ILI.csv
+- run the file incidence_daily_smoothed.py to smooth out the data with a time window of one week. You can use the command: python incidence_daily_smoothed.py daily_active_ILI.csv > incidence_daily_smotheed.txt 
