@@ -65,6 +65,7 @@ def _get_person_health_status(request, survey, global_id):
 
     logger.info('_get_person_health_status')
 
+    # habria que revisar request.user.id
     data = survey.get_last_participation_data(request.user.id, global_id)
     status = None
     if data:
@@ -359,6 +360,9 @@ def main_index(request):
     #    return HttpResponseRedirect(reverse(profile_index))
 
     logger.error('Main_Index')
+
+    
+    return HttpResponseRedirect(reverse(group_management))
 
     try:
         survey_user = get_active_survey_user(request)
