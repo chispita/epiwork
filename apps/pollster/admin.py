@@ -4,7 +4,7 @@ from .models import RuleType, QuestionDataType, VirtualOptionType, Survey, Trans
 #Results_Intake, Results_Monthly
 
 class ResultsIntake_Admin(admin.ModelAdmin):
-    #list_display = ('id', 'user.name', 'timestamp')
+    list_display = ('id','user','timestamp')
     search_fields = ['id']
 
 class Results_Monthly_Admin(admin.ModelAdmin):
@@ -17,5 +17,5 @@ admin.site.register(VirtualOptionType)
 admin.site.register(Survey)
 admin.site.register(TranslationSurvey)
 admin.site.register(Chart)
-admin.site.register(ResultsIntake)
+admin.site.register(ResultsIntake, ResultsIntake_Admin)
 #admin.site.register(Results_Monthly, Results_Monthly_Admin)
