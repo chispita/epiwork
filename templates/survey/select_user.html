@@ -1,0 +1,13 @@
+{% extends "survey/base.html" %}
+{% load i18n %}
+
+{% block col1 %}
+<h1>{% trans "Select User" %}</h1>
+
+<ul>
+{% for user in users %}
+<li><a href="{{ next }}?gid={{ user.global_id }}">{{ user }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
+

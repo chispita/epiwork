@@ -1,0 +1,48 @@
+{% block add_css %}<link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}pollster/css/qtip.css" />{% endblock add_css %}
+{% block add_js %}<script type="text/javascript" src="{{ MEDIA_URL }}pollster/js/qtip.js"></script>{% endblock add_js %}
+
+{% block content %}
+<h2>{{ survey }}</h2>
+    
+    User: <b>{{ user }}</b><br>
+    Data:{{ data }}<br>
+
+    <ul>
+        <li>Id : {{ data.id }}</li>
+        <li>User: {{ data.user }}</li>
+        <li>Time : {{ data.timestamp }}</li>
+        <li>Global_id : {{ data.global_id }}</li>
+        <li>Title 1 :{{ data.TITLE_1 }}</li>
+        <li>Question 1 :{{ data.QUESTION_1 }}</li>
+        <li>QUESTION_2_multi_row1_col1 : {{ data.QUESTION_2_multi_row1_col1 }}</li>
+        <li>QUESTION_3 : {{ data.QUESTION_3 }}</li>
+    </ul>
+
+    <!--
+    Shortname: {{ survey.shortname }}<br>
+    Version: {{ survey.version }}<br>
+    Created : {{ survey.created|date:"d-m-y H:i:s" }}<br>
+    Updated : {{ survey.updated|date:"d-m-y H:i:s" }}<br>
+    <br>
+    {% for question in survey.question_set.all %}
+        Question: {{ question.id }} {{ question.title|default:'' }}<br>
+        <li>
+            <ul> Name : {{ question.data_name|default:'' }} </ul>
+            <ul> Description : {{ question.description|default:'' }}</ul>
+            <ul> Type: {{ question.type }}</ul>
+            <ul> Data Name : {{ question.data_name}}</ul>
+        <ul>
+        {% for column in question.columns %}
+            <li>{{ column.title }}</li>
+        {% endfor %}
+        </ul>
+        <ul>
+        {% for row in question.rows %}
+            <li>{{ row.id }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    -->
+{% endblock %}
+
+

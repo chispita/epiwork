@@ -1,0 +1,122 @@
+{% extends "base/twocol.html" %}
+
+{% load i18n sekizai_tags %}
+
+{% block add_js %}
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}pollster/wok/js/wok.pollster.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}pollster/wok/js/wok.pollster.charts.js"></script>
+
+<script type="text/javascript">
+    wok.pollster.charts.init(function() {
+        $(function() {
+            wok.pollster.charts.createCharts('.survey-chart .chart');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block col1 %}
+
+<p>{% trans "Thanks for taking the time to fill out this survey." %}</p>
+
+<p>
+{% trans "Here is a summary of the information you entered for you and the members of your group or family:" %}
+</p>
+
+<table class="imagetable">
+<tr>
+	<th>{% trans "Group members" %}</th>
+    <th colspan="2">{% trans "Health status" %}</th>
+{% if persons|length > 1 %}
+    <th colspan="4">{% trans "Manage " %}</th>
+{% else %}
+    <th colspan="3">{% trans "Manage " %}</th>
+{% endif %}
+</tr>
+{% for person in persons %}
+<tr><td>{{ person.name }}</td>
+	<td><b>{{ person.diag }}</b></td>
+    <td><img class="diag-icon" src="{{ MEDIA_URL }}/survey/img/diag-{{ person.health_status|default:'UNKNOWN' }}-small.png"/></td>
+        <td><a href="{{ person.get_edit_url }}">{% trans "Change name" %}</a></td>
+        <td><a href="{{ person.get_profile_url }}">{% trans "Change profile" %}</a></td>
+        <td><a href="{{ person.get_survey_url }}">{% trans "Enter symptoms" %}</a></td>
+{% if persons|length > 1 %}
+        <td><a href="{{ person.get_remove_url }}">{% trans "Remove" %}</a></td>
+{% endif %}
+
+    <td>
+    {% for h in person.health_history %}
+        {{ h.timestamp }} / {{ h.status }} / {{ h.diag }}<br>
+    {% endfor %}
+    </td>
+
+</tr>
+
+{% endfor %}
+</table>
+
+<br/>
+
+<p>{% trans "The flu status of each participant is based on the symptoms you reported. <strong>This is not a medical diagnosis</strong>. We only ask for symptoms indicative of influenza-like illness, common colds, gastric flu. If you have other symptoms, or you are at all worried, we recommend that you contact your doctor or telephone NHS Direct / NHS 24."%}</p>
+
+<br/>
+
+<ul class="diag">
+{% for person in persons %}
+{% if person.health_history %}
+<li class="diag-person">
+    <h5 class="diag-name">{{ person.name }}</h5>
+    <ul>
+    {% for item in person.health_history %}
+    <li class="diag-item diag-{{ item.status|default:'UNKNOWN' }}">
+        <img class="diag-icon" src="{{ MEDIA_URL }}/survey/img/diag-{{ item.status|default:'UNKNOWN' }}.png"
+             alt="{{ item.diag }}:" title="{{ item.diag }}"/>
+        <span title="{{ item.timestamp }}" class="diag-timestamp">
+            {{ item.timestamp|date:'SHORT_DATE_FORMAT' }}
+        </span>
+    </li>
+    {% endfor %}
+    </ul>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+
+<br/>
+
+<div class="survey-chart">
+    <div class="chart" data-chart-url="{% url pollster_chart_data "weekly" "neighbourhood"  %}"
+        data-chart-type="google-map-centered" style="width:100%;height:330px">
+    </div>
+</div>
+
+<p>{% trans "Regions in which we currently have reports of influenza-like illness are red, and ones in which none of our participants currently report influenza-like illness are blue."%}<br>
+<strong>{% trans "Map updated hourly."%}</strong></p>
+
+
+<br/>
+
+<table class="imagetable">
+<thead>
+<tr>
+    <th>{% trans "Fill out date" %}</th>
+    <th>{% trans "Member" %}</th>
+    <th colspan="2">{% trans "Health status" %}</th>
+</tr>
+</thead>
+<tbody>
+{% for item in history reversed %}
+<tr>
+    <td title="{{ item.timestamp }}">{{ item.timestamp|date:'SHORT_DATE_FORMAT' }}</td>
+    <td>{{ item.person.name }}</td>
+    <td>{{ item.diag }}</td>
+    <td><img class="diag-icon" src="{{ MEDIA_URL }}/survey/img/diag-{{ item.status|default:'UNKNOWN' }}-small.png"/></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
+

@@ -1,0 +1,24 @@
+{% load sekizai_tags %}
+
+{{ instance }}
+<h1>Holita:
+    {% if request.user.is_authenticated %}
+        {{ request.user.first_name }} {{ request.user.last_name}}
+    {% else %}
+        Guest
+    {% endif %}
+</h1>
+<div class="survey-entry">
+<h1>{{ survey }} of {{ user }}</h2>
+    <ul>
+        <li>Id : {{ data.id }}</li>
+        <li>User: {{ data.user }}</li>
+        <li>Time : {{ data.timestamp }}</li>
+        <li>Global_id : {{ data.global_id }}</li>
+        <li>Title 1 :{{ data.TITLE_1 }}</li>
+        <li>Question 1 :{{ data.QUESTION_1 }}</li>
+        <li>QUESTION_2_multi_row1_col1 : {{ data.QUESTION_2_multi_row1_col1 }}</li>
+        <li>QUESTION_3 : {{ data.QUESTION_3 }}</li>
+        <li>...</li>
+    </ul>
+</div>
