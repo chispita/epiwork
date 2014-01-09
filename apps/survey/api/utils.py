@@ -7,6 +7,10 @@ from inspect import isclass
 from apps.survey import utils
 from re import sub
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def xmlify_spec(spec):
     """Take a survey specificatin and return it as XML."""
     p = parse_specification(spec)
@@ -72,6 +76,8 @@ def report_data(report):
     """Extract the data corresponding to the fields of report needed to write the
     report to the database.
     """
+    function = 'report_data'
+    logger.info('report_data')
 
     # Receive timestamp as in milliseconds since 1970-01-01
     time_stamp = epochal_to_timedate(report['ts'])
