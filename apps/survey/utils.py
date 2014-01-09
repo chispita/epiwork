@@ -15,6 +15,10 @@ from datetime import datetime, date
 
 from .survey import Specification, parse_specification
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -67,7 +71,11 @@ def _create_answers(spec, cleaned_data):
     return data
 
 def add_survey_participation(survey_user, survey_id, id=None):
+    function = 'add_survey_participation'
+    logger.info(function)
+    
     survey = models.Survey.objects.get(survey_id=survey_id)
+    # Save participation table
     participation = models.Participation()
     participation.user = survey_user
     participation.survey = survey
@@ -76,6 +84,7 @@ def add_survey_participation(survey_user, survey_id, id=None):
     participation.previous_participation_date = survey_user.last_participation_date
     participation.save()
 
+    # Save survey_user table
     survey_user.last_participation = participation
     survey_user.last_participation_date = participation.date
     survey_user.save()
@@ -147,7 +156,10 @@ def get_user_profile(survey_user):
         return None
 
 def get_last_response(survey_user):
+    function = 'get_last_response'
+    logger.info(function)
     try:
+        logger.info('%s - survey_user: %s' % (function, survey_user))
         response = models.LastResponse.objects.get(user=survey_user)
         if not response.data:
             return None
