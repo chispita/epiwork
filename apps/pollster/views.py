@@ -133,7 +133,6 @@ def survey_test(request, id, language=None):
     user_id = request.user.id
     global_id = survey_user and survey_user.global_id
     last_participation_data = None
-
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = user_id
@@ -168,6 +167,9 @@ def survey_test(request, id, language=None):
 def survey_run(request, shortname, next=None, clean_template=False):
     from apps.survey.views import _get_person_health_status
 
+    function = 'Survey run'
+    logger.info('%s' % function)
+
     if 'login_key' in request.GET:
         user = authenticate(key=request.GET['login_key'])
         if user is not None:
@@ -190,33 +192,32 @@ def survey_run(request, shortname, next=None, clean_template=False):
         if locale_code == "en-US":
             locale_code = "en-GB"
 
-    logger.info('Survey run save')
-
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
     survey_user = _get_active_survey_user(request)
 
     form = None
-    #user_id = request.user.id
-    user_id = survey_user.id
+    user_id = request.user.id
+    #user_id = survey_user.id
     global_id = survey_user and survey_user.global_id
     last_participation_data = survey.get_last_participation_data(user_id, global_id)
 
-    logger.info('last_participation_data: %s' % last_participation_data)
+    #if last_participation_data:
+    #    logger.info('%s - last_participation_data: %s' % (function, last_participation_data))
+
     if request.method == 'POST':
         data = request.POST.copy()
-        data['user'] = survey_user.id
+        data['user'] = user_id
         data['global_id'] = global_id
         data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
         if form.is_valid():
-
-            logger.info('Save')
+            logger.info('%s - Save' % function)
             form.save()
             next_url = next or _get_next_url(request, reverse("survey_run", kwargs={'shortname': shortname}))
-            logger.info('Antes global_id')
+            logger.info('%s - Antes global_id' % function)
             if global_id:
-                logger.info('next')
+                logger.info('%s - next' % function)
                 # add or override the 'gid' query parameter
                 next_url_parts = list(urlparse.urlparse(next_url))
                 #logger.info('next: %s' % next_url_parts)
@@ -226,6 +227,7 @@ def survey_run(request, shortname, next=None, clean_template=False):
                 next_url_parts[4] = urllib.urlencode(query)
                 next_url = urlparse.urlunparse(next_url_parts)
 
+            # Ejectuara algo despues de la grabacion
             if survey.shortname == 'weekly':
                 __, diagnosis = _get_person_health_status(request, survey, global_id)
                 messages.info(request, _("Thanks - your diagnosis:") + u" " + u"%s" % diagnosis)
