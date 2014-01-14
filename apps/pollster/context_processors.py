@@ -1,6 +1,6 @@
 from apps import pollster
 
-from apps.survey.views import _get_health_history
+#from apps.survey.views import _get_health_history
 
 def last_survey(request):
     try:
@@ -8,7 +8,8 @@ def last_survey(request):
     except:
         return {}
 
-    history = list(_get_health_history(request, survey))
+    #history = list(_get_health_history(request, survey))
+    history = None
     if not history:
         return {}
 
