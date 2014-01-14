@@ -138,11 +138,9 @@ def survey_test(request, id, language=None):
         data['user'] = user_id
         data['global_id'] = global_id
         data['user_id'] = survey_user.id
-
         data['timestamp'] = datetime.datetime.now()
 
         form = survey.as_form()(data)
-
         if form.is_valid():
             if language:
                 next_url = _get_next_url(request, reverse(survey_test, kwargs={'id':id, 'language': language}))
@@ -165,7 +163,7 @@ def survey_test(request, id, language=None):
     })
 
 def survey_run(request, shortname, next=None, clean_template=False):
-    from apps.survey.views import _get_person_health_status
+    #from apps.survey.views import _get_person_health_status
 
     function = 'Survey run'
     logger.info('%s' % function)
@@ -184,7 +182,7 @@ def survey_run(request, shortname, next=None, clean_template=False):
             return HttpResponse(simplejson.dumps({'error': True, 'error_code': 3, 'error_msg': 'you must be logged in'}), mimetype="application/json")
         return redirect_to_login(request.path)
 
-    survey = get_object_or_404(models.Survey, shortname=shortname, status='PUBLISHED')
+    survey = get_object_or_404(models.Survey, shortname=shortname,status='PUBLISHED')
     language = get_language()
     locale_code = locale.locale_alias.get(language)
     if locale_code:
@@ -198,12 +196,8 @@ def survey_run(request, shortname, next=None, clean_template=False):
 
     form = None
     user_id = request.user.id
-    #user_id = survey_user.id
     global_id = survey_user and survey_user.global_id
     last_participation_data = survey.get_last_participation_data(user_id, global_id)
-
-    #if last_participation_data:
-    #    logger.info('%s - last_participation_data: %s' % (function, last_participation_data))
 
     if request.method == 'POST':
         data = request.POST.copy()
@@ -220,9 +214,7 @@ def survey_run(request, shortname, next=None, clean_template=False):
                 logger.info('%s - next' % function)
                 # add or override the 'gid' query parameter
                 next_url_parts = list(urlparse.urlparse(next_url))
-                #logger.info('next: %s' % next_url_parts)
                 query = dict(urlparse.parse_qsl(next_url_parts[4]))
-                #logger.info('query: %s' % query)
                 query.update({'gid': global_id})
                 next_url_parts[4] = urllib.urlencode(query)
                 next_url = urlparse.urlunparse(next_url_parts)
@@ -401,19 +393,56 @@ def survey_results_csv(request, id):
     survey.write_csv(writer)
     return response
 
+#def survey_results_intake(request, id, language=None):
 def survey_results_intake(request, id):
-    '''
-    survey = get_object_or_404(models.Survey, pk=id)
-    now = datetime.datetime.now()
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=survey-results-%d-%s.csv' % (survey.id, format(now, '%Y%m%d%H%M'))
-    writer = csv.writer(response)
-    survey.write_csv(writer)
-    return response
-    '''
-    return HttpResponse("Hello, world. You're at the polls index.")
+    function = 'survey_results_intake'
+    logger.info('%s' % function)
+    logger.info('%s: Id:%s' % (function, id))
 
-@staff_member_required
+    language=None
+    survey = get_object_or_404(models.Survey, pk=id)
+    if language:
+        translation = get_object_or_404(models.TranslationSurvey, survey=survey, language=language)
+        survey.set_translation_survey(translation)
+    if language is None:
+        language = get_language()
+    locale_code = locale.locale_alias.get(language)
+    if locale_code:
+        locale_code = locale_code.split('.')[0].replace('_', '-')
+        if locale_code == "en-US":
+            locale_code = "en-GB"
+
+    survey_user = _get_active_survey_user(request)
+    user = _get_active_survey_user(request)
+    form = None
+
+    user_id = request.user.id
+    global_id = survey_user and survey_user.global_id
+    last_participation_data = None
+
+    encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
+    last_participation_data_json = encoder.encode(last_participation_data)
+
+    # Get data from Intake query by user 
+    data = models.ResultsIntake.get_by_user(930)
+
+    if data:
+        logger.info('%s: data:%s' % (function, data))
+    else:
+        logger.info('%s: No data' % function )
+
+    return request_render_to_response(request, 'pollster/survey_data.html', {
+        "person": survey_user,
+        "language": language,
+        "locale_code": locale_code,
+        "survey": survey,
+        "data" : data,
+        "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
+        "last_participation_data_json": last_participation_data_json,
+        "language": language,
+        "form": form
+    })
+
 def survey_export_xml(request, id):
     survey = get_object_or_404(models.Survey, pk=id)
     now = datetime.datetime.now()
