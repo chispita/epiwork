@@ -9,9 +9,9 @@ urlpatterns = patterns('',
     url(r'^pollster/(?P<id>\d+)/$', views.survey_edit, name='pollster_survey_edit'),
     url(r'^pollster/(?P<id>\d+)/export/$', views.survey_export_xml, name='pollster_survey_export_xml'),
     url(r'^pollster/(?P<id>\d+)/results/$', views.survey_results_csv, name='pollster_survey_results_csv'),
-    url(r'^pollster/(?P<id>\d+)/data/$', views.survey_results_intake, name='pollster_survey_results_data'),
 
-    url(r'^intake/$', views.survey_results_intake, name='pollster_survey_results_intake'),
+    # View data of results intake
+    url(r'^pollster/(?P<id>\d+)/data/$', views.survey_results_intake, name='pollster_survey_results_data'),
 
     url(r'^pollster/(?P<id>\d+)/publish/$', views.survey_publish, name='pollster_survey_publish'),
     url(r'^pollster/(?P<id>\d+)/unpublish/$', views.survey_unpublish, name='pollster_survey_unpublish'),
