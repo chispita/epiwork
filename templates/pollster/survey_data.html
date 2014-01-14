@@ -1,33 +1,26 @@
+{% extends "pollster/base_run.html" %}
 
-{% block content %}
-<h2>{{ survey }}</h2>
+{% block title %}{{ survey.translated_title }}{% endblock %}
 
-    Shortname: {{ survey.shortname }}<br>
-    Version: {{ survey.version }}<br>
-    Created : {{ survey.created|date:"d-m-y H:i:s" }}<br>
-    Updated : {{ survey.updated|date:"d-m-y H:i:s" }}<br>
-    <br>
-
-    {% for question in survey.question_set.all %}
-        Question: {{ question.id }} {{ question.title|default:'' }}<br>
-        <!--
-        <li>
-            <ul> Name : {{ question.data_name|default:'' }} </ul>
-            <ul> Description : {{ question.description|default:'' }}</ul>
-            <ul> Type: {{ question.type }}</ul>
-            <ul> Data Type : {{ question.data_type.js_class }}</ul>
-        </li>
-        -->
-        <ul>
-        {% for column in question.columns %}
-            <li>{{ column.title }}</li>
-        {% endfor %}
-        </ul>
-        <ul>
-        {% for row in question.rows %}
-            <li>{{ row.id }}</li>
-        {% endfor %}
-        </ul>
-    {% endfor %}
+{% block extrahead %}
+    <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.js"></script>
+    <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.datatypes.js"></script>
+    <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.rules.js"></script>
+    <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.virtualoptions.js"></script>
+    <script type="text/javascript">$(function() { wok.pollster.createPollsterRuntime(null, {}); })</script>
 {% endblock %}
 
+{% block col1 %}
+<div id="wok-main-panel-content">
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% include "pollster/questions_data.html" %}
+</div>
+{% endblock %}
