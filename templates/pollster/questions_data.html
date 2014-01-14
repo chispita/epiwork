@@ -1,0 +1,132 @@
+{% load pollster_extras %}
+
+<div class="survey clearfix" id="survey-{{ survey.id }}">
+
+    <li>
+        <ul>Person: {{ person }}</ul>
+        <ul>User: {{data }}</ul>
+        <ul>Data {{ data.timestamp }}</ul>
+        <ul>CP {{ data.QUESTION_3 }}</ul>
+    </li>
+    
+    {% for question in survey.questions %}
+        {% with valor=data|item:question.data_name %}
+
+    <div class="question-wrapper clearfix">
+        <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
+            data-question-type="{{ question.type }}" data-data-type="{{ question.data_type.id }}" data-tags="{{ question.tags }}"
+            data-regex="{{ question.regex|default:'' }}"
+            data-open-option-data-type="{{ question.open_option_data_type.id }}"
+            data-visual="{{ question.visual }}">
+            <p class="data"><span class="title">{{ question.title }}</span></p>
+
+            {% if question.is_text %}
+                <div class="value"> {{ valor }} </div>
+            {% endif %}
+
+             {% if question.is_single_choice %}
+                <div class="value">{{ question.options|extrae:valor }} </div>
+            {% endif %}
+
+            {% if question.is_multiple_choice %}
+            <ul class="choices sortable">
+                {% for option in question.options %}
+                    {% with value=data|item:option.data_name %}
+                        {% if value %}
+                            {% with key=option.data_name|add_underscore:"open" %}
+                            {% with subkey=data|item:key %}
+                            <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
+                                title="{{ option.translated_description }}">
+                            <div class="value">{{ option.translated_text }}: {{subkey}}</div>
+                            </li>
+                            {% endwith %}         
+                            {% endwith %}
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if question.is_matrix_select %}
+             <table class="matrix">
+            <thead>
+                <tr>
+                    <th class="empty"/>
+                    {% for column in question.columns %}
+                    {% if column.translated_title %}
+                    <th>{{ column.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row, columns in question.rows_columns %}
+                <tr>
+                    {% if row.translated_title %}
+                    <th>{{ row.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% with count_row=forloop.counter %}
+                    {% for column in columns %}
+                    <td>
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+                             <div class="value">{{ question.options|extrae:value }} </div>  
+                        {% endwith %}
+                        {% endwith %}
+                    </td>
+                    {% endfor %}
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% endif %}
+
+            {% if question.is_matrix_entry %}   
+            <table class="matrix">
+            <thead>
+                <tr>
+                    <th class="empty"/>
+                    {% for column in question.columns %}
+                    {% if column.translated_title %}
+                    <th>{{ column.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row, columns in question.rows_columns %}
+                <tr>
+                    {% if row.translated_title %}
+                    <th>{{ row.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% with count_row=forloop.counter %}
+                    {% for column in columns %}
+                    <td>
+
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+                             <div class="value">{{ value }} </div>  
+                        {% endwith %}
+                        {% endwith %}
+                    </td>
+                    {% endfor %}
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>

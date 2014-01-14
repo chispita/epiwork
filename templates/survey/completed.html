@@ -1,0 +1,21 @@
+{% extends "survey/base.html" %}
+{% load i18n %}
+
+{% block col1 %}
+    <div id="completed">
+        <h1>{% trans "Thanks for colaborating in our project," %}
+        {% if person %}
+            {{ person }}.
+        {% else %}
+            {{ user }}.
+        {% endif %}
+        </h1>
+
+        {% trans "You have done the survey in course, please come back in few days and you will complete a new one" %}
+    </div>
+{% endblock %}
+
+{% block col2 %}
+{% include "accounts/partials/usermenu.html" %}
+{% endblock %}
+~                

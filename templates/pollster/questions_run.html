@@ -2,10 +2,8 @@
 {% block add_js %}<script type="text/javascript" src="{{ MEDIA_URL }}pollster/js/qtip.js"></script>{% endblock add_js %}
 
 {% load i18n %}
-
 <form class="survey {% if survey.form.errors %}error{% endif %}" id="survey-{{ survey.id }}" method="POST">
     {% csrf_token %}
-    
     <div class="survey-message">
         {% trans "Questionnaire for participant" %} {{ person }}
     </div>

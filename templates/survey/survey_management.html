@@ -1,0 +1,87 @@
+{% extends "base/threecol.html" %}
+{% load i18n sekizai_tags cms_tags %}
+
+{% block title %}{{ block.super }} {% trans "Your results" %}{% endblock %}
+
+{% block add_css %}<link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}pollster/css/qtip.css" />{% endblock add_css %}
+
+{% block add_js %}
+<script type="text/javascript" src="{{ MEDIA_URL }}base/js/accordion.js"></script>
+
+<script type="text/javascript" src="{{ MEDIA_URL }}pollster/js/qtip.js"></script>
+
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}pollster/wok/js/wok.pollster.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}pollster/wok/js/wok.pollster.charts.js"></script>
+<script type="text/javascript">
+    wok.pollster.charts.init(function() {
+        $(function() {
+            wok.pollster.charts.createCharts('.survey-chart .chart');
+        });
+    });
+</script>
+{% endblock add_js %}
+
+{% block col1 %}
+<h1>{% trans "Electric Surveys" %}</h1>
+<p>{% trans "Aqu&iacute encontraras un listado de las &uacuteltimas encuentas que has completado y las que te quedan por completar." %}</p>
+
+{% for message in messages %}
+    <div class="usermessage"><span class="boldgreen">{{ message }}</span><br/>
+    </div>
+    <br />
+{% endfor %}
+
+{% if last_survey %}
+<div class="usermessage">{% trans "The last survey was submitted for" %} {{ person }}<br />{% trans "on" %} {{ last_survey.timestamp }}</div>
+<br />
+{% endif %}
+
+{% placeholder "Main content" %}
+<form action="" method="POST" name="groupmanage">{% csrf_token %}
+
+    <div id="groupwrapper">
+        <div id="groupheader">
+            <p>{% trans "Survey" %}</p>
+            <p>{% trans "Date" %}</p>
+        </div>
+        <div id="groupmembers">
+            {% for item in intake %}
+            <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
+                <p><b><i class="icon-list-ul"></i> {% trans "Intake" %}</b></p>
+                <p>{{ item.timestamp }}</p>
+            </div>
+            {% endfor %}
+            {% for item in monthly %}
+            <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
+                <p><b><i class="icon-list-ul"></i> {% trans "Monthly" %}</b></p>
+                <p>{{ item.timestamp }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</form>
+
+<script>
+var setLastSelected = function(element) {
+   $(element).data('lastSelected', $(element).find("option:selected"));
+};
+        
+$("select").each(function () {
+   setLastSelected(this);
+});
+</script>
+
+
+<p>{% trans "Bla bla bla bla bla <strong>bla bla</strong>. Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla."%}</p>
+{% endblock %}
+
+{% block col2 %}
+
+{% include "accounts/partials/usermenu.html" %}
+{% include "accounts/partials/usermap.html" %}
+
+{% placeholder "Left bar" %}
+
+{% endblock %}
