@@ -205,7 +205,6 @@ SURVEY_EXTRA_SQL = {
 }
 
 def _get_or_default(queryset, default=None):
-    #logger.info('_get_or_default: %s' % queryset)
     r = queryset[0:1]
     if r:
         return r[0]
@@ -280,9 +279,7 @@ class Survey(models.Model):
         return 'results_'+str(self.shortname)
 
     def get_last_participation_data(self, user_id, global_id):
-        logger.info('get_last_participation_data, user_id:%s global_id:%s' % (user_id, global_id))
         model = self.as_model()
-        #logger.info('get_last_participation_data despues de model')
         participation = model.objects\
             .filter(user=user_id)\
             .filter(global_id = global_id)\
@@ -291,15 +288,11 @@ class Survey(models.Model):
         return _get_or_default(participation)
 
     def as_model(self):
-        #logger.info('as model')
         fields = []
         fields.extend(Survey._standard_result_fields)
-        #logger.info('as model extend')
         for question in self.questions:
             fields += question.as_fields()
         model = dynamicmodels.create(self.get_table_name(), fields=dict(fields), app_label='pollster')
-
-        #logger.info('as model model')
         return model
 
     def as_form(self):
@@ -467,7 +460,6 @@ class Question(models.Model):
         if self.translation and self.translation.error_message:
             return self.translation.error_message
         return self.error_message
-
 
     @property
     def errors(self):
@@ -1309,8 +1301,6 @@ class GoogleProjection:
 
 
 class ResultsIntake(models.Model):
-    #user = models.ForeignKey(SurveyUser, db_column='user')
-
     user = models.ForeignKey(User, db_column='user')
 
     global_id = models.CharField(max_length=36, unique=True)
@@ -1324,6 +1314,203 @@ class ResultsIntake(models.Model):
     TITLE_2 = models.TextField(blank=True, default='')
     QUESTION_1 = models.TextField(blank=True, default='')
     TITLE_3 = models.TextField(blank=True, default='')
+    QUESTION_2_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row2_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row2_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row2_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row3_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row3_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row3_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row4_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row4_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row4_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row5_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row5_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row5_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row6_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row6_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row6_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row7_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row7_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row7_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row8_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row8_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row8_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row9_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row9_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row9_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row10_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row10_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row10_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row11_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row11_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row11_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row12_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row12_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_2_multi_row12_col3 = models.IntegerField(default=0,blank=True)
+    TITLE_4= models.BooleanField(default=False)
+    QUESTION_3 = models.CharField(max_length=30, null=True)
+    QUESTION_4_0= models.BooleanField(default=False)
+    QUESTION_4_0_open= models.IntegerField(default=0,blank=True)
+    QUESTION_4_1= models.BooleanField(default=False)
+    QUESTION_4_1_open= models.IntegerField(default=0,blank=True)
+    QUESTION_4_2= models.BooleanField(default=False)
+    QUESTION_4_2_open= models.IntegerField(default=0,blank=True)
+    TITLE_5= models.BooleanField(default=False)
+    QUESTION_5_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row3_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row4_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row5_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row6_col6= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row7_col6= models.IntegerField(default=0,blank=True)
+    TITLE_6= models.BooleanField(default=False)
+    QUESTION_6= models.IntegerField(default=0,blank=True)
+    QUESTION_7= models.IntegerField(default=0,blank=True)
+    QUESTION_8= models.IntegerField(default=0,blank=True)
+    QUESTION_9_0= models.BooleanField(default=False)
+    QUESTION_9_0_open= models.IntegerField(default=0,blank=True)
+    QUESTION_9_1= models.BooleanField(default=False)
+    QUESTION_9_1_open= models.IntegerField(default=0,blank=True)
+    QUESTION_9_2= models.BooleanField(default=False)
+    QUESTION_9_2_open= models.IntegerField(default=0,blank=True)
+    QUESTION_9_3= models.BooleanField(default=False)
+    QUESTION_9_3_open= models.IntegerField(default=0,blank=True)
+    QUESTION_9_4= models.BooleanField(default=False)
+    QUESTION_9_4_open= models.IntegerField(default=0,blank=True)
+    QUESTION_10_multi_row1_col1= models.BooleanField(default=False)
+    QUESTION_10_multi_row2_col1= models.BooleanField(default=False)
+    QUESTION_10_multi_row3_col1= models.BooleanField(default=False)
+    QUESTION_10_multi_row4_col1= models.BooleanField(default=False)
+    QUESTION_11= models.BooleanField(default=False)
+    QUESTION_12_multi_row1_col1= models.BooleanField(default=False)
+    QUESTION_12_multi_row2_col1= models.BooleanField(default=False)
+    QUESTION_12_multi_row3_col1= models.BooleanField(default=False)
+    QUESTION_12_multi_row4_col1= models.BooleanField(default=False)
+    QUESTION_12_multi_row5_col1= models.BooleanField(default=False)
+    QUESTION_13_multi_row1_col1= models.BooleanField(default=False)
+    QUESTION_13_multi_row2_col1= models.BooleanField(default=False)
+    QUESTION_13_multi_row3_col1= models.BooleanField(default=False)
+    QUESTION_13_multi_row4_col1= models.BooleanField(default=False)
+    QUESTION_13_multi_row5_col1= models.BooleanField(default=False)
+    QUESTION_14_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row1_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row1_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row2_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row2_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row3_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row3_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row4_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row4_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row5_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row5_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_14_multi_row5_col4= models.IntegerField(default=0,blank=True)
+    TITLE_7= models.BooleanField(default=False)
+    QUESTION_15= models.IntegerField(default=0,blank=True)
+    QUESTION_16= models.IntegerField(default=0,blank=True)
+    QUESTION_17= models.IntegerField(default=0,blank=True)
+    QUESTION_18_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_18_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_18_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19= models.IntegerField(default=0,blank=True)
+    QUESTION_20_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_20_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_20_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_21= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row5_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row6_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_22_multi_row6_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_23= models.IntegerField(default=0,blank=True)
+    QUESTION_24= models.IntegerField(default=0,blank=True)
+    QUESTION_25= models.IntegerField(default=0,blank=True)
+    TITLE_8= models.BooleanField(default=False)
+    QUESTION_26= models.IntegerField(default=0,blank=True)
+    QUESTION_27_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_27_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_27_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    TITLE_9= models.BooleanField(default=False)
+    QUESTION_28= models.SmallIntegerField(default=0,blank=True)
+    QUESTION_29= models.BooleanField(default=False)
+    QUESTION_30_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row5_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row6_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_30_multi_row6_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_31= models.IntegerField(default=0,blank=True)
+    QUESTION_32= models.IntegerField(default=0,blank=True)
+    QUESTION_33= models.IntegerField(default=0,blank=True)
+    QUESTION_34= models.IntegerField(default=0,blank=True)
+
+
+
+
 
     class Meta:
         managed = False
@@ -1336,20 +1523,13 @@ class ResultsIntake(models.Model):
 
     @staticmethod
     def get_by_user(user):
-        #logger.info('Get by User: %s' % user)
-        #r = ResultsIntake.objects.all().get(user=928)
-        #return _get_or_default( r ) 
-
         try:
-            return ResultsIntake.objects.all().get(user=user)
+            return ResultsIntake.objects.get(user=user)
         except ResultsIntake.DoesNotExist:
             logger.info('Get by User -> No Data')
             return None
 
-
-
 class ResultsMonthly(models.Model):
-    #user = models.ForeignKey(SurveyUser)
     user = models.ForeignKey(User, db_column='user')
 
     global_id = models.CharField(max_length=36, unique=True, verbose_name="User")
@@ -1359,9 +1539,11 @@ class ResultsMonthly(models.Model):
 
     NOTE_1 = models.TextField(blank=True, default='')
     TITLE_1 = models.TextField(blank=True, default='')
+
     QUESTION_1_multi_row1_col1= models.IntegerField(default=0,blank=True)
     QUESTION_1_multi_row2_col1= models.IntegerField(default=0,blank=True)
     QUESTION_1_multi_row3_col1= models.IntegerField(default=0,blank=True)
+
     QUESTION_2_multi_row1_col1= models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row1_col2= models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row1_col3= models.IntegerField(default=0,blank=True)
@@ -1438,6 +1620,23 @@ class ResultsMonthly(models.Model):
     QUESTION_10= models.IntegerField(default=0,blank=True)
     QUESTION_11= models.IntegerField(default=0,blank=True)
     QUESTION_12= models.IntegerField(default=0,blank=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     class Meta:
         managed = False
