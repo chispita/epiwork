@@ -1508,10 +1508,6 @@ class ResultsIntake(models.Model):
     QUESTION_33= models.IntegerField(default=0,blank=True)
     QUESTION_34= models.IntegerField(default=0,blank=True)
 
-
-
-
-
     class Meta:
         managed = False
         db_table = 'pollster_results_intake'
@@ -1621,23 +1617,6 @@ class ResultsMonthly(models.Model):
     QUESTION_11= models.IntegerField(default=0,blank=True)
     QUESTION_12= models.IntegerField(default=0,blank=True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     class Meta:
         managed = False
         db_table = 'pollster_results_monthly'
@@ -1651,9 +1630,18 @@ class ResultsMonthly(models.Model):
     def get_by_user(user):
         logger.info('Get by User: %s' % user)
         try:
-            return Results_Monthly.objects.all().get(user=user)
+            return ResultsMonthly.objects.all().get(user=user)
         except Results_Intake.DoesNotExist:
             logger.info('Get by User -> No Data')
+            return None
+
+    @staticmethod
+    def get_by_user_id(user,id ):
+        logger.info('Get by User:%s ID:%s:' % (user,id))
+        try:
+            return ResultsMonthly.objects.all().get(user=user,id=id)
+        except ResultsMonthly.DoesNotExist:
+            logger.info('Get by User ID -> No Data')
             return None
 
 class SurveyChartPlugin(CMSPlugin):
