@@ -142,9 +142,13 @@ def X_get_health_history(request, survey):
 
 
 @login_required
-def survey_data(request):
+def survey_data(request, survey_shortname, id=0):
+
     function = 'survey_data'
     logger.info('%s' % function)
+    logger.info('%s - survey_name:%s' % (function, survey_shortname))
+    logger.info('%s - id:%s' % (function, id))
+
 
     try:
         survey_user = get_active_survey_user(request)
@@ -154,8 +158,8 @@ def survey_data(request):
     if survey_user is None:
         logger.info('%s - survey_user is None' % function)
         return HttpResponseRedirect(reverse(group_management))
-
-    return pollster_views.survey_results_intake(request,7)
+    
+    return pollster_views.survey_results_intake(request, survey_shortname, id)
 
 @login_required
 def survey_management(request):
