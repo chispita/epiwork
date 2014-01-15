@@ -1,7 +1,6 @@
 {% load pollster_extras %}
 
 <div class="survey clearfix" id="survey-{{ survey.id }}">
-
     <li>
         <ul>Person: {{ person }}</ul>
         <ul>User: {{data }}</ul>
@@ -19,6 +18,15 @@
             data-open-option-data-type="{{ question.open_option_data_type.id }}"
             data-visual="{{ question.visual }}">
             <p class="data"><span class="title">{{ question.title }}</span></p>
+    
+            {% if question.title == "Compilation Date" %}
+                <div class="value">
+                    (Person) {{ person }}<br>
+                    (User) {{data }}<br>
+                    {{ valor }}<br>
+                </div>
+            
+            {% endif %}
 
             {% if question.is_text %}
                 <div class="value"> {{ valor }} </div>
