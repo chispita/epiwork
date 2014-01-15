@@ -49,13 +49,16 @@
         <div id="groupmembers">
             {% for item in intake %}
             <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
-                <p><b><i class="icon-list-ul"></i> {% trans "Intake" %}</b></p>
+
+            <p><a href="{% url survey_data survey_shortname="intake" id=0%}?gid={{ person.global_id }}" class="noslide">
+                <i class="icon-list-ul"></i> {% trans "Intake" %}</a></p>
                 <p>{{ item.timestamp }}</p>
             </div>
             {% endfor %}
             {% for item in monthly %}
             <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
-                <p><b><i class="icon-list-ul"></i> {% trans "Monthly" %}</b></p>
+            <p><a href="{% url survey_data survey_shortname="monthly" id=item.id %}?gid={{ person.global_id }}" class="noslide">
+                <i class="icon-list-ul"></i> {% trans "Monthly" %}</a></p>
                 <p>{{ item.timestamp }}</p>
             </div>
             {% endfor %}
