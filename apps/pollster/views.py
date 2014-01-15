@@ -394,13 +394,13 @@ def survey_results_csv(request, id):
     return response
 
 #def survey_results_intake(request, id, language=None):
-def survey_results_intake(request, id):
+def survey_results_intake(request, shortname, id=0):
     function = 'survey_results_intake'
     logger.info('%s' % function)
-    logger.info('%s: Id:%s' % (function, id))
+    logger.info('%s: shortname:%s id:%s' % (function, shortname, id))
 
     language=None
-    survey = get_object_or_404(models.Survey, pk=id)
+    survey = get_object_or_404(models.Survey, shortname=shortname)
     if language:
         translation = get_object_or_404(models.TranslationSurvey, survey=survey, language=language)
         survey.set_translation_survey(translation)
@@ -424,7 +424,12 @@ def survey_results_intake(request, id):
     last_participation_data_json = encoder.encode(last_participation_data)
 
     # Get data from Intake query by user 
-    data = models.ResultsIntake.get_by_user(930)
+    if shortname == 'intake':
+        logger.info('%s  Busqueda:intake' % function )
+        data = models.ResultsIntake.get_by_user(user_id)
+    else:
+        logger.info('%s  Busqueda:monthly' % function )
+        data = models.ResultsMonthly.get_by_user_id(user_id, id)
 
     if data:
         logger.info('%s: data:%s' % (function, data))
