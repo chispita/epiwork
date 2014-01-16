@@ -56,6 +56,7 @@ admin.site.register(Site, ReminderSiteAdmin)
 
 class NewsLetterTemplateAdmin(TranslatableAdmin):
     form = NewsLetterTemplateForm
+    list_display = ("__unicode__","is_default_reminder", "is_default_newsitem")
 
     class Media:
         js = [join(settings.CMS_MEDIA_URL, path) for path in (
@@ -68,7 +69,7 @@ admin.site.register(NewsLetterTemplate, NewsLetterTemplateAdmin)
 
 class NewsLetterAdmin(TranslatableAdmin):
     form = NewsLetterForm
-    list_display = ("__unicode__", "date")
+    list_display = ("__unicode__", "published","date")
 
     class Media:
         js = [join(settings.CMS_MEDIA_URL, path) for path in (
