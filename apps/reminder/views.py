@@ -13,6 +13,7 @@ from .send import create_message, send
 
 @login_required
 def latest_newsletter(request):
+    # Show the latest newsletter published
     now = datetime.now()
     newsletter_queryset = NewsLetter.objects.filter(date__lte=now, published=True).order_by("-date")
     if newsletter_queryset.count():
