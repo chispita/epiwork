@@ -16,6 +16,7 @@ from apps.survey.models import SurveyUser
 
 NO_INTERVAL = -1
 WEEKLY_WITH_BATCHES = -2
+MONTHLY_WITH_BATCHES = -3
 
 class UserReminderInfo(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -34,7 +35,7 @@ class UserReminderInfo(models.Model):
 class ReminderSettings(models.Model):
     site = models.OneToOneField(Site)
     send_reminders = models.BooleanField(_("Send reminders"), help_text=_("Check this box to send reminders"))
-    interval = models.IntegerField(_("Interval"), choices=((7 ,_("Weekly")), (14,_("Bi-weekly")), (NO_INTERVAL, _("Don't send reminders at a fixed interval")), (WEEKLY_WITH_BATCHES, "Send exactly 7 days after the last action was taken.")), null=True, blank=True)
+    interval = models.IntegerField(_("Interval"), choices=((1,_("Daily")), (7 ,_("Weekly")), (14,_("Bi-weekly")), (30,_("Monthly")), (NO_INTERVAL, _("Don't send reminders at a fixed interval")), (WEEKLY_WITH_BATCHES, "Send exactly 7 days after the last action was taken."), (MONTHLY_WITH_BATCHES, "Send exactly 30 days after the last action was taken.")), null=True, blank=True)
     begin_date = models.DateTimeField(_("Begin date"), help_text="Date & time of the first reminder and point of reference for subsequent reminders; (Time zone: %s)" % settings.TIME_ZONE, null=True, blank=True)
     batch_size = models.IntegerField("Batch size", null=True, blank=True, help_text="Batch size determines the max. sent emails per call to 'reminder_send'; choose in coordinance with you r crontab interval and total users; Leave empty to not have any maximum")
     currently_sending = models.BooleanField("Currently sending", help_text="This indicates if the reminders are being sent right now. Don't tick this box unless you absolutely know what you're doing", default=False)
@@ -46,6 +47,8 @@ class ReminderSettings(models.Model):
     def get_interval(self):
         if self.interval == WEEKLY_WITH_BATCHES:
             return 7
+        elif self.interval == MONTHLY_WITH_BATCHES:
+            return 30
         return self.interval
 
 class NewsLetterTemplate(TranslatableModel):
@@ -259,5 +262,4 @@ def get_reminders_for_users(now, users):
         if info.last_reminder < reminder.date:
             yield user, reminder, language
             yielded += 1
-
 
