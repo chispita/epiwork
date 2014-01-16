@@ -150,36 +150,14 @@
 		{% block content %}{% endblock content %}
 		
 		<div id="footer">{% block footercontent %}
-            {% if site_footer %}
 				<div id="footercontent-client">
-                	{{ site_footer }}
+                	<!--{{ site_footer }}-->
                     <a href="http://www.bifi.es/en/" rel="external" title="BIFI"><img src="{{ MEDIA_URL }}cms_page_media/2/BIFI_logo.png" alt="BIFI logo" height="65"/></a><a href="http://gee.unizar.es/" rel="external" title="GEE"><img src="{{ MEDIA_URL }}cms_page_media/2/GEE.JPG" alt="GEE logo" height="65"/></a>
 				</div>
-            {% else %}
-				<div id="footercontent-main">
-					<div id="footercol1"><img src="{{ MEDIA_URL }}base/img/main/influenzanetlogo.png" alt="Influenzanet logo" /><p>Influenzanet is a system to monitor the activity of influenza-like-illness (ILI) via the internet with the aid of volunteers.<br />We have tried to ensure that all information we provide through this website is correct at the time we include it.</p></div>
-					<div id="footercol2"><h2>Partners</h2>
-							<span class="disable"><a href="http://www.aktivgegengrippe.de/" rel="external" title="Aktiv gegen Grippe Deutschland">Aktiv gegen Grippe Deutschland</a><br /></span>
-							<span class="disable"><a href="http://www.aktivgegengrippe.at/" rel="external" title="Aktiv gegen Grippe Österreich">Aktiv gegen Grippe Österreich</a><br /></span>
-							<span class="disable"><a href="http://www.aktivgegengrippe.ch/" rel="external" title="Aktiv gegen Grippe Schweiz">Aktiv gegen Grippe Schweiz</a><br /></span>
-							<a href="http://www.degrotegriepmeting.nl/" rel="external" title="De Grote Griepmeting Nederland">De Grote Griepmeting Nederland</a><br />
-							<a href="http://www.degrotegriepmeting.be/" rel="external" title="De Grote Griepmeting België">De Grote Griepmeting België</a><br />
-							<a href="http://www.grippenet.fr/" rel="external" title="Grippenet France">Grippenet France</a><br />
-							<a href="http://flusurvey.ie/" rel="external" title="Flusurvey Ireland">Flusurvey Ireland</a><br />
-							<a href="http://flusurvey.org.uk/" rel="external" title="Flusurvey United Kingdom">Flusurvey United Kingdom</a><br />
-						</div>
-						<div id="footercol3"><h2>&nbsp;</h2>
-							<a href="http://www.gripenet.pt/" rel="external" title="Gripenet Portugal">Gripenet Portugal</a><br />
-							<a href="http://www.gripenet.es/" rel="external" title="Gripenet Spain">Gripenet Spain</a><br />
-							<a href="http://www.influensakoll.se/" rel="external" title="Influensakoll Sverige">Influensakoll Sweden</a><br />
-							<a href="http://www.influweb.it/" rel="external" title="Influweb Italia">Influweb Italy</a><br />				
-					</div>
-				</div>
-            {% endif %}
             <div id="footerclose">
-                {% now "Y" %} {{ site_name }} &nbsp;&nbsp;
+                {% now "Y" %} {{ site_name }} &nbsp;&nbsp;|&nbsp;&nbsp;
                 <span class="disable">{% language_chooser %}</span>
-                {% if show_cookie_warning %}<a href="#" class="cc-privacy-link">{% trans "Cookie settings" %}</a>  &nbsp;|&nbsp; {% endif %}<a href="{% url contact_form %}" title="{% trans "Contact us" %}">{% trans "Contact" %}</a>
+                {% if show_cookie_warning %}<a href="#" class="cc-privacy-link">{% trans "Cookie settings" %}</a>  &nbsp;&nbsp; {% endif %}<a href="{% url contact_form %}" title="{% trans "Contact us" %}">{% trans "Contact" %}</a>
             </div>
 			</div>{% endblock footercontent %}
 		</div>
