@@ -162,10 +162,15 @@ def survey_test(request, id, language=None):
         "form": form
     })
 
+def survey_intake(request, next=None):
+    function = 'def Survey intake'
+    logger.info('%s' % function)
+    return survey_run(request, 'intake', next)
+
 def survey_run(request, shortname, next=None, clean_template=False):
     #from apps.survey.views import _get_person_health_status
 
-    function = 'Survey run'
+    function = 'def Survey run'
     logger.info('%s' % function)
 
     if 'login_key' in request.GET:
