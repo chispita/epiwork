@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 
     # View data of results intake
     url(r'^pollster/(?P<id>\d+)/data/$', views.survey_results_intake, name='pollster_survey_results_data'),
-
+    #url(r'^pollster/(?P<shorname>.+)/$', views.survey_run, name='pollster_survey_intake'),
     url(r'^pollster/(?P<id>\d+)/publish/$', views.survey_publish, name='pollster_survey_publish'),
     url(r'^pollster/(?P<id>\d+)/unpublish/$', views.survey_unpublish, name='pollster_survey_unpublish'),
     url(r'^pollster/(?P<id>\d+)/translations/$', views.survey_translation_list_or_add, name='pollster_survey_translation_list'),
