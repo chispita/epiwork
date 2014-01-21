@@ -17,6 +17,12 @@
                         {% block col2 %}{% placeholder "Left bar" %}{% endblock col2 %}
                     </div> 
                     <div id="col3"> 
+                        <div id="searchbar">
+                            <form method="get" action="/search/">
+                                <p><input type="text" id="searchfield" name="q"/><input type="submit" id="searchsubmit" value="Search" /></p>
+                            </form>
+                        </div>
+
                         {% block col3 %}{% placeholder "Right bar" %}{% endblock col3 %}
                     </div> 
                 </div> 
