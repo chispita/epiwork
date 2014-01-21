@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth import views as auth_views
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 
 from registration.views import activate
 from registration.views import register
@@ -11,9 +11,7 @@ from .forms import UnicodeRegistrationForm
 urlpatterns = patterns('',
     # From registration.backends.default.urls
     url(r'^activate/complete/$',
-        direct_to_template,
-        { 'template': 'registration/activation_complete.html' },
-        name='registration_activation_complete'),
+        TemplateView.as_view(template_name='registration/activation_complete.html')),
     # Activation keys get matched by \w+ instead of the more specific
     # [a-fA-F0-9]{40} because a bad activation key should still get to the view;
     # that way it can return a sensible "invalid key" message instead of a
@@ -30,13 +28,9 @@ urlpatterns = patterns('',
           'form_class': UnicodeRegistrationForm},
         name='registration_register'),
     url(r'^register/complete/$',
-        direct_to_template,
-        { 'template': 'registration/registration_complete.html' },
-        name='registration_complete'),
+        TemplateView.as_view(template_name='registration/registration_complete.html')),
     url(r'^register/closed/$',
-        direct_to_template,
-        { 'template': 'registration/registration_closed.html' },
-        name='registration_disallowed'),
+        TemplateView.as_view(template_name='registration/registration_closed.html')),
     # From registration.auth_urls
     url(r'^login/$',
         auth_views.login,
