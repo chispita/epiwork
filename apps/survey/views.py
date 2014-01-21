@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from dateutil import relativedelta
 
 from django import forms
 from django.template import Context, loader, RequestContext
@@ -26,29 +27,10 @@ from .survey import ( Specification,
 import apps.pollster as pollster
 import pickle
 import logging 
-logger = logging.getLogger(__name__)
-
+logger = logging.getLogger('logview.userlogins')  # 
 
 survey_form_helper = None
 profile_form_helper = None
-
-def get_active_survey_user(request):
-    # Obtain the survey user by the gid argument!
-    function = 'def get_active_survey_user'
-    logger.info('%s' % function)
-    gid = request.GET.get('gid', None)
-
-    logger.info('%s - Gid: %s' % (function, gid))
-    if gid is None:
-        logger.info('%s - Gid is None' % function)
-        return None
-    else:
-        try:
-            logger.info('%s - user: % s' % (function, request.user))
-            return models.SurveyUser.objects.get(global_id=gid,
-                                                 user=request.user)
-        except models.SurveyUser.DoesNotExist:
-            raise ValueError()
 
 def X_decode_person_health_status(status):
     d = {
@@ -68,10 +50,10 @@ def X_decode_person_health_status(status):
 
 def X_get_person_health_status(request, survey, global_id):
 
-    logger.info('_get_person_health_status')
+    logger.debug('_get_person_health_status')
 
     # habria que revisar request.user.id
-    data = survey.get_last_participation_data(request.user.id, global_id)
+    data = survey.get_last_participation_data(request.user.id)
     status = None
     if data:
         cursor = connection.cursor()
@@ -96,7 +78,7 @@ def X_get_person_health_status(request, survey, global_id):
 
 def X_get_person_is_female(global_id):
 
-    logger.info('_get_person_is_female')
+    logger.debug('_get_person_is_female')
 
     try:
         cursor = connection.cursor()
@@ -143,46 +125,34 @@ def X_get_health_history(request, survey):
 
 
 @login_required
-def survey_data(request, survey_shortname, id=0):
+def survey_data(request, survey_shortname="intake", id=0):
+    function = 'def survey_data'
+    logger.debug('%s' % function)
+    logger.debug('%s - survey_name:%s' % (function, survey_shortname))
+    logger.debug('%s - id:%s' % (function, id))
 
-    function = 'survey_data'
-    logger.info('%s' % function)
-    logger.info('%s - survey_name:%s' % (function, survey_shortname))
-    logger.info('%s - id:%s' % (function, id))
+    logger.debug('%s - pollster(1)' % function) 
+    return pollster_views.survey_data(request, survey_shortname, id)
 
+@login_required
+def survey_data_monthly(request, id):
+    function = 'def survey_data_monthly'
+    logger.debug('%s' % function)
 
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
-
-    if survey_user is None:
-        logger.info('%s - survey_user is None' % function)
-        return HttpResponseRedirect(reverse(group_management))
-    
-    return pollster_views.survey_results_intake(request, survey_shortname, id)
+    return survey_data(request,"monthly", id)
 
 @login_required
 def survey_management(request):
     function = 'survey_management'
-    logger.info('%s' % function)
+    logger.debug('%s' % function)
     
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
-
-    if survey_user is None:
-        logger.info('%s - survey_user is None' % function)
-        return HttpResponseRedirect(reverse(group_management))
-
     # Get Survey Data
     intake = pollster.models.Survey.get_by_shortname('intake')
     monthly =  pollster.models.Survey.get_by_shortname('monthly')
 
     # Get last survey date
     survey = monthly if monthly else intake
-    last_survey= survey.get_last_participation_data(request.user.id, survey_user.global_id)
+    last_survey= survey.get_last_participation_data(request.user.id)
 
     # Query to obtain survey data
     survey_intake = pollster.models.ResultsIntake.objects.all().filter(user=request.user)
@@ -190,7 +160,7 @@ def survey_management(request):
 
     template = 'survey/survey_management.html'
     return render_to_response( template, {
-            'person': survey_user,
+            #'person': survey_user,
             'last_survey' : last_survey,
             'intake' : survey_intake,
             'monthly' : survey_monthly
@@ -198,7 +168,7 @@ def survey_management(request):
 
 @login_required
 def group_management(request):
-    logger.info('group_management')
+    logger.debug('group_management')
 
     try:
         survey = pollster.models.Survey.get_by_shortname('weekly')
@@ -252,58 +222,52 @@ def thanks_profile(request):
         context_instance=RequestContext(request))
 
 @login_required
-def select_user(request, template='survey/select_user.html'):
-    # select_user is still used in some cases: notably when there are unqualified calls to
-    # 'profile_index'. So we've not yet removed this template & view.
-    # Obviously it's a good candidate for refactoring.
+def show_message(request):
+    ''' Show completed template '''
+    function='def show_message'
+    logger.debug(function)
 
-    function= 'def select_user'
-    logger.info(function)
-
-    next = request.GET.get('next', None)
-    if next is None:
-        next = reverse(index)
-
-    users = models.SurveyUser.objects.filter(user=request.user, deleted=False)
-    total = len(users)
-    if total == 0:
-        logger.info('%s - Create SurveyUser: %s %s' % (function, request.user, request.user.username))
-        survey_user = models.SurveyUser.objects.create(
-            user=request.user,
-            name=request.user.username,
-        )
-        url = '%s?gid=%s' % (next, survey_user.global_id)
-        return HttpResponseRedirect(url)
-        
-    elif total == 1:
-        logger.info('%s - Ya existie SurveyUser: %s %s' % (function, request.user, request.user.username))
-        survey_user = users[0]
-        url = '%s?gid=%s' % (next, survey_user.global_id)
-        return HttpResponseRedirect(url)
-
-    return render_to_response(template, {
-        'users': users,
-        'next': next,
-    }, context_instance=RequestContext(request))
-
+    return render_to_response(
+            'survey/completed.html',
+            context_instance=RequestContext(request))
 
 @login_required
 def survey_intake(request, next=next):
     function = 'def survey_intake'
-    logger.info('%s' % function)
-    logger.info('%s: user.id:%s user.username:%s' % (function, request.user.id, request.user.username))
+    logger.debug('%s' % function)
+    logger.debug('%s: user.id:%s user.username:%s' % (function, request.user.id, request.user.username))
+
+    messages.info(request, _("You need to complete the initial survey, please."))
+
+    logger.debug('%s: survey_user(1)' % function)
+    return pollster_views.survey_run(request, 'intake' , next=next)
+
+@login_required
+def profile_index(request):
+    # this appears to be ready-for-cleanup; but at this moment I (KvS) cannot be absolutely
+    # sure and don't have the time to check, so I'll leave it.
+
+    # what does this do? if no "gid" parameter is presented in the GET, 'select_user' is
+    # called to select the user.
+    # if one is present, 
+    function = 'def profile_index'
+    logger.debug(function)
 
     try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
+        ''' 
+        DIC/22/13 CVG
+        Faltaria comprobar si ha rellenado el intake 
+        para que complete el monthly
+        '''
+        survey = pollster.models.Survey.get_by_shortname('intake')
+    except:
+        raise Exception("The survey application requires a published survey with the shortname 'intake'")
 
-    if survey_user is None:
-        url = '%s?next=%s' % (reverse(select_user), reverse(profile_index))
-        return HttpResponseRedirect(url)
+    next = None
+    if 'next' not in request.GET:
+        next = reverse(thanks_profile)
 
-    logger.info('%s: survey_user' % survey_user)
-    return pollster_views.survey_run(request, 'intake' , next=next)
+    return pollster_views.survey_run(request, survey.shortname, next=next)
 
 @login_required
 def index(request):
@@ -311,74 +275,55 @@ def index(request):
     # it falls back to 'group management' if no 'gid' is provided.
     # i.e. it expects gid to be part of the request!
     function = 'def index:'
-    logger.info('%s' % function)
-
+    logger.debug('%s' % function)
+    logger.debug('%s User:%s' % (function, request.user.id))
+    
+    dt = 0
+    survey_name = 'monthly'
     next = request.GET.get('next', None)
     if next is None:
         next = reverse(index)
 
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
-
-    # No me gusta mucho esta parte
-    if survey_user is None:
-        url = '%s?next=%s' % (reverse(select_user), reverse(profile_index))
-        logger.info('%s - url: %s' % (function, url))
-        return HttpResponseRedirect(url)
 
     # Check if the user has filled user profile
-    logger.info('%s- Check Profile' % function)
-    profile = pollster_utils.get_user_profile(request.user.id, survey_user.global_id)
+    logger.debug('%s- Check Profile' % function)
+    profile = pollster_utils.get_user_profile(request.user.id)
 
     if profile is None:
-        logger.info('%s- Check Profile is None' % function)
-        # If the user does not complete the Intake form this is the moment
-        messages.add_message(request, messages.INFO, 
-            _(u'Before we take you to the electric questionnaire, please complete the short background questionnaire below. You will only have to complete this once.'))
-
-        # Redireccion al intake
-        url = reverse('apps.survey.views.survey_intake')
-        #  check if we need back to views.index
-        url_next = reverse('apps.survey.views.survey_management')
-        url = '%s?gid=%s&next=%s' % (url, survey_user.global_id, url_next)
-        return HttpResponseRedirect(url)
-        # check if we need back to views.index)
+        logger.debug('%s- Check Profile is None' % function)
+        next = reverse('apps.survey.views.survey_management')
+        return survey_intake(request, next=next)
 
     try:
-        # Busqueda para saber si ha rellenado el formulario inicial
-
-        survey = pollster.models.Survey.get_by_shortname('monthly')
-
-        #daiys = 0
-        #logger.info('%s - user: %s, global_id: %s' % (function, request.user.id, survey_user.global_id))
-        #last = survey.get_last_participation_data(request.user.id, survey_user.global_id)
-        #if last:
-        #    dt = datetime.now() - last['timestamp']
-        #    logger.info('%s - timestamp: %s days:%s' % (function, last['timestamp'], dt.days))
+        # Busqueda para saber si ha rellenado el formulario monthly
+        survey = pollster.models.Survey.get_by_shortname(survey_name)
     
     except Exception as e:
-        logger.info('%s - except: %s (%s)' % (function, e.message, type(e)))
+        logger.debug('%s - except: %s (%s)' % (function, e.message, type(e)))
         raise Exception("The survey application requires a published survey with the shortname %s" % survey_name)
 
     next = None
     if 'next' not in request.GET:
-        next = reverse(group_management) # is this necessary? Or would it be the default?
+        next = reverse(survey_management) # is this necessary? Or would it be the default?
 
-    return pollster_views.survey_run(request, survey.shortname, next=next)
+    logger.debug('%s - user: %s' % (function, request.user.id))
+    last = survey.get_last_participation_data(request.user.id)
+    if last:
+        datenow = datetime.now()
+        datenow = datetime.strptime(str('2014-06-15'), '%Y-%m-%d')
 
-    # If there are more than 30 days let complet another survey
-    #if dt.days > 29:
-    #    logger.info('%s - shortname: %s' % (function, survey.shortname))
-    #    return pollster_views.survey_run(request, survey.shortname, next=next)
-    #else:        
-    #    return thanks_profile(request)
+        if datenow.month != last['timestamp'].month:
+            logger.debug('%s - shortname: %s' % (function, survey.shortname))
+            logger.debug('%s: survey_user(2)' % function)
+            return pollster_views.survey_run(request, survey.shortname, next=next)
+        else:
+            messages.info(request, _("You have done the survey in course, please come back in few days and you will complete a new one."))
+            return show_message(request)
+    else:
+        logger.debug('%s - shortname(2): %s' % (function, survey.shortname))
 
-    #    template = 'survey/completed.html'
-    #    return render_to_response(template, {
-    #            'person': survey_user
-    #            }, context_instance=RequestContext(request))
+        logger.debug('%s: survey_user(3)' % function)
+        return pollster_views.survey_run(request, survey.shortname, next=next)
 
 def query_to_dicts(query_string, *query_args):
     """Run a simple query and produce a generator
@@ -386,7 +331,7 @@ def query_to_dicts(query_string, *query_args):
     with keys for the column values selected.
     """
 
-    logger.info('query_to_dicts')
+    logger.debug('query_to_dicts')
 
     cursor = connection.cursor()
     cursor.execute(query_string, query_args)
@@ -405,71 +350,22 @@ def query_to_dicts(query_string, *query_args):
 @login_required
 def profile_electric(request):
     function = ('Profile_Electric') 
-    logger.info(function)
-
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
-
-    if survey_user is None:
-        url = '%s?next=%s' % (reverse(select_user), reverse(profile_index))
-        return HttpResponseRedirect(url)
+    logger.debug(function)
 
     # Query to obtain survey headers
     survey = pollster.models.Survey.get_by_shortname('intake')
-    logger.info('Survey: %s' % survey)
+    logger.debug('Survey: %s' % survey)
 
     # Query to obtain survey data
     data = pollster.models.ResultsIntake.get_by_user(request.user.id)
       
     # survery_data 
-    logger.info('Data: %s' % data)
+    logger.debug('Data: %s' % data)
     return render_to_response('survey/profile_electric.html', {
             "user": survey_user,
             "survey": survey,
             "data": data,
         },context_instance=RequestContext(request))
-
-@login_required
-def profile_index(request):
-    # this appears to be ready-for-cleanup; but at this moment I (KvS) cannot be absolutely
-    # sure and don't have the time to check, so I'll leave it.
-
-    # what does this do? if no "gid" parameter is presented in the GET, 'select_user' is
-    # called to select the user.
-    # if one is present, 
-    function = 'def profile_index'
-    logger.info(function)
-
-    try:
-        logger.info('%s - Search survey_user' % function)
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        raise Http404()
-
-    if survey_user is None:
-        logger.info('%s - survey_user is None' % function)
-        url = '%s?next=%s' % (reverse(select_user), reverse(profile_index))
-        logger.info('%s - url: %s' % (function, url))
-        return HttpResponseRedirect(url)
-
-    try:
-        ''' 
-        DIC/22/13 CVG
-        Faltaria comprobar si ha rellenado el intake 
-        para que complete el monthly
-        '''
-        survey = pollster.models.Survey.get_by_shortname('intake')
-    except:
-        raise Exception("The survey application requires a published survey with the shortname 'intake'")
-
-    next = None
-    if 'next' not in request.GET:
-        next = reverse(thanks_profile)
-
-    return pollster_views.survey_run(request, survey.shortname, next=next)
-
 
 def main_index(request):
     # the generalness of the name of this method reflects the mess that the various
@@ -477,35 +373,7 @@ def main_index(request):
 
     # this is the one that does the required redirection for the button 'my account'
     # i.e. to group if there is a group, to the main index otherwise
-
-
-    if models.SurveyUser.objects.filter(user=request.user, deleted=False).count() != 1:
-        return HttpResponseRedirect(reverse(profile_index))
-
-    gid = models.SurveyUser.objects.get(user=request.user, deleted=False).global_id
-    return HttpResponseRedirect(reverse(index) + '?gid=' + gid)
-
-
     function = 'def Main Index'
-    logger.info(function)
+    logger.debug(function)
 
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        # Si no existe llamara a profile_index que crea el survey_user
-        logger.error('%s - Main_Index: Vaue Error' % function)
-        return HttpResponseRedirect(reverse(profile_index))
-
-    logger.info('%s - SurveyUser: %s' % (function, survey_user))
-
-    try:
-        gid = models.SurveyUser.objects.get(user=request.user, deleted=False).global_id
-    except models.SurveyUser.DoesNotExist:
-        gid = None
-
-    logger.info('%s - Gid: %s' % (function,gid))
-    if gid:
-        return HttpResponseRedirect(reverse(index) + '?gid=' + gid)
-    else:
-        return HttpResponseRedirect(reverse(profile_index))
-
+    return HttpResponseRedirect(reverse(index))
