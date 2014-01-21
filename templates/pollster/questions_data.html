@@ -1,32 +1,25 @@
 {% load pollster_extras %}
 
 <div class="survey clearfix" id="survey-{{ survey.id }}">
-    <li>
-        <ul>Person: {{ person }}</ul>
-        <ul>User: {{data }}</ul>
-        <ul>Data {{ data.timestamp }}</ul>
-        <ul>CP {{ data.QUESTION_3 }}</ul>
-    </li>
-    
+
+    <div class="usermessage"><span class="boldgreen">Created by {{ person }} on {{ data.timestamp }}</span><br/>
+    </div>
+    <br />
+
     {% for question in survey.questions %}
         {% with valor=data|item:question.data_name %}
 
-    <div class="question-wrapper clearfix">
+        {% if question.title != 'Compilation Date' %}
+
+
+   <div class="question-wrapper clearfix">
+        
         <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
             data-question-type="{{ question.type }}" data-data-type="{{ question.data_type.id }}" data-tags="{{ question.tags }}"
             data-regex="{{ question.regex|default:'' }}"
             data-open-option-data-type="{{ question.open_option_data_type.id }}"
             data-visual="{{ question.visual }}">
             <p class="data"><span class="title">{{ question.title }}</span></p>
-    
-            {% if question.title == "Compilation Date" %}
-                <div class="value">
-                    (Person) {{ person }}<br>
-                    (User) {{data }}<br>
-                    {{ valor }}<br>
-                </div>
-            
-            {% endif %}
 
             {% if question.is_text %}
                 <div class="value"> {{ valor }} </div>
@@ -135,6 +128,7 @@
             {% endif %}
         </div>
     </div>
+    {% endif %}
     {% endwith %}
     {% endfor %}
 </div>
