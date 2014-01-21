@@ -15,7 +15,8 @@ from django.conf import settings
 from apps.survey.models import SurveyUser
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('logview.userlogins') 
+
 
 DEG_TO_RAD = pi/180
 RAD_TO_DEG = 180/pi
@@ -278,11 +279,10 @@ class Survey(models.Model):
             raise RuntimeError('cannot generate tables for surveys with no shortname')
         return 'results_'+str(self.shortname)
 
-    def get_last_participation_data(self, user_id, global_id):
+    def get_last_participation_data(self, user_id):
         model = self.as_model()
         participation = model.objects\
             .filter(user=user_id)\
-            .filter(global_id = global_id)\
             .order_by('-timestamp')\
             .values()
         return _get_or_default(participation)
@@ -988,20 +988,36 @@ class Chart(models.Model):
             return True
 
     def to_json(self, user_id, global_id):
+        function ='def to_json'
+        logger.debug(function)
         data = {}
         if self.type.shortname == "google-charts":
+            logger.debug('%s - google-charts', function)
+
             data[ "chartType"] = "Table"
             if self.chartwrapper:
                 data = json.loads(self.chartwrapper)
+                logger.debug('%s - data:%s' % (function, data))
+
+            logger.debug('%s - sqlsource:%s' % (function, self.sqlsource))
             descriptions, cells = self.load_data(user_id, global_id)
+
+            logger.debug('%s - cells:%s' % (function, cells))
+            
             cols = [{"id": desc[0], "label": desc[0], "type": "number"} for desc in descriptions]
+            logger.debug('%s - description:%s' % (function, cols))
+
             rows = [{"c": [{"v": v} for v in c]} for c in cells]
+            logger.debug('%s - rows:%s' % (function, rows))
+            
             data["dataTable"] = { "cols": cols, "rows": rows }
 
         else:
             if self.chartwrapper:
+                logger.debug('%s - chartwrapper:%s' % (function, self.chartwrapper))
                 data["bounds"] = json.loads(self.chartwrapper)
             try:
+                logger.debug('%s - No chartwrapp' % function )
                 shortname = settings.POLLSTER_USER_PROFILE_SURVEY
                 survey = Survey.objects.get(shortname=shortname, status='PUBLISHED')
 
@@ -1022,6 +1038,8 @@ class Chart(models.Model):
         return json.dumps(data)
 
     def get_map_click(self, lat, lng):
+        logger.debug('def get_map_click')
+        data = {}
         result = {}
         skip_cols = ("ogc_fid", "color", "geometry")
         description, data = self.load_info(lat, lng)
@@ -1032,16 +1050,19 @@ class Chart(models.Model):
         return json.dumps(result)
 
     def get_map_tile(self, user_id, global_id, z, x, y):
+        logger.debug('def get_map_tile')
         filename = self.get_map_tile_filename(z, x, y)
         if self.sqlfilter == "USER" and user_id:
             filename = filename + "_user_" + str(user_id)
         elif self.sqlfilter == "PERSON" and global_id:
             filename = filename + "_gid_" + global_id
+        logger.debug(filename) 
         if not os.path.exists(filename):
             self.generate_map_tile(self.generate_mapnik_map(user_id, global_id), filename, z, x, y)
         return open(filename).read()
 
     def generate_map_tile(self, m, filename, z, x, y):
+        logger.debug('def generate_map_tile')
         # Code taken from OSM generate_tiles.py
         proj = GoogleProjection()
         mprj = mapnik.Projection(m.srs)
@@ -1072,6 +1093,7 @@ class Chart(models.Model):
             im.save(str(filename), "png")
 
     def generate_mapnik_map(self, user_id, global_id):
+        logger.debug('def generate_mapnik_map')
         m = mapnik.Map(256, 256)
 
         style = self.generate_mapnik_style(user_id, global_id)
@@ -1088,6 +1110,7 @@ class Chart(models.Model):
         return m
 
     def generate_mapnik_style(self, user_id, global_id):
+        logger.debug('def generate_mapnik_style')
         style = mapnik.Style()
         for color in self.load_colors(user_id, global_id):
             # If the color can't be parsed, use red.
@@ -1106,6 +1129,7 @@ class Chart(models.Model):
         return style
 
     def create_mapnik_datasource(self, user_id, global_id):
+        logger.debug('def create_mapnki_datasource')
         # First create the SQL query that is a join between pollster_zip_codes and
         # the chart query as created by the user; then create an appropriate datasource.
 
@@ -1118,7 +1142,7 @@ class Chart(models.Model):
         elif self.sqlfilter == 'PERSON':
             table += """ WHERE "user" = %d AND global_id = '%s'""" % (user_id, global_id)
         table = "(" + table + ") AS ZIP_CODES"
-
+        logger.debug(table)
         if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
             name = settings.DATABASES["default"]["NAME"]
             return mapnik.SQLite(file=filename, wkb_format="spatialite",
@@ -1160,6 +1184,8 @@ class Chart(models.Model):
         return self.get_table_name() + "_view"
 
     def update_table(self):
+        logger.debug('def update_table')
+        logger.debug(self.sqlsource)
         table_query = self.sqlsource
         geo_table = self.geotable
         if table_query:
@@ -1192,6 +1218,8 @@ class Chart(models.Model):
         return False
 
     def update_data(self):
+        logger.debug('def update_data')
+        logger.info(self.sqlsource)
         table_query = self.sqlsource
         if table_query:
             table = self.get_table_name()
@@ -1204,13 +1232,24 @@ class Chart(models.Model):
         return False
 
     def load_data(self, user_id, global_id):
-        table = self.get_table_name()
-        query = "SELECT * FROM %s" % (table,)
+        function = 'def load_data'
+        logger.debug(function)
+        logger.debug('%s - user_id:%s global_id:%s' % (function, user_id,global_id))
+        #table = self.get_table_name()
+        #query = "SELECT * FROM %s" % (table,)
+
+        query = self.sqlsource
+        logger.debug('%s - sqlsource:%s' % (function, self.sqlsource))
+        logger.debug('%s - sqlfilter:%s' % (function, self.sqlfilter))
         if self.sqlfilter == 'USER' :
             query += """ WHERE "user" = %(user_id)s"""
         elif self.sqlfilter == 'PERSON':
             query += """ WHERE "user" = %(user_id)s AND global_id = %(global_id)s"""
+        
+        logger.debug('%s - query:%s' % (function, query))
         params = { 'user_id': user_id, 'global_id': global_id }
+        logger.debug('%s - params:%s'  % (function, params))
+        #table = self.get_table_name()
         query = convert_query_paramstyle(connection, query, params)
         try:
             cursor = connection.cursor()
@@ -1220,12 +1259,14 @@ class Chart(models.Model):
             return ((('Error',),), ((str(e),),))
 
     def load_colors(self, user_id, global_id):
+        logger.debug('def load_colors')
         table = self.get_table_name()
         query = """SELECT DISTINCT color FROM %s""" % (table,)
         if self.sqlfilter == 'USER' :
             query += """ WHERE "user" = %(user_id)s"""
         elif self.sqlfilter == 'PERSON':
             query += """ WHERE "user" = %(user_id)s AND global_id = %(global_id)s"""
+        logger.debug(query)
         params = { 'user_id': user_id, 'global_id': global_id }
         query = convert_query_paramstyle(connection, query, params)
         try:
@@ -1239,6 +1280,7 @@ class Chart(models.Model):
             return ['#ff0000']
 
     def load_info(self, lat, lng):
+        logger.debug('def load_info')
         view = self.get_view_name()
         query = "SELECT * FROM %s WHERE ST_Contains(geometry, 'SRID=4326;POINT(%%s %%s)')" % (view,)
         try:
@@ -1522,7 +1564,7 @@ class ResultsIntake(models.Model):
         try:
             return ResultsIntake.objects.get(user=user)
         except ResultsIntake.DoesNotExist:
-            logger.info('Get by User -> No Data')
+            logger.debug('Get by User -> No Data')
             return None
 
 class ResultsMonthly(models.Model):
@@ -1628,20 +1670,20 @@ class ResultsMonthly(models.Model):
 
     @staticmethod
     def get_by_user(user):
-        logger.info('Get by User: %s' % user)
+        logger.debug('Get by User: %s' % user)
         try:
             return ResultsMonthly.objects.all().get(user=user)
-        except Results_Intake.DoesNotExist:
-            logger.info('Get by User -> No Data')
+        except ResultsMonthly.DoesNotExist:
+            logger.debug('Get by User -> No Data')
             return None
 
     @staticmethod
     def get_by_user_id(user,id ):
-        logger.info('Get by User:%s ID:%s:' % (user,id))
+        logger.debug('Get by User:%s ID:%s:' % (user,id))
         try:
             return ResultsMonthly.objects.all().get(user=user,id=id)
         except ResultsMonthly.DoesNotExist:
-            logger.info('Get by User ID -> No Data')
+            logger.debug('Get by User ID -> No Data')
             return None
 
 class SurveyChartPlugin(CMSPlugin):
@@ -1649,3 +1691,26 @@ class SurveyChartPlugin(CMSPlugin):
 
 class SurveyResultsEntryPlugin(CMSPlugin):
     title = models.CharField('Title', max_length=255)
+
+class SurveyChartIntake(CMSPlugin):
+    name = models.CharField(max_length=255, unique=True)
+    shortname = models.SlugField(max_length=255)
+    description = models.CharField(max_length=255)
+    chartwrapper = models.TextField(blank=True, default='')
+    sqlsource = models.TextField(blank=True, default='', verbose_name="SQL Source Query")
+    sqlfilter = models.CharField(max_length=255, default='NONE', choices=CHART_SQLFILTER_CHOICES, verbose_name="Results Filter")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=255, default='DRAFT', choices=CHART_STATUS_CHOICES)
+    
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def is_draft(self):
+        return self.status == 'DRAFT'
+
+    @property
+    def is_published(self):
+        return self.status == 'PUBLISHED'
+
