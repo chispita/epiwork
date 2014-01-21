@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.survey.models import SurveyUser, Profile, Participation, ParticipationTest
+from apps.survey.models import SurveyUser, Profile, Participation, ParticipationTest, ResponseSendQueue, ProfileSendQueue
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'updated', 'valid', 'created')
@@ -16,7 +16,14 @@ class SurveyUserAdmin(admin.ModelAdmin):
     ordering = ('name',)
     search_fields = ('name',)
 
+class ResponseSendQueueAdmin(admin.ModelAdmin):
+    pass
+
+class ProfileSendQueueAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Participation, ParticipationAdmin)
 admin.site.register(SurveyUser, SurveyUserAdmin)
+admin.site.register(ResponseSendQueue, ResponseSendQueueAdmin)
+admin.site.register(ProfileSendQueue, ProfileSendQueueAdmin)
