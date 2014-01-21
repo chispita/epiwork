@@ -1,6 +1,6 @@
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
-from .models import SurveyChartPlugin
+from .models import SurveyChartPlugin, SurveyChartIntake
 from .utils import get_user_profile
 from django.utils.translation import ugettext as _
 
@@ -24,3 +24,21 @@ class CMSSurveyChartPlugin(CMSPluginBase):
         return context
 
 plugin_pool.register_plugin(CMSSurveyChartPlugin)
+
+class CMSSurveyChartIntake(CMSPluginBase):
+    model = SurveyChartIntake
+    name = _("Survey Chart Intake")
+    render_template = "pollster/cms_survey_chart_intake.html"
+
+    def render(self, context, instance, placeholder):
+        request = context['request']
+
+        context.update({
+            'object':instance,
+            'chart': instance,
+            'placeholder':placeholder
+        })
+        return context
+
+plugin_pool.register_plugin(CMSSurveyChartIntake)
+
