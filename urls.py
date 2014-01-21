@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.views.generic.simple import redirect_to
+#from django.views.generic.simple import redirect_to
+from django.views.generic import TemplateView
 
 from haystack.views import SearchView, search_view_factory
 from haystack.forms import SearchForm
@@ -46,8 +47,10 @@ urlpatterns = patterns('',
     (r'^test-search/$', 'views.test_search'),
     (r'^accounts/', include('apps.accounts.urls')),
 
-    url(r'^login/$', redirect_to, {'url': settings.LOGIN_URL}, 
-                     name='loginurl-index'),
+    url(r'^login/$', TemplateView.as_view(template_name=settings.LOGIN_URL)),
+
+    #url(r'^login/$', redirect_to, {'url': settings.LOGIN_URL}, 
+    #                 name='loginurl-index'),
     (r'^login/', include('loginurl.urls')),
     (r'^count/', include('apps.count.urls')),
     (r'^contest/', include('apps.contest.urls')),
