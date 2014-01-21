@@ -5,6 +5,7 @@ DEBUG = True
 DEBUG_MIDDELWARE = False
 TEMPLATE_DEBUG = DEBUG
 
+#from pybb.settings import *
 
 ADMINS = (
     ('Carlos Val', 'carlos.val@bifi.es'),
@@ -23,9 +24,12 @@ DATABASES = {
     }
 }
 
+import os
+VENV_ROOT = os.path.join('/','var','log')
+
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
@@ -35,35 +39,21 @@ LOGGING = {
         },
     },
     'handlers': {
-        'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
-        },
-        'console':{
+        'file_userlogins': {                # define and name a handler
             'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        # I always add this handler to facilitate separating loggings
-        'log_file':{
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/django/django.log',
-            'maxBytes': '16777216', # 16megabytes
-            'formatter': 'verbose'
+            'class': 'logging.FileHandler', # set the logging class to log to a file
+            'formatter': 'verbose',         # define the formatter to associate
+            'filename': os.path.join(VENV_ROOT, 'django', 'django.log') # log file
         },
     },
     'loggers': {
-        'apps': { # I keep all my of apps under 'apps' folder, but you can also add them one by one, and this depends on how your virtualenv/paths are set
-            'handlers': ['log_file'],
-            'level': 'INFO',
+        'logview.userlogins': {              # define a logger - give it a name
+            'handlers': ['file_userlogins'], # specify what handler to associate
+            'level': 'DEBUG',                 # specify the logging level
             'propagate': True,
-        },
-    },
+        },     
+    }       
 }
-
-
-
 
 
 SITE_ID = 1
@@ -118,6 +108,9 @@ POLLSTER_CACHE_PATH = PROJECT_PATH
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 STATIC_URL = MEDIA_URL = '/media/'
+
+#STATIC_URL = '/media1/'
+#MEDIA_URL = '/media2/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
