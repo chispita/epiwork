@@ -4,16 +4,16 @@
 {% block col1 %}
 <h1>{% trans "Thanks for changing your profile," %}
 {% if person %}
-{{ person }}.
+    {{ person }}.
 {% else %}
-{{ user }}.
+    {{ user }}.
 {% endif %}
 </h1>
 <p>{% trans "Please, if you have not already done so, fill in" %}
 {% if person %}
-<a href="/survey/?gid={{person.global_id}}">
+    <a href="/survey/?gid={{person.global_id}}">
 {% else %}
-<a href="/survey/">
+    <a href="/survey/">
 {% endif %}
 {% trans "the symptoms questionaire" %}</a>.
 </p>
