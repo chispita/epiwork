@@ -20,7 +20,7 @@ from . import models, forms, fields, parser, json
 import re, datetime, locale, csv, urlparse, urllib
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('logview.userlogins') 
 
 
 def request_render_to_response(req, *args, **kwargs):
@@ -168,14 +168,15 @@ def survey_intake(request, next=None):
     return survey_run(request, 'intake', next)
 
 def survey_run(request, shortname, next=None, clean_template=False):
-    #from apps.survey.views import _get_person_health_status
 
     function = 'def Survey run'
     logger.info('%s' % function)
 
     if 'login_key' in request.GET:
         user = authenticate(key=request.GET['login_key'])
+        logger.info('%s - Authenticate:%s' % (function, user))
         if user is not None:
+            logger.info('%s - user is None' % function)
             login(request, user)
 
         # deal with the else branch somehow, since it's rather unexpected to have login_key in the
@@ -197,40 +198,43 @@ def survey_run(request, shortname, next=None, clean_template=False):
 
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
-    survey_user = _get_active_survey_user(request)
+    #survey_user = _get_active_survey_user(request)
 
     form = None
     user_id = request.user.id
-    global_id = survey_user and survey_user.global_id
-    last_participation_data = survey.get_last_participation_data(user_id, global_id)
+    #global_id = survey_user and survey_user.global_id
+    last_participation_data = survey.get_last_participation_data(user_id)
 
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = user_id
-        data['global_id'] = global_id
+        #data['global_id'] = global_id
         data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
         if form.is_valid():
             logger.info('%s - Save' % function)
             form.save()
             next_url = next or _get_next_url(request, reverse("survey_run", kwargs={'shortname': shortname}))
-            logger.info('%s - Antes global_id' % function)
-            if global_id:
-                logger.info('%s - next' % function)
-                # add or override the 'gid' query parameter
-                next_url_parts = list(urlparse.urlparse(next_url))
-                query = dict(urlparse.parse_qsl(next_url_parts[4]))
-                query.update({'gid': global_id})
-                next_url_parts[4] = urllib.urlencode(query)
-                next_url = urlparse.urlunparse(next_url_parts)
+
+            #if global_id:
+            #    logger.info('%s - next' % function)
+            #    # add or override the 'gid' query parameter
+            next_url_parts = list(urlparse.urlparse(next_url))
+            logger.debug('%s - next_url_parts:%s' % (function, next_url_parts))
+            query = dict(urlparse.parse_qsl(next_url_parts[4]))
+            logger.info('%s - query:%s' % (function, query))
+            #    query.update({'gid': global_id})
+            next_url_parts[4] = urllib.urlencode(query)
+            logger.debug('%s - next_url_iparts:%s' % (function, next_url_parts[4]))
+            next_url = urlparse.urlunparse(next_url_parts)
+            logger.debug('%s - next_url:%s' % (function, next_url))
 
             # Ejectuara algo despues de la grabacion
             if survey.shortname == 'weekly':
-                __, diagnosis = _get_person_health_status(request, survey, global_id)
-                messages.info(request, _("Thanks - your diagnosis:") + u" " + u"%s" % diagnosis)
+                #__, diagnosis = _get_person_health_status(request, survey, global_id)
+                messages.info(request, _("Thanks - your survey"))
             else:
                 messages.info(request, _("Thanks for taking the time to fill out this survey."))
-
             return HttpResponseRedirect(next_url)
         else:
             survey.set_form(form)
@@ -243,8 +247,8 @@ def survey_run(request, shortname, next=None, clean_template=False):
         "survey": survey,
         "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
         "last_participation_data_json": last_participation_data_json,
-        "form": form,
-        "person": survey_user
+        "form": form
+#        "person": survey_user
     })
 
 def survey_map(request, survey_shortname, chart_shortname):
@@ -364,11 +368,33 @@ def survey_chart_edit(request, id, shortname):
 
 @staff_member_required
 def survey_chart_data(request, id, shortname):
-    survey = get_object_or_404(models.Survey, pk=id)
+    function = 'def survey_chart_data'
+    logger.debug(function)
+    logger.debug('%s - pk:%s shortname:%s' % (function, id, shortname))
+
+    #survey = get_object_or_404(models.Survey, id=id)
+    
+    try:
+        survey = models.Survey.get(pk=id)
+        logger.debug('%s - survey:' % (function, survey))
+    except models.Survey.DoesNotExits:
+        logger.debug('%s - No existe' % function)
+        raise Http404
+
+
+    logger.debug('%s - aqui estamos:' % function)
+    
+
     chart = get_object_or_404(models.Chart, survey=survey, shortname=shortname)
+    logger.debug('%s - chart:' % (function, chart))
+
     survey_user = _get_active_survey_user(request)
+    logger.debug('%s - survey_user:' % (function, survey_user))
+
     user_id = request.user.id
     global_id = survey_user and survey_user.global_id
+    logger.debug('%s - global_id:' % (function, global_id))
+
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
 @staff_member_required
@@ -398,9 +424,8 @@ def survey_results_csv(request, id):
     survey.write_csv(writer)
     return response
 
-#def survey_results_intake(request, id, language=None):
-def survey_results_intake(request, shortname, id=0):
-    function = 'survey_results_intake'
+def survey_data(request, shortname, id=0):
+    function = 'def survey_data'
     logger.info('%s' % function)
     logger.info('%s: shortname:%s id:%s' % (function, shortname, id))
 
@@ -417,12 +442,9 @@ def survey_results_intake(request, shortname, id=0):
         if locale_code == "en-US":
             locale_code = "en-GB"
 
-    survey_user = _get_active_survey_user(request)
-    user = _get_active_survey_user(request)
     form = None
 
     user_id = request.user.id
-    global_id = survey_user and survey_user.global_id
     last_participation_data = None
 
     encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
@@ -438,20 +460,21 @@ def survey_results_intake(request, shortname, id=0):
 
     if data:
         logger.info('%s: data:%s' % (function, data))
+        return request_render_to_response(request, 'pollster/survey_data.html', {
+            "language": language,
+            "locale_code": locale_code,
+            "survey": survey,
+            "data" : data,
+            "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
+            "last_participation_data_json": last_participation_data_json,
+            "language": language,
+            "form": form
+            })
     else:
-        logger.info('%s: No data' % function )
-
-    return request_render_to_response(request, 'pollster/survey_data.html', {
-        "person": survey_user,
-        "language": language,
-        "locale_code": locale_code,
-        "survey": survey,
-        "data" : data,
-        "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
-        "last_participation_data_json": last_participation_data_json,
-        "language": language,
-        "form": form
-    })
+        logger.error('%s: No data' % function)
+        messages.error(request, 'Unable to find data with this survey.')
+        return request_render_to_response(request, 'pollster/messages.html')
+                 
 
 def survey_export_xml(request, id):
     survey = get_object_or_404(models.Survey, pk=id)
@@ -473,20 +496,31 @@ def survey_import(request):
             return redirect(survey)
     return redirect(survey_list)
 
-def survey_consumos(request):
-    return HttpResponse("You're looking at poll")
-
 def chart_data(request, survey_shortname, chart_shortname):
+    function = 'chart_data'
+    logger.debug(function)
     chart = None
     if request.user.is_active and request.user.is_staff:
+        logger.debug('%s is_staff' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname)
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname)
     else:
+        logger.debug('%s is_currito' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname, status='PUBLISHED')
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname, status='PUBLISHED')
+
+    logger.debug('%s - survey:%s' % (function, survey))
+    logger.debug('%s - chart:%s' % (function, chart))
+
     survey_user = _get_active_survey_user(request)
+    logger.debug('%s - survey_user:%s' % (function, survey_user))
+
     user_id = request.user.id
+    logger.debug('%s - user_id:%s' % (function, user_id))
+
     global_id = survey_user and survey_user.global_id
+    logger.debug('%s - global_id:%s' % (function, global_id))
+
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
 def map_tile(request, survey_shortname, chart_shortname, z, x, y):
