@@ -664,7 +664,7 @@ msgstr "Para comunicarse con el equipo de SavingEnergy@home, recibir informació
 #: templates/registration/activate.html:9
 #: templates/registration/registration_complete.html:10
 msgid "contact us"
-msgstr " "
+msgstr ""
 
 #: templates/admin/pollster/survey/change_form.html:6
 #: templates/admin/pollster/translationsurvey/change_form.html:6
