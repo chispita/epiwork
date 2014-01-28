@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
 
 from .models import UserReminderInfo, get_upcoming_dates, get_prev_reminder, get_settings, get_default_for_reminder, NewsLetter
-from .send import create_message, send
+from .send import create_message, send, send_reminders
 
 
 @login_required
@@ -56,7 +56,9 @@ def manage(request, year, month, day, hour, minute):
 
     if request.method == "POST":
         sent = True
-        send(datetime.now(), request.user, reminder, None, is_test_message=True)
+
+        send_reminders()
+        #send(datetime.now(), request.user, reminder, None, is_test_message=True)
         
     return render(request, 'reminder/manage.html', locals())
 

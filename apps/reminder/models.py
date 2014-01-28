@@ -10,6 +10,9 @@ from nani.models import TranslatableModel, TranslatedFields
 
 from apps.survey.models import SurveyUser
 
+import logging
+logger = logging.getLogger('logview.userlogins') 
+
 # A short word on terminology:
 # "Reminder" may refer to a NewsLetter object, or simply a placeholder
 # that's based on the is_default_reminder NewsLetterTemplate
@@ -151,13 +154,16 @@ def get_default_for_newsitem(language):
 def get_prev_reminder_date(now, published=True):
     """Returns the date of the previous reminder or None if there's no
     such date"""
-
+    function = 'def get_prev_reminder_data'
+    logger.debug(function)
     settings = get_settings()
 
     if not settings or not settings.send_reminders or not settings.begin_date or now < settings.begin_date:
+        logger.debug('%s - not settings' % function )
         return None
 
     if settings.interval == NO_INTERVAL:
+        logger.debug('%s - settings: NO_INTERNAL' % function )
         qs = NewsLetter.objects.filter(date__lte=now).exclude(date__gt=now).order_by("-date")
         if published:
             qs = qs.filter(published=published)
@@ -178,8 +184,12 @@ def get_prev_reminder_date(now, published=True):
 def get_prev_reminder(now, published=True):
     """Returns the reminder (newsletter/tempate) to send at a given moment
     as a dict with languages as keys, or None if there is no such reminder"""
+    function = 'def get_prev_reminder'
+    logger.debug(function)
+
     def p(qs):
         if published:
+            logger.debug('%s - published' % function)
             return qs.filter(published=published)
         return qs
 
@@ -211,20 +221,27 @@ def get_prev_reminder(now, published=True):
     return result
 
 def get_reminders_for_users(now, users):
+    function = 'def get_reminders_for_users'
+    logger.debug('def get_reminders_for_users')
+
     reminder_dict = get_prev_reminder(now)
     if not reminder_dict:
+        logger.debug('%s No reminder_dict' % function)
         raise StopIteration()
 
     batch_size = get_settings().batch_size if get_settings() else None
 
     yielded = 0
     for user in users:
+        logger.debug('%s - user:%s' % (function, user))
         if batch_size and yielded >= batch_size:
+            logger.debug('%s - batch size' % function)
             raise StopIteration 
 
         info, _ = UserReminderInfo.objects.get_or_create(user=user, defaults={'active': True, 'last_reminder': user.date_joined})
 
         if not info.active:
+            logger.debug('%s - not info.active' % function)
             continue
 
         language = info.get_language()
@@ -262,4 +279,5 @@ def get_reminders_for_users(now, users):
         if info.last_reminder < reminder.date:
             yield user, reminder, language
             yielded += 1
-
+        else:
+            logger.debug('%s - Ya se ha mandado un aviso' % function)

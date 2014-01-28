@@ -18,7 +18,11 @@ from apps.partnersites.context_processors import site_context
 
 from .models import get_reminders_for_users, UserReminderInfo, ReminderError
 
+import logging
+logger = logging.getLogger('logview.userlogins') 
+
 def create_message(user, message, language):
+    logger.debug('def create_message')
     if language:
         activate(language)
 
@@ -41,6 +45,7 @@ def create_message(user, message, language):
     return inner, t.render(Context(c))
 
 def send_reminders(fake=False):
+    logger.debug('def send_reminders')
     now = datetime.datetime.now()
 
     i = -1
@@ -79,6 +84,7 @@ def get_survey_url():
     return 'http://%s%s' % (domain, path)
 
 def send(now, user, message, language, is_test_message=False):
+    logger.debug('def send')
     text_base, html_content = create_message(user, message, language)
     text_content = strip_tags(text_base)
 

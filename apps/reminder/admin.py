@@ -10,6 +10,10 @@ from nani.admin import TranslatableAdmin
 from .models import UserReminderInfo, ReminderSettings, NewsLetterTemplate, NewsLetter, ReminderError
 from .forms import ReminderSettingsForm, NewsLetterTemplateForm, NewsLetterForm
 
+def delete_reminder(modeladmin, request, queryset):
+    queryset.delete()
+delete_reminder.short_description = 'Delete reminder'
+
 def make_active(modeladmin, request, queryset):
     queryset.update(active=True)
 make_active.short_description = 'Make selected reminders active'
@@ -21,7 +25,7 @@ make_inactive.short_description = 'Make selected reminders inactive'
 class UserReminderInfoAdmin(admin.ModelAdmin):
     list_display = ('user', 'active', 'last_reminder',)
     ordering = ('user__username',)
-    actions = (make_active, make_inactive,)
+    actions = (delete_reminder,make_active, make_inactive,)
     list_editable = ('active',)
     list_filter = ('active',)
     search_fields = ('user__username',)
