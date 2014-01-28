@@ -20,8 +20,7 @@ from . import models, forms, fields, parser, json
 import re, datetime, locale, csv, urlparse, urllib
 
 import logging
-logger = logging.getLogger('logview.userlogins') 
-
+logger = logging.getLogger('logview.userlogins')
 
 def request_render_to_response(req, *args, **kwargs):
     kwargs['context_instance'] = RequestContext(req)
@@ -43,8 +42,10 @@ def retry(f, *args, **kwargs):
             if tries == 0:
                 raise
 
-@staff_member_required
+#@staff_member_required
 def survey_list(request):
+    function = 'def Survey list'
+    logger.info('%s' % function)
     surveys = models.Survey.objects.all()
     form_import = forms.SurveyImportForm()
     return request_render_to_response(request, 'pollster/survey_list.html', {
@@ -54,6 +55,8 @@ def survey_list(request):
 
 @staff_member_required
 def survey_add(request):
+    function = 'def Survey add'
+    logger.info('%s' % function)
     survey = models.Survey()
     if (request.method == 'POST'):
         form = forms.SurveyXmlForm(request.POST)
@@ -75,13 +78,18 @@ def survey_add(request):
 
 @staff_member_required
 def survey_edit(request, id):
+    function = 'def Survey edit'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     if not survey.is_editable:
         return redirect(survey_test, id=id)
     if request.method == 'POST':
+        logger.info('%s- POST' % function)
         form = forms.SurveyXmlForm(request.POST)
         if form.is_valid():
+            logger.info('%s- is_valid' % function)
             parser.survey_update_from_xhtml(survey, form.cleaned_data['surveyxml'])
+            logger.info('%s- Suvey:%s' % (function, survey))
             return redirect(survey)
     virtual_option_types = models.VirtualOptionType.objects.all()
     question_data_types = models.QuestionDataType.objects.all()
@@ -96,6 +104,8 @@ def survey_edit(request, id):
 
 @staff_member_required
 def survey_publish(request, id):
+    function = 'def Survey publish'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     if (request.method == 'POST'):
         errors = survey.publish()
@@ -108,6 +118,8 @@ def survey_publish(request, id):
 
 @staff_member_required
 def survey_unpublish(request, id):
+    function = 'def Survey unpublish'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     if (request.method == 'POST'):
         survey.unpublish()
@@ -116,6 +128,8 @@ def survey_unpublish(request, id):
 
 @staff_member_required
 def survey_test(request, id, language=None):
+    function = 'def Survey test'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     if language:
         translation = get_object_or_404(models.TranslationSurvey, survey=survey, language=language)
@@ -165,28 +179,14 @@ def survey_test(request, id, language=None):
 def survey_intake(request, next=None):
     function = 'def Survey intake'
     logger.info('%s' % function)
-    return survey_run(request, 'intake', next)
+    return pollster_run(request, 'intake', next)
 
-def survey_run(request, shortname, next=None, clean_template=False):
-
-    function = 'def Survey run'
+@login_required
+def pollster_update(request, shortname, id=0):
+    function = 'def Pollster update'
     logger.info('%s' % function)
 
-    if 'login_key' in request.GET:
-        user = authenticate(key=request.GET['login_key'])
-        logger.info('%s - Authenticate:%s' % (function, user))
-        if user is not None:
-            logger.info('%s - user is None' % function)
-            login(request, user)
-
-        # deal with the else branch somehow, since it's rather unexpected to have login_key in the
-        # GET, yet have it be incorrect?
-
-    # @login_required from this point on.
-    if not request.user.is_authenticated():
-        if clean_template: # i.e. "if is_mobile"
-            return HttpResponse(simplejson.dumps({'error': True, 'error_code': 3, 'error_msg': 'you must be logged in'}), mimetype="application/json")
-        return redirect_to_login(request.path)
+    user_id = request.user.id
 
     survey = get_object_or_404(models.Survey, shortname=shortname,status='PUBLISHED')
     language = get_language()
@@ -198,36 +198,58 @@ def survey_run(request, shortname, next=None, clean_template=False):
 
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
-    #survey_user = _get_active_survey_user(request)
+
+    data = pollster_get_data(user_id,shortname, id)
+    if data is None:
+        logger.error('%s: No data' % function)
+        messages.error(request, 'Unable to find data with this survey.')
+        return request_render_to_response(request, 'pollster/messages.html')
 
     form = None
     user_id = request.user.id
-    #global_id = survey_user and survey_user.global_id
+
+    return request_render_to_response(request, 'pollster/pollster_update.html', {
+        "language": language,
+        "locale_code": locale_code,
+        "survey": survey,
+        "data":data,
+        "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
+        "form": form
+    })
+
+def pollster_run(request, shortname, next=None, clean_template=False):
+    function = 'def Pollster run'
+    logger.info('%s' % function)
+
+    survey = get_object_or_404(models.Survey, shortname=shortname,status='PUBLISHED')
+    language = get_language()
+    locale_code = locale.locale_alias.get(language)
+    if locale_code:
+        locale_code = locale_code.split('.')[0].replace('_', '-')
+        if locale_code == "en-US":
+            locale_code = "en-GB"
+
+    translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
+    survey.set_translation_survey(translation)
+
+    form = None
+    user_id = request.user.id
     last_participation_data = survey.get_last_participation_data(user_id)
 
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = user_id
-        #data['global_id'] = global_id
         data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
         if form.is_valid():
             logger.info('%s - Save' % function)
             form.save()
-            next_url = next or _get_next_url(request, reverse("survey_run", kwargs={'shortname': shortname}))
+            next_url = next or _get_next_url(request, reverse("pollster_run", kwargs={'shortname': shortname}))
 
-            #if global_id:
-            #    logger.info('%s - next' % function)
-            #    # add or override the 'gid' query parameter
             next_url_parts = list(urlparse.urlparse(next_url))
-            logger.debug('%s - next_url_parts:%s' % (function, next_url_parts))
             query = dict(urlparse.parse_qsl(next_url_parts[4]))
-            logger.info('%s - query:%s' % (function, query))
-            #    query.update({'gid': global_id})
             next_url_parts[4] = urllib.urlencode(query)
-            logger.debug('%s - next_url_iparts:%s' % (function, next_url_parts[4]))
             next_url = urlparse.urlunparse(next_url_parts)
-            logger.debug('%s - next_url:%s' % (function, next_url))
 
             # Ejectuara algo despues de la grabacion
             if survey.shortname == 'weekly':
@@ -238,10 +260,11 @@ def survey_run(request, shortname, next=None, clean_template=False):
             return HttpResponseRedirect(next_url)
         else:
             survey.set_form(form)
+
     encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
     last_participation_data_json = encoder.encode(last_participation_data)
 
-    return request_render_to_response(request, "pollster/survey_run_clean.html" if clean_template else 'pollster/survey_run.html', {
+    return request_render_to_response(request, "pollster/pollster_run_clean.html" if clean_template else 'pollster/pollster_run.html', {
         "language": language,
         "locale_code": locale_code,
         "survey": survey,
@@ -267,16 +290,22 @@ def survey_map(request, survey_shortname, chart_shortname):
 
 @staff_member_required
 def survey_translation_list_or_add(request, id):
+    function = 'def survey_translation_list_or_add'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     form_add = forms.SurveyTranslationAddForm()
     if request.method == 'POST':
+        logger.info('%s POST' % function)
         form_add = forms.SurveyTranslationAddForm(request.POST)
         if form_add.is_valid():
+            logger.info('%s is_valid' % function)
             language = form_add.cleaned_data['language']
             translations = survey.translationsurvey_set.all().filter(language=language)[0:1]
             if translations:
+                logger.info('%s - translations:%s' % (function, translations))
                 translation = translations[0]
             else:
+                logger.info('%s - create translations' % function)
                 translation = models.TranslationSurvey(survey=survey, language=language)
                 survey.set_translation_survey(translation)
                 survey.translation_survey.save()
@@ -298,6 +327,8 @@ def survey_translation_list_or_add(request, id):
 
 @staff_member_required
 def survey_translation_edit(request, id, language):
+    function = 'def survey_translation_edit'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     translation = get_object_or_404(models.TranslationSurvey, survey=survey, language=language)
     survey.set_translation_survey(translation)
@@ -324,6 +355,8 @@ def survey_translation_edit(request, id, language):
 
 @staff_member_required
 def survey_chart_list_or_add(request, id):
+    function = 'def survey_chart_list_or_add'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     form_add = forms.SurveyChartAddForm()
     if request.method == 'POST':
@@ -346,6 +379,8 @@ def survey_chart_list_or_add(request, id):
 
 @staff_member_required
 def survey_chart_edit(request, id, shortname):
+    function = 'def survey_chart_edit'
+    logger.info('%s' % function)
     survey = get_object_or_404(models.Survey, pk=id)
     chart = get_object_or_404(models.Chart, survey=survey, shortname=shortname)
     form_chart = forms.SurveyChartEditForm(instance=chart)
@@ -373,7 +408,7 @@ def survey_chart_data(request, id, shortname):
     logger.debug('%s - pk:%s shortname:%s' % (function, id, shortname))
 
     #survey = get_object_or_404(models.Survey, id=id)
-    
+
     try:
         survey = models.Survey.get(pk=id)
         logger.debug('%s - survey:' % (function, survey))
@@ -383,7 +418,7 @@ def survey_chart_data(request, id, shortname):
 
 
     logger.debug('%s - aqui estamos:' % function)
-    
+
 
     chart = get_object_or_404(models.Chart, survey=survey, shortname=shortname)
     logger.debug('%s - chart:' % (function, chart))
@@ -424,12 +459,29 @@ def survey_results_csv(request, id):
     survey.write_csv(writer)
     return response
 
-def survey_data(request, shortname, id=0):
-    function = 'def survey_data'
+def pollster_get_data(user_id,shortname,id):
+    # Get data from Intake query by user
+    function = 'def pollster_get_data'
+    logger.info('%s: shortname:%s user_id:%s' % (function, shortname, user_id))
+
+    if shortname == 'intake':
+        logger.info('%s  Busqueda:intake' % function )
+        data = models.ResultsIntake.get_by_user(user_id)
+    else:
+        logger.info('%s  Busqueda:monthly' % function )
+        data = models.ResultsMonthly.get_by_user_id(user_id, id)
+
+    return data
+
+@login_required
+def pollster_data(request, shortname, id=0):
+    function = 'def pollster_data'
     logger.info('%s' % function)
     logger.info('%s: shortname:%s id:%s' % (function, shortname, id))
 
     language=None
+    form = None
+
     survey = get_object_or_404(models.Survey, shortname=shortname)
     if language:
         translation = get_object_or_404(models.TranslationSurvey, survey=survey, language=language)
@@ -442,25 +494,28 @@ def survey_data(request, shortname, id=0):
         if locale_code == "en-US":
             locale_code = "en-GB"
 
-    form = None
-
     user_id = request.user.id
     last_participation_data = None
 
     encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
     last_participation_data_json = encoder.encode(last_participation_data)
 
-    # Get data from Intake query by user 
-    if shortname == 'intake':
-        logger.info('%s  Busqueda:intake' % function )
-        data = models.ResultsIntake.get_by_user(user_id)
-    else:
-        logger.info('%s  Busqueda:monthly' % function )
-        data = models.ResultsMonthly.get_by_user_id(user_id, id)
+    data = pollster_get_data(user_id,shortname, id)
+    if data is None:
+        logger.error('%s: No data' % function)
+        messages.error(request, 'Unable to find data with this survey.')
+        return request_render_to_response(request, 'pollster/messages.html')
 
-    if data:
+    if (request.method == 'POST'):
+        logger.info('%s: POST ' % function)
+
+        # Reenvio a la funcion de update
+        return HttpResponseRedirect(reverse(pollster_update, kwargs={'survey':survey}))
+
+    else:
+        template = 'pollster/pollster_data.html'
         logger.info('%s: data:%s' % (function, data))
-        return request_render_to_response(request, 'pollster/survey_data.html', {
+        return request_render_to_response(request, template, {
             "language": language,
             "locale_code": locale_code,
             "survey": survey,
@@ -469,12 +524,7 @@ def survey_data(request, shortname, id=0):
             "last_participation_data_json": last_participation_data_json,
             "language": language,
             "form": form
-            })
-    else:
-        logger.error('%s: No data' % function)
-        messages.error(request, 'Unable to find data with this survey.')
-        return request_render_to_response(request, 'pollster/messages.html')
-                 
+        })
 
 def survey_export_xml(request, id):
     survey = get_object_or_404(models.Survey, pk=id)
@@ -485,6 +535,9 @@ def survey_export_xml(request, id):
 
 @staff_member_required
 def survey_import(request):
+    function = 'def survey_import'
+    logger.debug(function)
+
     form_import = forms.SurveyImportForm()
     if request.method == 'POST':
         form_import = forms.SurveyImportForm(request.POST, request.FILES)
@@ -524,6 +577,9 @@ def chart_data(request, survey_shortname, chart_shortname):
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
 def map_tile(request, survey_shortname, chart_shortname, z, x, y):
+    function = 'def map_tile'
+    logger.debug(function)
+
     if int(z) > 22:
         raise Http404
     chart = None
@@ -539,6 +595,9 @@ def map_tile(request, survey_shortname, chart_shortname, z, x, y):
     return HttpResponse(retry(chart.get_map_tile, user_id, global_id, int(z), int(x), int(y)), mimetype='image/png')
 
 def map_click(request, survey_shortname, chart_shortname, lat, lng):
+    function = 'def map_click'
+    logger.debug(function)
+
     chart = None
     if request.user.is_active and request.user.is_staff:
         survey = get_object_or_404(models.Survey, shortname=survey_shortname)
@@ -585,6 +644,9 @@ def urls(request, prefix=''):
     return request_render_to_response(request, "pollster/urls.js", {'urls':urls}, mimetype="application/javascript")
 
 def _get_active_survey_user(request):
+    function = 'def get_active_survey_user'
+    logger.debug(function)
+
     gid = request.GET.get('gid', None)
     if gid is None or not request.user.is_active:
         return None
@@ -592,6 +654,9 @@ def _get_active_survey_user(request):
         return get_object_or_404(SurveyUser, global_id=gid, user=request.user)
 
 def _get_next_url(request, default):
+    function = 'def get_next_url'
+    logger.debug(function)
+
     url = request.GET.get('next', default)
     survey_user = _get_active_survey_user(request)
     if survey_user:

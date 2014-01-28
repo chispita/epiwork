@@ -15,7 +15,7 @@ from django.conf import settings
 from apps.survey.models import SurveyUser
 
 import logging
-logger = logging.getLogger('logview.userlogins') 
+logger = logging.getLogger('logview.userlogins')
 
 
 DEG_TO_RAD = pi/180
@@ -31,7 +31,7 @@ except:
     except ImportError:
         mapnik_version = None
         warnings.warn("No working version for library 'mapnik' found. Continuing without mapnik")
-        
+
 
 SURVEY_STATUS_CHOICES = (
     ('DRAFT', 'Draft'),
@@ -82,51 +82,51 @@ SURVEY_EXTRA_SQL = {
                            and ("Q1_5" or "Q1_6" or "Q1_7")
                               then 'ILI'
 
-                          when 
+                          when
                             (
-                                (not "Q1_1") and (not "Q1_2") 
-                                and (("Q6d" = 0) or ("Q6d" is null)) 
+                                (not "Q1_1") and (not "Q1_2")
+                                and (("Q6d" = 0) or ("Q6d" is null))
                                 and ("Q1_3" or "Q1_4" or "Q1_14")
                                 and ("Q11" = 2)
                             ) and (
-                                case true when "Q1_17" then 1 else 0 end + 
-                                case true when "Q1_15" then 1 else 0 end + 
-                                case true when "Q1_16" then 1 else 0 end + 
+                                case true when "Q1_17" then 1 else 0 end +
+                                case true when "Q1_15" then 1 else 0 end +
+                                case true when "Q1_16" then 1 else 0 end +
                                 case true when "Q1_18" then 1 else 0 end >= 2
                             ) then 'ALLERGY-or-HAY-FEVER-and-GASTROINTESTINAL'
 
-                          when (not "Q1_1") and (not "Q1_2") 
-                           and (("Q6d" = 0) or ("Q6d" is null)) 
+                          when (not "Q1_1") and (not "Q1_2")
+                           and (("Q6d" = 0) or ("Q6d" is null))
                            and ("Q1_3" or "Q1_4" or "Q1_14")
                            and ("Q11" = 2)
-                              then 'ALLERGY-or-HAY-FEVER' 
+                              then 'ALLERGY-or-HAY-FEVER'
 
                           when
                             (
-                                case true when "Q1_3" then 1 else 0 end + 
-                                case true when "Q1_4" then 1 else 0 end + 
-                                case true when "Q1_6" then 1 else 0 end + 
+                                case true when "Q1_3" then 1 else 0 end +
+                                case true when "Q1_4" then 1 else 0 end +
+                                case true when "Q1_6" then 1 else 0 end +
                                 case true when "Q1_5" then 1 else 0 end >= 2
                                   -- note: common cold after all allergy-related branches
                             ) and (
-                                case true when "Q1_17" then 1 else 0 end + 
-                                case true when "Q1_15" then 1 else 0 end + 
-                                case true when "Q1_16" then 1 else 0 end + 
+                                case true when "Q1_17" then 1 else 0 end +
+                                case true when "Q1_15" then 1 else 0 end +
+                                case true when "Q1_16" then 1 else 0 end +
                                 case true when "Q1_18" then 1 else 0 end >= 2
                             ) then 'COMMON-COLD-and-GASTROINTESTINAL'
 
-                          when 
-                            case true when "Q1_3" then 1 else 0 end + 
-                            case true when "Q1_4" then 1 else 0 end + 
-                            case true when "Q1_6" then 1 else 0 end + 
+                          when
+                            case true when "Q1_3" then 1 else 0 end +
+                            case true when "Q1_4" then 1 else 0 end +
+                            case true when "Q1_6" then 1 else 0 end +
                             case true when "Q1_5" then 1 else 0 end >= 2
                               -- note: common cold after all allergy-related branches
                               then 'COMMON-COLD'
 
-                          when 
-                            case true when "Q1_17" then 1 else 0 end + 
-                            case true when "Q1_15" then 1 else 0 end + 
-                            case true when "Q1_16" then 1 else 0 end + 
+                          when
+                            case true when "Q1_17" then 1 else 0 end +
+                            case true when "Q1_15" then 1 else 0 end +
+                            case true when "Q1_16" then 1 else 0 end +
                             case true when "Q1_18" then 1 else 0 end >= 2
                               then 'GASTROINTESTINAL'
 
@@ -149,51 +149,51 @@ SURVEY_EXTRA_SQL = {
                            and (Q1_5 or Q1_6 or Q1_7)
                               then 'ILI'
 
-                          when 
+                          when
                             (
-                                (not Q1_1) and (not Q1_2) 
-                                and ((Q6d = 0) or (Q6d is null)) 
+                                (not Q1_1) and (not Q1_2)
+                                and ((Q6d = 0) or (Q6d is null))
                                 and (Q1_3 or Q1_4 or Q1_14)
                                 and (Q11 = 2)
                             ) and (
-                                case true when Q1_17 then 1 else 0 end + 
-                                case true when Q1_15 then 1 else 0 end + 
-                                case true when Q1_16 then 1 else 0 end + 
+                                case true when Q1_17 then 1 else 0 end +
+                                case true when Q1_15 then 1 else 0 end +
+                                case true when Q1_16 then 1 else 0 end +
                                 case true when Q1_18 then 1 else 0 end >= 2
                             ) then 'ALLERGY-or-HAY-FEVER-and-GASTROINTESTINAL'
 
-                          when (not Q1_1) and (not Q1_2) 
-                           and ((Q6d = 0) or (Q6d is null)) 
+                          when (not Q1_1) and (not Q1_2)
+                           and ((Q6d = 0) or (Q6d is null))
                            and (Q1_3 or Q1_4 or Q1_14)
                            and (Q11 = 2)
-                              then 'ALLERGY-or-HAY-FEVER' 
+                              then 'ALLERGY-or-HAY-FEVER'
 
                           when
                             (
-                                case true when Q1_3 then 1 else 0 end + 
-                                case true when Q1_4 then 1 else 0 end + 
-                                case true when Q1_6 then 1 else 0 end + 
+                                case true when Q1_3 then 1 else 0 end +
+                                case true when Q1_4 then 1 else 0 end +
+                                case true when Q1_6 then 1 else 0 end +
                                 case true when Q1_5 then 1 else 0 end >= 2
                                   -- note: common cold after all allergy-related branches
                             ) and (
-                                case true when Q1_17 then 1 else 0 end + 
-                                case true when Q1_15 then 1 else 0 end + 
-                                case true when Q1_16 then 1 else 0 end + 
+                                case true when Q1_17 then 1 else 0 end +
+                                case true when Q1_15 then 1 else 0 end +
+                                case true when Q1_16 then 1 else 0 end +
                                 case true when Q1_18 then 1 else 0 end >= 2
                             ) then 'COMMON-COLD-and-GASTROINTESTINAL'
 
-                          when 
-                            case true when Q1_3 then 1 else 0 end + 
-                            case true when Q1_4 then 1 else 0 end + 
-                            case true when Q1_6 then 1 else 0 end + 
+                          when
+                            case true when Q1_3 then 1 else 0 end +
+                            case true when Q1_4 then 1 else 0 end +
+                            case true when Q1_6 then 1 else 0 end +
                             case true when Q1_5 then 1 else 0 end >= 2
                               -- note: common cold after all allergy-related branches
                               then 'COMMON-COLD'
 
-                          when 
-                            case true when Q1_17 then 1 else 0 end + 
-                            case true when Q1_15 then 1 else 0 end + 
-                            case true when Q1_16 then 1 else 0 end + 
+                          when
+                            case true when Q1_17 then 1 else 0 end +
+                            case true when Q1_15 then 1 else 0 end +
+                            case true when Q1_16 then 1 else 0 end +
                             case true when Q1_18 then 1 else 0 end >= 2
                               then 'GASTROINTESTINAL'
 
@@ -960,7 +960,7 @@ class Chart(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=255, default='DRAFT', choices=CHART_STATUS_CHOICES)
     geotable = models.CharField(max_length=255, default='pollster_zip_codes', choices=settings.GEOMETRY_TABLES)
-    
+
     class Meta:
         ordering = ['survey', 'shortname']
         unique_together = ('survey', 'shortname')
@@ -1003,13 +1003,13 @@ class Chart(models.Model):
             descriptions, cells = self.load_data(user_id, global_id)
 
             logger.debug('%s - cells:%s' % (function, cells))
-            
+
             cols = [{"id": desc[0], "label": desc[0], "type": "number"} for desc in descriptions]
             logger.debug('%s - description:%s' % (function, cols))
 
             rows = [{"c": [{"v": v} for v in c]} for c in cells]
             logger.debug('%s - rows:%s' % (function, rows))
-            
+
             data["dataTable"] = { "cols": cols, "rows": rows }
 
         else:
@@ -1056,7 +1056,7 @@ class Chart(models.Model):
             filename = filename + "_user_" + str(user_id)
         elif self.sqlfilter == "PERSON" and global_id:
             filename = filename + "_gid_" + global_id
-        logger.debug(filename) 
+        logger.debug(filename)
         if not os.path.exists(filename):
             self.generate_map_tile(self.generate_mapnik_map(user_id, global_id), filename, z, x, y)
         return open(filename).read()
@@ -1191,7 +1191,7 @@ class Chart(models.Model):
         if table_query:
             table = self.get_table_name()
             view = self.get_view_name()
-            
+
             if re.search(r'\bzip_code_country\b', table_query):
                 view_query = """SELECT A.*, B.id AS OGC_FID, B.geometry
                                   FROM %s B, (SELECT * FROM %s) A
@@ -1245,7 +1245,7 @@ class Chart(models.Model):
             query += """ WHERE "user" = %(user_id)s"""
         elif self.sqlfilter == 'PERSON':
             query += """ WHERE "user" = %(user_id)s AND global_id = %(global_id)s"""
-        
+
         logger.debug('%s - query:%s' % (function, query))
         params = { 'user_id': user_id, 'global_id': global_id }
         logger.debug('%s - params:%s'  % (function, params))
@@ -1326,14 +1326,14 @@ class GoogleProjection:
             self.zc.append((e,e))
             self.Ac.append(c)
             c *= 2
-                
+
     def fromLLtoPixel(self,ll,zoom):
          d = self.zc[zoom]
          e = round(d[0] + ll[0] * self.Bc[zoom])
          f = min(max(sin(DEG_TO_RAD * ll[1]),-0.9999),0.9999)
          g = round(d[1] + 0.5*log((1+f)/(1-f))*-self.Cc[zoom])
          return (e,g)
-     
+
     def fromPixelToLL(self,px,zoom):
          e = self.zc[zoom]
          f = (px[0] - e[0])/self.Bc[zoom]
@@ -1344,16 +1344,33 @@ class GoogleProjection:
 
 class ResultsIntake(models.Model):
     user = models.ForeignKey(User, db_column='user')
-
     global_id = models.CharField(max_length=36, unique=True)
-
     channel = models.CharField(max_length=36, blank=True, default='')
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Date")
 
     TITLE_1 = models.TextField(blank=True, default='')
     NOTE_1 = models.TextField(blank=True, default='')
-    NOTE_2 = models.TextField(blank=True, default='')
     TITLE_2 = models.TextField(blank=True, default='')
+    QUESTION_3 = models.CharField(max_length=30, null=True)
+    QUESTION_4_0= models.BooleanField(default=False)
+    QUESTION_4_0_open= models.IntegerField(default=0,blank=True)
+    QUESTION_4_1= models.BooleanField(default=False)
+    QUESTION_4_1_open= models.IntegerField(default=0,blank=True)
+    QUESTION_4_2= models.BooleanField(default=False)
+    QUESTION_4_2_open= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row1_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col3= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col4= models.IntegerField(default=0,blank=True)
+    QUESTION_5_multi_row2_col5= models.IntegerField(default=0,blank=True)
+    QUESTION_6= models.IntegerField(default=0,blank=True)
+    QUESTION_7= models.IntegerField(default=0,blank=True)
+    QUESTION_8= models.IntegerField(default=0,blank=True)
     QUESTION_1 = models.TextField(blank=True, default='')
     TITLE_3 = models.TextField(blank=True, default='')
     QUESTION_2_multi_row1_col1 = models.IntegerField(default=0,blank=True)
@@ -1392,67 +1409,6 @@ class ResultsIntake(models.Model):
     QUESTION_2_multi_row12_col1 = models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row12_col2 = models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row12_col3 = models.IntegerField(default=0,blank=True)
-    TITLE_4= models.BooleanField(default=False)
-    QUESTION_3 = models.CharField(max_length=30, null=True)
-    QUESTION_4_0= models.BooleanField(default=False)
-    QUESTION_4_0_open= models.IntegerField(default=0,blank=True)
-    QUESTION_4_1= models.BooleanField(default=False)
-    QUESTION_4_1_open= models.IntegerField(default=0,blank=True)
-    QUESTION_4_2= models.BooleanField(default=False)
-    QUESTION_4_2_open= models.IntegerField(default=0,blank=True)
-    TITLE_5= models.BooleanField(default=False)
-    QUESTION_5_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row3_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row4_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row5_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row6_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row7_col6= models.IntegerField(default=0,blank=True)
-    TITLE_6= models.BooleanField(default=False)
-    QUESTION_6= models.IntegerField(default=0,blank=True)
-    QUESTION_7= models.IntegerField(default=0,blank=True)
-    QUESTION_8= models.IntegerField(default=0,blank=True)
     QUESTION_9_0= models.BooleanField(default=False)
     QUESTION_9_0_open= models.IntegerField(default=0,blank=True)
     QUESTION_9_1= models.BooleanField(default=False)
@@ -1641,7 +1597,7 @@ class ResultsMonthly(models.Model):
     QUESTION_5= models.IntegerField(default=0,blank=True)
     QUESTION_6= models.IntegerField(default=0,blank=True)
     QUESTION_7= models.IntegerField(default=0,blank=True)
-    TITLE_3 = models.TextField(blank=True, default='') 
+    TITLE_3 = models.TextField(blank=True, default='')
     QUESTION_8= models.IntegerField(default=0,blank=True)
     QUESTION_9_multi_row1_col1= models.IntegerField(default=0,blank=True)
     QUESTION_9_multi_row1_col2= models.IntegerField(default=0,blank=True)
@@ -1702,7 +1658,7 @@ class SurveyChartIntake(CMSPlugin):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=255, default='DRAFT', choices=CHART_STATUS_CHOICES)
-    
+
     def __unicode__(self):
         return self.name
 
