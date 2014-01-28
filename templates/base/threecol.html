@@ -1,5 +1,7 @@
 {% extends "base/sitebase.html" %}
-{% load cms_tags menu_tags %}
+{% load i18n cms_tags menu_tags %}
+
+<!--{% load cms_tags menu_tags %}-->
 
 {% block content %}
         <div id="colmask">
@@ -17,9 +19,26 @@
                         {% block col2 %}{% placeholder "Left bar" %}{% endblock col2 %}
                     </div> 
                     <div id="col3"> 
+
+                        {% block authentication %}<div id="account">{% if user.is_authenticated %}
+                            <ul class="member">
+                                <li><a href="/survey/main/">{% trans "My account" %}</a></li>
+                                <li><a href="/accounts/logout/">{% trans "Log out" %}</a></li>
+                            </ul>
+                            <p class="loggedinas"><a href="/survey/profile/">{% trans "Logged in as" %} {{ user.username }}</a></p>
+                        {% else %}
+                            <ul class="anonymous">
+                                <li><a href="/accounts/login/">{% trans "Log in" %}</a></li>
+                                <li><a href="/accounts/register/">{% trans "Register" %}</a></li>
+                            </ul>
+                            <p><a href="/accounts/password/reset/">{% trans "Forgot password?" %}</a></p>{% endif %}
+                        </div>{% endblock authentication %}
+
+
+
                         <div id="searchbar">
                             <form method="get" action="/search/">
-                                <p><input type="text" id="searchfield" name="q"/><input type="submit" id="searchsubmit" value="Search" /></p>
+                                <p><input type="text" id="searchfield" name="q"/><input type="submit" id="searchsubmit" value="{% trans "Search" %}" /></p>
                             </form>
                         </div>
 

@@ -39,8 +39,9 @@
 {% endif %}
 
 {% placeholder "Main content" %}
-<form action="" method="POST" name="groupmanage">{% csrf_token %}
 
+<br>
+<form action="" method="POST" name="groupmanage">{% csrf_token %}
     <div id="groupwrapper">
         <div id="groupheader">
             <p>{% trans "Survey" %}</p>
@@ -51,7 +52,10 @@
                 <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
                     <p><a href="{% url survey_data  %}" class="noslide">
                         <i class="icon-list-ul"></i> {% trans "Intake" %}</a></p>
-                    <p>{% trans "Closed" %}
+
+                    <p><a href="{% url survey_data_monthly id=item.id %}" class="noslide">
+                        <i class="icon-list-ul"></i> {% trans "Closed" %}</a></p>
+
                     <p>{{ item.timestamp|date:"Y-b-d H:m:s" }}</p>
                 </div>
             {% endfor %}
@@ -60,7 +64,10 @@
                 <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
                     <p><a href="{% url survey_data_monthly id=item.id %}" class="noslide">
                         <i class="icon-list-ul"></i> {% trans "Monthly" %}</a></p>
-                    <p>{% trans "Closed" %}
+
+                    <p><a href="{% url survey_data_monthly id=item.id %}" class="noslide">
+                        <i class="icon-list-ul"></i> {% trans "Closed" %}</a></p>
+
                     <p>{{ item.timestamp|date:"Y-b-d H:m:s" }}</p>
                 </div>
             {% endfor %}
