@@ -91,7 +91,7 @@ img {
 
 p.influenzanet {
  height: 26px;
- padding: 7px 26px 0 40px;
+ padding: 7px 46px 0 40px;
  text-align: right;
  color: #c8c8c8;
  font-size: 11px;
@@ -114,7 +114,7 @@ a.close:focus {
 }
 
 p.toggle a {
- color: #c8c8c8;
+ color: #FFFFFF;
  text-decoration: none;
 }
 
@@ -131,7 +131,8 @@ div.influenzabarcontent{
  color: #ffffff;
  font-size: 0.75em;
  line-height: 1.3em;
- background: #444444;
+/* background: #444444;*/
+ background: #E5C253;
  border-left: 12px solid #ffffff;
  border-right: 12px solid #ffffff; 
 }
@@ -389,22 +390,24 @@ ul.map_buttons li {
 #header {
  float: left;
  width: 950px;
- padding: 10px 12px 12px 12px;
+ padding: 0 12px 12px 12px;
  background: #ffffff;
 }
 
 
 #headerlogo {
- float: left;
- width: 756px;
+ /*float: left;
+ width: 756px;*/
  overflow: hidden;
- padding: 0;
- margin: 0 0 12px 0;
+ padding: 10px 0;
+ margin: 0 auto;
+ text-align: center;
+ background: #EFCC6C;
 }
 
 #account {
  float: right;
- margin: 0 0 10px 0;
+ margin: 0 0 0 0;
  text-align: center;
  font-size: 0.75em;
 }
@@ -447,7 +450,7 @@ ul.map_buttons li {
 }
 
 .loggedinas {
- width: 183px;
+/* width: 183px;*/
  padding: 4px 0 0 0;
  line-height: 1.3em;
 }
@@ -461,7 +464,7 @@ ul.map_buttons li {
  float: left;
  max-width: 754px;
  overflow: hidden;
- margin: 0 0 4px 0 !important;
+ margin: 15px 0 4px 0 !important;
 }
 
 #menubar li {
@@ -488,10 +491,11 @@ ul.map_buttons li {
  line-height: 2em;
  text-align: center;
  vertical-align: middle;
+ background: #DCB324;
 }
 
 #menubar li a:hover {
- background: #515151;
+ background: #EFCC6C;
  color: #ffffff;
 }
 
@@ -539,6 +543,7 @@ ul.map_buttons li {
 
 #searchbar {
  float: right;
+ margin: 0 0 10px 0;
 }
 
 #searchbar input {
@@ -554,7 +559,7 @@ ul.map_buttons li {
  font-size: 0.95em;
  line-height: 2em;
  background-color: #ffffff;
- border: 1px solid #cccccc;
+ border: 1px solid #DCB324;
  width: 150px;
 }
 
@@ -785,7 +790,7 @@ input#commentsubmit:hover {
  position: relative;
  left: 314px;
  background: #ffffff;
- border-left: 1px solid #e2e2e2;
+ border-left: 1px solid #DCB324;
 }
 
 #colright {
@@ -795,7 +800,7 @@ input#commentsubmit:hover {
  left: 50%;
  margin-left: -510px;
  background: #ffffff;
- border-left: 1px solid #e2e2e2;
+ border-left: 1px solid #DCB324;
 }
 
 #col1wrap {
@@ -873,14 +878,15 @@ input#commentsubmit:hover {
  width: 946px;
 }
 
-
 #footercontent-client {
- background: url("../img/main/footerbar-client.gif") repeat-x scroll center bottom #727272;
- border-top: 2px solid #909090;
+/* background: url("../img/main/footerbar-client.gif") repeat-x scroll center bottom #727272;*/
+ background: #E5C253;
+ border-top: 2px solid #E5C253;
  color: #F8F8F8;
  font-size: 0.75em;
  padding: 14px 14px 18px;
  width: 946px;
+ text-align: center;
 }
 
 #footercol1, #footercol2, #footercol3 {
@@ -894,9 +900,8 @@ input#commentsubmit:hover {
 }
 
 #footer img {
- display: inline;
  margin: 0 auto;
- padding-right: 20px;
+ padding: 0 20px;
 }
 
 #footercol2 {
@@ -915,8 +920,8 @@ input#commentsubmit:hover {
 #footerclose {
  width: 946px;
  padding: 8px 14px 10px 14px;
- background: #000000;
- border-top: 2px solid #222222;
+ background: #DCB324;
+ border-top: 2px solid #DCB324;
  border-bottom: 10px solid #d5d5d5;
  color: #f8f8f8;
  font-weight: bold;
@@ -938,7 +943,7 @@ input#commentsubmit:hover {
 /* Content */
 
 hr {
- border-color: #e2e2e2;
+ border-color: #DCB324;
  border-style: solid;
  border-width: 1px 0 0;
  clear: both;
@@ -958,8 +963,8 @@ hr {
 
 #col1 li {
  margin: 0;
- padding: 0;
- font-weight: bold;
+ padding: 4px 0;
+/* font-weight: bold;*/
  line-height: 1.5em; 
 }
 
@@ -1061,12 +1066,19 @@ hr {
  font-size: 0.75em;
 }
 
+#col3 p.title {
+ font-size: 1.2em;
+ color: #000000;
+ margin: 8px 0 8px 0;
+}
+
 #col2 h2,
 #col3 h2 {
  margin: 8px 0 12px 0;
  padding: 0;
  color: #0a0a0a;
- font-size: 1em;
+ font-size: 0.8em;
+ font-weight: normal;
 }
 
 #col1 ul.messages {
