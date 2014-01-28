@@ -6,7 +6,12 @@ from utils import xmlify_spec, report_survey, code_hash, code_unhash, GetError
 from datetime import datetime
 from base64 import b64encode
 
+import logging
+logger = logging.getLogger('logview.userlogins')  # 
+
+
 class EpiwebHandler(BaseHandler):
+    logger.debug('EpiwebHandler')
     allowed_methods = ('GET',)
     returnable = {'prot_v': '1.0', # EIP protocol version
                   'serv': 99,      # Service type identifier
@@ -27,6 +32,7 @@ class EpiwebHandler(BaseHandler):
         pass
 
 class GetUserProfile(EpiwebHandler):
+    logger.debug('GetUserProfile')
     """Takes uid (which is an activation code)
     Returns name, activation_codes, code, report_ts
 
@@ -68,6 +74,7 @@ class GetReportSurvey(EpiwebHandler):
     """Takes language int
     Returns survey in XML format
     """
+    logger.debug('GetReportSurvey')
 
     def read(self, request, language=None):
         returnable = self.returnable.copy()
@@ -81,6 +88,8 @@ class GetReportSurvey(EpiwebHandler):
 class Report(EpiwebHandler):
     """Post a report of completed surveys.
     """
+    logger.debug('Report')
+
     allowed_methods = ('POST',)
 
     def create(self, request):

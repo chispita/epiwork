@@ -132,7 +132,9 @@ def survey_data(request, survey_shortname="intake", id=0):
     logger.debug('%s - id:%s' % (function, id))
 
     logger.debug('%s - pollster(1)' % function) 
-    return pollster_views.survey_data(request, survey_shortname, id)
+    return pollster_views.pollster_data(request, survey_shortname, id)
+    #return pollster_views.pollster_update(request, survey_shortname, id)
+
 
 @login_required
 def survey_data_monthly(request, id):
@@ -167,52 +169,6 @@ def survey_management(request):
             }, context_instance=RequestContext(request))
 
 @login_required
-def group_management(request):
-    logger.debug('group_management')
-
-    try:
-        survey = pollster.models.Survey.get_by_shortname('weekly')
-    except:
-        raise Exception("The survey application requires a published survey with the shortname 'weekly'")
-    Weekly = survey.as_model()
-    try:
-        survey_user = get_active_survey_user(request)
-    except ValueError:
-        pass
-
-    if request.method == "POST":
-        global_ids = request.POST.getlist('global_ids')
-
-        for survey_user in request.user.surveyuser_set.filter(global_id__in=global_ids):
-            if request.POST.get('action') == 'healthy':
-                Weekly.objects.create(
-                    user=request.user.id,
-                    global_id=survey_user.global_id,
-                    Q1_0=True, # Q1_0 => "No symptoms. The other fields are assumed to have the correct default information in them.
-                    timestamp=datetime.now(),
-                )
-            elif request.POST.get('action') == 'delete':
-                survey_user.deleted = True
-                survey_user.save()
-
-    #
-    #history = list(_get_health_history(request, survey))
-    persons = models.SurveyUser.objects.filter(user=request.user, deleted=False)
-    #persons_dict = dict([(p.global_id, p) for p in persons])
-    #for item in history:
-    #    item['person'] = persons_dict.get(item['global_id'])
-    #for person in persons:
-    #    person.health_status, person.diag = _get_person_health_status(request, survey, person.global_id)
-    #    person.health_history = [i for i in history if i['global_id'] == person.global_id][-10:]
-    #    person.is_female = _get_person_is_female(person.global_id)
-
-    template = 'survey/group_management.html'
-    return render_to_response( template, {
-            'person': survey_user,
-            'persons' : persons
-            }, context_instance=RequestContext(request))
-
-@login_required
 def thanks_profile(request):
     try:
         survey_user = get_active_survey_user(request)
@@ -240,7 +196,7 @@ def survey_intake(request, next=next):
     messages.info(request, _("You need to complete the initial survey, please."))
 
     logger.debug('%s: survey_user(1)' % function)
-    return pollster_views.survey_run(request, 'intake' , next=next)
+    return pollster_views.pollster_run(request, 'intake' , next=next)
 
 @login_required
 def profile_index(request):
@@ -267,7 +223,7 @@ def profile_index(request):
     if 'next' not in request.GET:
         next = reverse(thanks_profile)
 
-    return pollster_views.survey_run(request, survey.shortname, next=next)
+    return pollster_views.pollster_run(request, survey.shortname, next=next)
 
 @login_required
 def index(request):
@@ -315,7 +271,7 @@ def index(request):
         if datenow.month != last['timestamp'].month:
             logger.debug('%s - shortname: %s' % (function, survey.shortname))
             logger.debug('%s: survey_user(2)' % function)
-            return pollster_views.survey_run(request, survey.shortname, next=next)
+            return pollster_views.pollster_run(request, survey.shortname, next=next)
         else:
             messages.info(request, _("You have done the survey in course, please come back in few days and you will complete a new one."))
             return show_message(request)
@@ -323,7 +279,7 @@ def index(request):
         logger.debug('%s - shortname(2): %s' % (function, survey.shortname))
 
         logger.debug('%s: survey_user(3)' % function)
-        return pollster_views.survey_run(request, survey.shortname, next=next)
+        return pollster_views.pollster_run(request, survey.shortname, next=next)
 
 def query_to_dicts(query_string, *query_args):
     """Run a simple query and produce a generator
@@ -345,7 +301,6 @@ def query_to_dicts(query_string, *query_args):
         yield row_dict
 
     return
-
 
 @login_required
 def profile_electric(request):
