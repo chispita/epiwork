@@ -17,6 +17,9 @@ from cms.utils.html import clean_html
 
 from .models import Entry, published_filter
 
+import logging
+logger = logging.getLogger('logview.userlogins')  #
+
 def _get_queryset(categories=(), date_range=(None, None)):
     # Filter by category
     if len(categories) == 0:
@@ -76,6 +79,8 @@ def archive_year(request, year, categories=(), paginate_by=10,
 
 def archive_month(request, year, month, categories=(), paginate_by=10,
                   template_name=None):
+    function = 'archive_month'
+    logger.debug(function)
     try:
         year, month = int(year), int(month)
         start = datetime.date(year, month, 1)
@@ -146,20 +151,20 @@ def entry(request, year, month, day, slug, categories=(), paginate_by=10,
         'months': _sidebar(_get_queryset([]))
         }
 
-    return render_to_response(template, c, context_instance=RequestContext(request)) 
+    return render_to_response(template, c, context_instance=RequestContext(request))
 
 def image(request, slug=None, max_width=250):
     entry = get_object_or_404(Entry, slug=slug)
     if not entry.image:
         return Http404()
 
-    image = Image.open(entry.image.path) 
+    image = Image.open(entry.image.path)
     image.thumbnail((max_width, max_width * 10), Image.ANTIALIAS)
 
     response = HttpResponse()
     response['Content-type'] = "image/jpeg"
     image.save(response, "JPEG")
-    return response 
+    return response
 
 def _sidebar(queryset):
     def t2(d):
