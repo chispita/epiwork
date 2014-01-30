@@ -1,0 +1,17 @@
+{% extends "survey/base.html" %}
+{% load i18n %}
+
+{% block col1 %}
+    <div id="completed">
+        {% for message in messages %}
+            <div class="usermessage"><span class="boldgreen">{{ message }}</span><br/>
+            </div>
+            <br />
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block col2 %}
+{% include "accounts/partials/usermenu.html" %}
+{% endblock %}
+~                
