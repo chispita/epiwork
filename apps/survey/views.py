@@ -26,8 +26,8 @@ from .survey import ( Specification,
 
 import apps.pollster as pollster
 import pickle
-import logging 
-logger = logging.getLogger('logview.userlogins')  # 
+import logging
+logger = logging.getLogger('logview.userlogins')  #
 
 survey_form_helper = None
 profile_form_helper = None
@@ -39,7 +39,7 @@ def X_decode_person_health_status(status):
         "COMMON-COLD":                                  _('Common cold'),
         "GASTROINTESTINAL":                             _('Gastrointestinal symptoms'),
         "ALLERGY-or-HAY-FEVER-and-GASTROINTESTINAL":    _('Allergy / hay fever and gastrointestinal symptoms'),
-        "ALLERGY-or-HAY-FEVER":                         _('Allergy / hay fever'), 
+        "ALLERGY-or-HAY-FEVER":                         _('Allergy / hay fever'),
         "COMMON-COLD-and-GASTROINTESTINAL":             _('Common cold and gastrointestinal symptoms'),
         "NON-SPECIFIC-SYMPTOMS":                        _('Other non-influenza symptons'),
     }
@@ -123,31 +123,47 @@ def X_get_health_history(request, survey):
         survey_user = models.SurveyUser.objects.get(global_id=global_id)
         yield {'global_id': global_id, 'timestamp': timestamp, 'status': status, 'diag':_decode_person_health_status(status), 'survey_user': survey_user}
 
-
 @login_required
-def survey_data(request, survey_shortname="intake", id=0):
+def survey_intake_view(request, survey_shortname="intake", id=0):
+    # Get data of Survey Intake
     function = 'def survey_data'
     logger.debug('%s' % function)
     logger.debug('%s - survey_name:%s' % (function, survey_shortname))
     logger.debug('%s - id:%s' % (function, id))
 
-    logger.debug('%s - pollster(1)' % function) 
+    logger.debug('%s - pollster(1)' % function)
     return pollster_views.pollster_data(request, survey_shortname, id)
-    #return pollster_views.pollster_update(request, survey_shortname, id)
-
 
 @login_required
-def survey_data_monthly(request, id):
+def survey_monthly(request, id):
+    # Get data of survey monthly
     function = 'def survey_data_monthly'
     logger.debug('%s' % function)
 
     return survey_data(request,"monthly", id)
 
 @login_required
+def survey_intake_update(request, survey_shortname="intake", id=0):
+    # Update data of survey intake
+    function = 'def survey_update'
+    logger.debug('%s' % function)
+    logger.debug('%s - survey_name:%s' % (function, survey_shortname))
+    logger.debug('%s - id:%s' % (function, id))
+    return pollster_views.pollster_update(request, survey_shortname, id)
+
+@login_required
+def survey_monthly_update(request, id):
+    # Update data of survey monthly
+    function = 'def survey_update_monthly'
+    logger.debug('%s' % function)
+    return survey_update(request,"monthly", id)
+
+@login_required
 def survey_management(request):
+    # List of all surveys
     function = 'survey_management'
     logger.debug('%s' % function)
-    
+
     # Get Survey Data
     intake = pollster.models.Survey.get_by_shortname('intake')
     monthly =  pollster.models.Survey.get_by_shortname('monthly')
@@ -205,14 +221,14 @@ def profile_index(request):
 
     # what does this do? if no "gid" parameter is presented in the GET, 'select_user' is
     # called to select the user.
-    # if one is present, 
+    # if one is present,
     function = 'def profile_index'
     logger.debug(function)
 
     try:
-        ''' 
+        '''
         DIC/22/13 CVG
-        Faltaria comprobar si ha rellenado el intake 
+        Faltaria comprobar si ha rellenado el intake
         para que complete el monthly
         '''
         survey = pollster.models.Survey.get_by_shortname('intake')
@@ -233,7 +249,7 @@ def index(request):
     function = 'def index:'
     logger.debug('%s' % function)
     logger.debug('%s User:%s' % (function, request.user.id))
-    
+
     dt = 0
     survey_name = 'monthly'
     next = request.GET.get('next', None)
@@ -253,7 +269,7 @@ def index(request):
     try:
         # Busqueda para saber si ha rellenado el formulario monthly
         survey = pollster.models.Survey.get_by_shortname(survey_name)
-    
+
     except Exception as e:
         logger.debug('%s - except: %s (%s)' % (function, e.message, type(e)))
         raise Exception("The survey application requires a published survey with the shortname %s" % survey_name)
@@ -304,7 +320,7 @@ def query_to_dicts(query_string, *query_args):
 
 @login_required
 def profile_electric(request):
-    function = ('Profile_Electric') 
+    function = ('Profile_Electric')
     logger.debug(function)
 
     # Query to obtain survey headers
@@ -313,8 +329,8 @@ def profile_electric(request):
 
     # Query to obtain survey data
     data = pollster.models.ResultsIntake.get_by_user(request.user.id)
-      
-    # survery_data 
+
+    # survery_data
     logger.debug('Data: %s' % data)
     return render_to_response('survey/profile_electric.html', {
             "user": survey_user,
@@ -324,7 +340,7 @@ def profile_electric(request):
 
 def main_index(request):
     # the generalness of the name of this method reflects the mess that the various
-    # indexes have become. 
+    # indexes have become.
 
     # this is the one that does the required redirection for the button 'my account'
     # i.e. to group if there is a group, to the main index otherwise
