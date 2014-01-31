@@ -32,7 +32,7 @@ def item( value, arg):
 
 @register.filter
 def extrae(value, arg):
-   # Force convertion to string 
+   # Force convertion to string
     comp = '%s' % arg
     dst = ''
 
@@ -51,4 +51,9 @@ def add(value, arg):
 def add_underscore(value,arg):
     # Add strings with a underscore between
     return "%s_%s" % (value, arg)
+
+@register.filter
+def convert_tostring(value):
+    # Convert a integer to string
+    return "%s" % value
 
