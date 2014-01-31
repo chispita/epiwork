@@ -183,12 +183,11 @@ def survey_intake(request, next=None):
 
 @login_required
 def pollster_update(request, shortname, id=0):
-    function = 'def Pollster update'
+    function = 'def pollster update'
     logger.info('%s' % function)
 
-    user_id = request.user.id
-
     survey = get_object_or_404(models.Survey, shortname=shortname,status='PUBLISHED')
+    logger.info('%s survey:%s' % (function, survey))
     language = get_language()
     locale_code = locale.locale_alias.get(language)
     if locale_code:
@@ -199,20 +198,43 @@ def pollster_update(request, shortname, id=0):
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
 
-    data = pollster_get_data(user_id,shortname, id)
-    if data is None:
+    user_id = request.user.id
+    query = pollster_get_data(user_id,shortname, id)
+
+    form = None
+    if request.method == 'POST':
+        logger.debug('%s POST' % function)
+        data = request.POST.copy()
+        data['user'] = user_id
+        data['timestamp'] = datetime.datetime.now()
+        form = survey.as_form()(data)
+
+        if form.is_valid():
+            # como no podía actualizar el campo se borra el registro y
+            # lo vuelve a crear
+            logger.info('%s - Save Delete' % function)
+            query.delete()
+            logger.info('%s - Save Update' % function)
+            form.save()
+
+            messages.info(request, _("Your survey has been updated"))
+            return render(request, 'survey/survey_management.html')
+        else:
+            survey.set_form(form)
+
+    user_id = request.user.id
+    logger.info('%s user_id:%s' % (function, user_id))
+
+    if query is None:
         logger.error('%s: No data' % function)
         messages.error(request, 'Unable to find data with this survey.')
         return request_render_to_response(request, 'pollster/messages.html')
-
-    form = None
-    user_id = request.user.id
 
     return request_render_to_response(request, 'pollster/pollster_update.html', {
         "language": language,
         "locale_code": locale_code,
         "survey": survey,
-        "data":data,
+        "data":query,
         "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
         "form": form
     })
@@ -473,6 +495,16 @@ def pollster_get_data(user_id,shortname,id):
 
     return data
 
+def pollster_del_data(user_id,shortname,id):
+    # Get data from Intake query by user
+    function = 'def pollster_del_data'
+    logger.info('%s: shortname:%s user_id:%s' % (function, shortname, user_id))
+
+    if shortname == 'intake':
+        data = models.ResultsIntake.get_by_user(user_id)
+    else:
+        data = models.ResultsMonthly.get_by_user_id(user_id, id)
+
 @login_required
 def pollster_data(request, shortname, id=0):
     function = 'def pollster_data'
@@ -501,6 +533,8 @@ def pollster_data(request, shortname, id=0):
     last_participation_data_json = encoder.encode(last_participation_data)
 
     data = pollster_get_data(user_id,shortname, id)
+    logger.error('%s: after pollster_get_data' % function)
+
     if data is None:
         logger.error('%s: No data' % function)
         messages.error(request, 'Unable to find data with this survey.')
@@ -514,7 +548,7 @@ def pollster_data(request, shortname, id=0):
 
     else:
         template = 'pollster/pollster_data.html'
-        logger.info('%s: data:%s' % (function, data))
+        logger.info('%s: data:' % (function))
         return request_render_to_response(request, template, {
             "language": language,
             "locale_code": locale_code,
@@ -551,34 +585,34 @@ def survey_import(request):
 
 def chart_data(request, survey_shortname, chart_shortname):
     function = 'chart_data'
-    logger.debug(function)
+    #logger.debug(function)
     chart = None
     if request.user.is_active and request.user.is_staff:
-        logger.debug('%s is_staff' % function)
+        #logger.debug('%s is_staff' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname)
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname)
     else:
-        logger.debug('%s is_currito' % function)
+        #logger.debug('%s is_currito' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname, status='PUBLISHED')
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname, status='PUBLISHED')
 
-    logger.debug('%s - survey:%s' % (function, survey))
-    logger.debug('%s - chart:%s' % (function, chart))
+    #logger.debug('%s - survey:%s' % (function, survey))
+    #logger.debug('%s - chart:%s' % (function, chart))
 
     survey_user = _get_active_survey_user(request)
-    logger.debug('%s - survey_user:%s' % (function, survey_user))
+    #logger.debug('%s - survey_user:%s' % (function, survey_user))
 
     user_id = request.user.id
-    logger.debug('%s - user_id:%s' % (function, user_id))
+    #logger.debug('%s - user_id:%s' % (function, user_id))
 
     global_id = survey_user and survey_user.global_id
-    logger.debug('%s - global_id:%s' % (function, global_id))
+    #logger.debug('%s - global_id:%s' % (function, global_id))
 
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
 def map_tile(request, survey_shortname, chart_shortname, z, x, y):
     function = 'def map_tile'
-    logger.debug(function)
+    #logger.debug(function)
 
     if int(z) > 22:
         raise Http404
@@ -596,7 +630,7 @@ def map_tile(request, survey_shortname, chart_shortname, z, x, y):
 
 def map_click(request, survey_shortname, chart_shortname, lat, lng):
     function = 'def map_click'
-    logger.debug(function)
+    #logger.debug(function)
 
     chart = None
     if request.user.is_active and request.user.is_staff:
