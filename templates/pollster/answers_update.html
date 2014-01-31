@@ -1,14 +1,12 @@
-{% load pollster_extras %}
-
-
 {% block add_css %}<link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}pollster/css/qtip.css" />{% endblock add_css %}
 {% block add_js %}<script type="text/javascript" src="{{ MEDIA_URL }}pollster/js/qtip.js"></script>{% endblock add_js %}
 
-{% load i18n %}
-*** UPDATE ***
+{% load pollster_extras %}
 
+{% load i18n %}
 <form class="survey {% if survey.form.errors %}error{% endif %}" id="survey-{{ survey.id }}" method="POST">
     {% csrf_token %}
+
     <div class="survey-message">
         {% trans "Questionnaire for participant" %} {{ person }}
     </div>
@@ -18,8 +16,7 @@
     </div>
     {% endif %}
     {% for question in survey.questions %}
-    {% with valor=data|item:question.data_name %}
-    ** {{ valor }} **
+    {% with valor=data|item:question.data_name %} 
     {% if question.is_builtin %}
     <div class="question-wrapper clearfix" style="display:none">
         <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
@@ -48,31 +45,25 @@
                 <span class="title">{{ question.translated_title }}</span>
             </p>
             {% if question.is_text %}
-                texto
-                <input type="text" name="{{ question.data_name }}" id="question-{{ question.id }}-field"
+            <input type="text" name="{{ question.data_name }}" id="question-{{ question.id }}-field"
                    value="{{ valor }}" class="user-field" />
-
-                <p class="error-message">{{ question.translated_error_message }}</p>
-                <ul class="derived-values">
-                    {% for option in question.options %}
-                    <li id="option-{{ option.id }}"
-                        data-type="{{ option.virtual_type.id }}"
-                        data-inf="{{ option.virtual_inf }}" data-sup="{{ option.virtual_sup }}" data-regex="{{ option.virtual_regex }}">
-                        <div class="info"><input class="derived" type="checkbox" disabled="disabled"/></div>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <p class="error-message">{{ question.translated_error_message }}</p>
+            <ul class="derived-values">
+                {% for option in question.options %}
+                <li id="option-{{ option.id }}"
+                    data-type="{{ option.virtual_type.id }}"
+                    data-inf="{{ option.virtual_inf }}" data-sup="{{ option.virtual_sup }}" data-regex="{{ option.virtual_regex }}">
+                    <div class="info"><input class="derived" type="checkbox" disabled="disabled"/></div>
+                </li>
+                {% endfor %}
+            </ul>
             {% endif %}
             {% if question.is_single_choice %}
-                *** Single choice ***
-                {{ question.options|extrae:valor }}
-                {{ valor }}
                 {% if question.is_visual_dropdown %}
-                * Visual_dropdown *
                 <select class="choices user-field" name="{{ question.data_name }}">
                     {% for option in question.options %}
                     <option id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %}"
-                         value="{{ option.value }}" {% if option.form_is_checked %}selected="selected"{% endif %}
+                    value="{{ option.value }}" {% if option.value = valor|slugify %}selected="selected"{% endif %}
                          title="{{ option.translated_description }}">
                         {{ option.translated_text }}
                     </option>
@@ -105,33 +96,38 @@
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_multiple_choice %}
-            *** multiple choice ***
             <ul class="choices">
                 {% for option in question.options %}
+                {% with value=data|item:option.data_name %}
                 {% if option.is_open %}
+                {{ value }}
                 <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
-                    title="{{ option.translated_description }}">
-                    <input type="checkbox" value="1" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
-                        {% if option.form_is_checked %}checked="checked"{% endif %} class="user-field" />
-                    <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
-                    <input type="text" name="{{ option.open_option_data_name }}" class="user-field open-option-data {{ option.open_option_data_type.css_class }}"
-                        id="option-{{ option.id }}-field-open"
-                        value="{{ option.open_option_data_form_value }}" id="option-{{ option.id }}-field-open" />
+                        title="{{ option.translated_description }}">
+                    <input type="radio" value="{{ option.value }}" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
+                        {% if value %}checked="checked"{% endif %} class="user-field" />
+                        <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
+                        {% with key=option.data_name|add_underscore:"open" %}
+                        {% with subkey=data|item:key %}
+                        <input type="text" name="{{ option.open_option_data_name }}" class="user-field open-option-data {{ option.open_option_data_type.css_class }}" 
+                            id="option-{{ option.id }}-field-open"
+                            value={%if subkey %}{{ subkey }}{%else%}0{%endif%} id="option-{{ option.id }}-field-open" />
+                        {% endwith %}
+                        {% endwith %}
                 </li>
                 {% else %}
                 <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %}"
                     title="{{ option.translated_description }}">
                     <input type="checkbox" value="1" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
-                        {% if option.form_is_checked %}checked="checked"{% endif %} class="user-field" />
+                        {% if value %}checked="checked"{% endif %} class="user-field" />
                     <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
                 </li>
                 {% endif %}
+                {% endwith %}
                 {% endfor %}
             </ul>
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_matrix_select %}
-            *** matrix *** 
             <table class="matrix">
             <thead>
                 <tr>
@@ -153,22 +149,32 @@
                     {% else %}
                     <th class="empty"/>
                     {% endif %}
+                    {% with count_row=forloop.counter %}
                     {% for column in columns %}
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+
                     <td>
                         <select name="{{ column.data_name }}" class="user-field">
                             {% for option in column.options %}
-                            <option value="{{ option.value }}" title="{{ option.translated_description }}">{{ option.translated_text }}</option>
+                            <option value="{{ option.value }}" 
+                                {% if option.value = value|slugify %}selected="selected"{% endif %}
+                                title="{{ option.translated_description }}">{{ option.translated_text }}
+                            </option>
                             {% endfor %}
                         </select>
                     </td>
+                        {% endwith %}
+                        {% endwith %}
                     {% endfor %}
+                    {% endwith %}
                 </tr>
                 {% endfor %}
             </tbody>
             </table>
             {% endif %}
             {% if question.is_matrix_entry %}
-            *** matrix entry ***
+            matrix entry
             <table class="matrix">
             <thead>
                 <tr>
@@ -186,15 +192,22 @@
                 {% for row, columns in question.rows_columns %}
                 <tr>
                     {% if row.translated_title %}
-                    <th>{{ row.translated_title }}</th>
+                        <th>{{ row.translated_title }}</th>
                     {% else %}
-                    <th class="empty"/>
+                        <th class="empty"/>
                     {% endif %}
+                    {% with count_row=forloop.counter %}
                     {% for column in columns %}
                     <td>
-                        <input type="text" name="{{ column.data_name }}" class="user-field" />
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+                        <input type="text" name="{{ column.data_name }}" class="user-field" 
+                            value={% if value %}{{ value }} {% else %}0{% endif %} />
+                        {% endwith %}
+                        {% endwith %}
                     </td>
                     {% endfor %}
+                    {% endwith %}
                 </tr>
                 {% endfor %}
             </tbody>
