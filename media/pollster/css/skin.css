@@ -14,7 +14,7 @@ h1 { color: #A22B22; }
 #wok-navigation li a { text-decoration: none; font-weight: bold; color: black; border: 1px solid #CCC; padding: 4px 8px; margin: 0; }
 #wok-navigation li a:hover { color: #A03932; }
 
-#wok-main-panel-content { padding: 10px; }
+#wok-main-panel-content { padding: 10px 0; }
 
 /* SURVEY */
 

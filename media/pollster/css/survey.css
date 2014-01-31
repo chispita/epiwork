@@ -1,5 +1,5 @@
 #col1 .question p { margin: 0 0 6px 0; padding: 0; }
-#col1 .question ul.choices, #col1 .question ul.derived-values, #col1 .question li { font-weight: normal; padding: 2px; }
+#col1 .question ul.choices, #col1 .question ul.derived-values, #col1 .question li { font-weight: normal; padding: 2px 2px 10px 2px; }
 #col1 ul.choices li img { margin: 0 0 -4px 0; }
 
 .survey-error-message { border: 1px solid #C00; -webkit-border-radius: 5px; padding: 10px 10px 16px 10px; background: #FBB; margin-bottom: 10px; font-size: 0.75em; font-weight: bold; }
@@ -18,8 +18,8 @@
 .question .matrix th { background: #EEE; border: 1px solid white; padding: 3px; width: 140px; }
 .question .matrix th.empty { background: none; border: none; padding: 0; }
 .question .matrix td { text-align: center; }
-.question .matrix select { margin: 0; width: auto; } 
-.question .matrix input { margin: 0; width: 59px;  }
+.question .matrix select { margin: 0; width: auto; max-width: 61px; } 
+.question .matrix input { margin: 0; max-width: 47px;  }
 .question.mandatory .star { color: red; margin-left: -0.25em; }
 
 .rules, .derived-values { display: none; }
