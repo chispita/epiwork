@@ -11,7 +11,7 @@ from nani.models import TranslatableModel, TranslatedFields
 from apps.survey.models import SurveyUser
 
 import logging
-logger = logging.getLogger('logview.userlogins') 
+logger = logging.getLogger('logview.userlogins')
 
 # A short word on terminology:
 # "Reminder" may refer to a NewsLetter object, or simply a placeholder
@@ -109,7 +109,7 @@ class ReminderError(models.Model):
 def get_settings():
     if ReminderSettings.objects.count() == 0:
         return None
-    return ReminderSettings.objects.all()[0] 
+    return ReminderSettings.objects.all()[0]
 
 def get_upcoming_dates(now):
     settings = get_settings()
@@ -127,17 +127,20 @@ def get_upcoming_dates(now):
         if current >= now - datetime.timedelta(2 * settings.get_interval()):
             diff = current - now
             days = abs(diff.days) % 7
-            weeks = abs(diff.days) / 7 
-            if diff.days > 0:
+            weeks = abs(diff.days) / 7
+
+            if diff.days == 0:
+                yield current, _("now")
+            elif diff.days > 0:
                 if weeks == 0:
-                    yield current, _("%(current)s (in %(days)s days)") % locals()
+                    yield current, _("%(days)s days") % locals()
                 else:
-                    yield current, _("%(current)s (in %(weeks)s weeks)") % locals()
+                    yield current, _("in %(weeks)s weeks") % locals()
             else:
                 if weeks == 0:
-                    yield current, _("%(current)s (%(days)s days ago)") % locals()
+                    yield current, _("%(days)s days ago") % locals()
                 else:
-                    yield current, _("%(current)s (%(weeks)s weeks ago)") % locals()
+                    yield current, _("%(weeks)s weeks ago") % locals()
             to_yield -= 1
         current += datetime.timedelta(settings.get_interval())
 
@@ -236,7 +239,7 @@ def get_reminders_for_users(now, users):
         logger.debug('%s - user:%s' % (function, user))
         if batch_size and yielded >= batch_size:
             logger.debug('%s - batch size' % function)
-            raise StopIteration 
+            raise StopIteration
 
         info, _ = UserReminderInfo.objects.get_or_create(user=user, defaults={'active': True, 'last_reminder': user.date_joined})
 
@@ -247,7 +250,7 @@ def get_reminders_for_users(now, users):
         language = info.get_language()
         if not language in reminder_dict:
             language = settings.LANGUAGE_CODE
-        
+
         reminder = reminder_dict[language]
 
         if info.last_reminder is None:
@@ -266,8 +269,8 @@ def get_reminders_for_users(now, users):
                 last_action_date = info.last_reminder
 
             last_action = (now - last_action_date).days
-            last_action_long_ago_enough = last_action >= 7 
-            
+            last_action_long_ago_enough = last_action >= 7
+
             if not last_action_long_ago_enough:
                 continue
 

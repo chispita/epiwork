@@ -1,4 +1,5 @@
 {% extends "base/twocol.html" %}
+{% load i18n %}
 
 {% block col1 %}
 
@@ -7,15 +8,27 @@
 There appear to be no upcoming reminders. Please check you <a href="/admin/sites/site/1/">site settings</a> to make sure sending of reminders is turned on.
 
 {% else %}
-    <table><tbody>
-    {% for upcoming_reminder in upcoming %}
-        <tr>
-            <td>{{ upcoming_reminder.date }}</td>
-            <td>{{ upcoming_reminder.description }}</td>
-            <td><a href="/reminder/manage/{{ upcoming_reminder.date.year }}/{{ upcoming_reminder.date.month }}/{{ upcoming_reminder.date.day }}/{{ upcoming_reminder.date.hour }}/{{ upcoming_reminder.date.minute }}/">View</a></td> 
+    <h1>List of Reminders</h1>
 
-    {% endfor %}
-    </tbody></table>
+    <div id="groupwrapper">
+        <div id="groupheader">
+            <p>{% trans "Reminder" %}</p>
+            <p>{% trans "Status" %}</p>
+            <p>{% trans "View" %}</p>
+            <p>{% trans "Send" %}</p>
+        </div>
+        <div id="groupmembers"> 
+            {% for upcoming_reminder in upcoming %}
+             <div class="accordionButton">
+                <p>{{ upcoming_reminder.date }}</p>        
+                <p>{{ upcoming_reminder.description }}</p>        
+                <p><a href="/reminder/manage/{{ upcoming_reminder.date.year }}/{{ upcoming_reminder.date.month }}/{{ upcoming_reminder.date.day }}/{{ upcoming_reminder.date.hour }}/{{ upcoming_reminder.date.minute }}/">{% trans "View" %}</a></p>
+                <p><a href="/reminder/manage/{{ upcoming_reminder.date.year }}/{{ upcoming_reminder.date.month }}/{{ upcoming_reminder.date.day }}/{{ upcoming_reminder.date.hour }}/{{ upcoming_reminder.date.minute }}/{{ "Send" }}">{% trans "Send" %}</a></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 {% endif %}
 
 {% endblock col1 %}

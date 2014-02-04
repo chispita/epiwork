@@ -6,18 +6,21 @@ A test message was sent to {{ request.user.email }}.
 {% endif %}
 
 <h2>Message</h2>
-To be sent at:
-{{ year }}-{{ month }}-{{ day }} {{ hour }}:{{ minute }}<br>
 
-From: {{ reminder.sender_name }} <{{ reminder.sender_email }}><br>
-Subject: {{ reminder.subject }}<br/>
+From: <b>{{ reminder.sender_name }} <{{ reminder.sender_email }}></b><br>
+Subject: <b>{{ reminder.subject }}</b><br/>
 
 <iframe width="700" height="700" src="/reminder/preview/{{ year }}/{{ month }}/{{ day }}/{{ hour }}/{{ minute }}/">
 </iframe>
 
+{%if is_test_message %}
+    <h2>Send Test Reminder now</h2>
+    You may send a test reminder to your self ({{ request.user.email }}) by pressing the button below:
+{%else %}
+    <h2>Send Reminder to all people now</h2>
+    Be carefull! You are going to send this reminder to all the people by pressing the button below:
+{%endif%}
 
-<h2>Send test reminder now</h2>
-You may send a testreminder to your self ({{ request.user.email }}) by pressing the button below:
 <form action="" method="POST">{% csrf_token %}
 <input type="submit" value="Send!">
 </form>
