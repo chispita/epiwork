@@ -124,8 +124,7 @@ def X_get_health_history(request, survey):
         yield {'global_id': global_id, 'timestamp': timestamp, 'status': status, 'diag':_decode_person_health_status(status), 'survey_user': survey_user}
 
 @login_required
-def survey_intake_view(request, survey_shortname="intake", id=0):
-    # Get data of Survey Intake
+def survey_data(request, survey_shortname="intake", id=0):
     function = 'def survey_data'
     logger.debug('%s' % function)
     logger.debug('%s - survey_name:%s' % (function, survey_shortname))
@@ -135,32 +134,31 @@ def survey_intake_view(request, survey_shortname="intake", id=0):
     return pollster_views.pollster_data(request, survey_shortname, id)
 
 @login_required
-def survey_monthly(request, id):
-    # Get data of survey monthly
+def survey_data_monthly(request, id):
     function = 'def survey_data_monthly'
     logger.debug('%s' % function)
 
     return survey_data(request,"monthly", id)
 
 @login_required
-def survey_intake_update(request, survey_shortname="intake", id=0):
-    # Update data of survey intake
+def survey_update(request, survey_shortname="intake", id=0):
     function = 'def survey_update'
     logger.debug('%s' % function)
     logger.debug('%s - survey_name:%s' % (function, survey_shortname))
     logger.debug('%s - id:%s' % (function, id))
+
+    logger.debug('%s - pollster(1)' % function)
     return pollster_views.pollster_update(request, survey_shortname, id)
 
 @login_required
-def survey_monthly_update(request, id):
-    # Update data of survey monthly
+def survey_update_monthly(request, id):
     function = 'def survey_update_monthly'
     logger.debug('%s' % function)
+
     return survey_update(request,"monthly", id)
 
 @login_required
 def survey_management(request):
-    # List of all surveys
     function = 'survey_management'
     logger.debug('%s' % function)
 
@@ -185,6 +183,25 @@ def survey_management(request):
             }, context_instance=RequestContext(request))
 
 @login_required
+def survey_general_data_update(request):
+    # Update data of survey intake
+    function = 'def survey_update'
+    logger.debug('%s' % function)
+
+    survey_shortname="intake"
+    id=0
+    # Get Survey Data
+#    intake = pollster.models.Survey.get_by_shortname('intake')
+
+    # Query to obtain survey data
+#Missing to filter by tag
+#    survey_intake = pollster.models.ResultsIntake.objects.all().filter(user=request.user)
+
+    logger.debug('%s - survey_name:%s' % (function, survey_shortname))
+    logger.debug('%s - id:%s' % (function, id))
+    return pollster_views.pollster_update(request, survey_shortname, id)
+
+@login_required
 def thanks_profile(request):
     try:
         survey_user = get_active_survey_user(request)
@@ -202,6 +219,31 @@ def show_message(request):
     return render_to_response(
             'survey/completed.html',
             context_instance=RequestContext(request))
+
+@login_required
+def survey_intake_view(request, survey_shortname="intake", id=0):
+    # Get data of Survey Intake
+    function = 'def survey_data'
+    logger.debug('%s' % function)
+    logger.debug('%s - survey_name:%s' % (function, survey_shortname))
+    logger.debug('%s - id:%s' % (function, id))
+    return pollster_views.pollster_data(request, survey_shortname, id)
+
+
+@login_required
+def survey_intake_update(request, category=""):
+    # Update data of survey intake
+    function = 'def survey_update'
+
+    id=0
+    shortname = 'intake'
+
+    logger.debug('%s' % function)
+    #logger.debug('%s - survey_name:%s' % (function, survey_shortname))
+    logger.debug('%s - id:%s' % (function, id))
+    logger.debug('%s - category:%s' % (function, category))
+
+    return pollster_views.pollster_update(request, shortname, category, id)
 
 @login_required
 def survey_intake(request, next=next):

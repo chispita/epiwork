@@ -182,13 +182,14 @@ def survey_intake(request, next=None):
     return pollster_run(request, 'intake', next)
 
 @login_required
-def pollster_update(request, shortname, id=0):
+def pollster_update(request, shortname='intake', category="", id=0):
     function = 'def pollster update'
     logger.info('%s' % function)
+    logger.info('%s - shortname:%s category:%s' % (function, shortname, category))
 
-    user_id = request.user.id
 
-    survey = get_object_or_404(models.Survey, shortname=shortname,status='PUBLISHED')
+
+    survey = get_object_or_404(models.Survey, shortname=shortname, status='PUBLISHED')
     language = get_language()
     locale_code = locale.locale_alias.get(language)
     if locale_code:
@@ -199,25 +200,21 @@ def pollster_update(request, shortname, id=0):
     translation = get_object_or_none(models.TranslationSurvey, survey=survey, language=language, status="PUBLISHED")
     survey.set_translation_survey(translation)
 
-    data = pollster_get_data(user_id,shortname, id)
-    if data is None:
-        logger.error('%s: No data' % function)
-        messages.error(request, 'Unable to find data with this survey.')
-        return request_render_to_response(request, 'pollster/messages.html')
-
-    form = None
     user_id = request.user.id
-    logger.debug('%s id:%s' % (function, data))
-    data_id = 24
+    query = pollster_get_data(user_id,shortname, id)
+    form = None
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data['id'] = data_id
-        data['NOTE_1']= 'testito'
-        #data['timestamp'] = datetime.datetime.now()
+        data['user'] = user_id
+        data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
         logger.debug('%s - form:%s' % (function, form))
         if form.is_valid():
+            # como no podía actualizar el campo se borra el registro y
+            # lo vuelve a crear
+            logger.info('%s - Save Delete' % function)
+            query.delete()
             logger.info('%s - Save Update' % function)
             form.save()
 
@@ -228,6 +225,11 @@ def pollster_update(request, shortname, id=0):
         else:
             survey.set_form(form)
 
+    if query is None:
+        logger.error('%s: No data' % function)
+        messages.error(request, 'Unable to find data with this survey.')
+        return request_render_to_response(request, 'pollster/messages.html')
+
     #encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
     #last_participation_data_json = encoder.encode(last_participation_data)
 
@@ -235,7 +237,8 @@ def pollster_update(request, shortname, id=0):
         "language": language,
         "locale_code": locale_code,
         "survey": survey,
-        "data":data,
+        "category": category,
+        "data":query,
         "default_postal_code_format": fields.PostalCodeField.get_default_postal_code_format(),
         "form": form
     })

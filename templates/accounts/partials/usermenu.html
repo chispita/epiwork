@@ -9,11 +9,16 @@
 
 <div id="usermenu">
     <ul class="icons">
-        <li><i class="icon-envelope-alt"></i> <a href="{% url apps.reminder.views.latest_newsletter %}">{% trans "Newsletter" %}</a></li>
-        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.index %}">{% trans "Monthly survey" %}</a></li>
-        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.survey_management %}">{% trans "Electric Surveys" %}</a></li>
+        <!--li><i class="icon-envelope-alt"></i> <a href="{% url apps.reminder.views.latest_newsletter %}">{% trans "Newsletter" %}</a></li>
+        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.index %}">{% trans "Monthly survey" %}</a></li-->
+        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.survey_intake_update category='generic' %}">{% trans "General Data" %}</a></li>
+        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.survey_intake_update category='energy' %}">{% trans "Energy Data" %}</a></li>
+
+
+        <li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.survey_intake_update category='records' %}">{% trans "Consumption Records" %}</a></li>
+        <!--li><i class="icon-list-ul"></i> <a href="{% url apps.survey.views.survey_management %}">{% trans "Electric Surveys" %}</a></li-->
         <li><i class="icon-cog"></i> <a href="{% url apps.accounts.views.my_settings %}">{% trans "Account settings" %}</a></li>
-        <li><i class="icon-off"></i> <a href="{% url django.contrib.auth.views.logout %}">{% trans "Log out" %}</a></li>
+        <!--li><i class="icon-off"></i> <a href="{% url django.contrib.auth.views.logout %}">{% trans "Log out" %}</a></li-->
     </ul>
 </div>
 

@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = patterns('',
     url(r'^urls.js$', views.urls, kwargs={'prefix': 'pollster_'}, name='pollster_urls'),
+    url(r'^test/$', views.survey_add, name='pollster_survey_add'),
     url(r'^pollster/$', views.survey_add, name='pollster_survey_add'),
     url(r'^pollster/import/$', views.survey_import, name='pollster_survey_import'),
     url(r'^pollster/(?P<id>\d+)/$', views.survey_edit, name='pollster_survey_edit'),
@@ -13,7 +14,7 @@ urlpatterns = patterns('',
     # View data of results intake
     url(r'^pollster/(?P<id>\d+)/data/$', views.pollster_data, name='pollster_survey_results_data'),
     url(r'^pollster/(?P<id>\d+)/update/$', views.pollster_update, name='pollster_survey_results_update'),
-    
+
     #url(r'^pollster/(?P<id>\d+)/delete/$', views.pollster_data, name='pollster_survey_results_data'),
 
     #url(r'^pollster/(?P<shorname>.+)/$', views.survey_run, name='pollster_survey_intake'),

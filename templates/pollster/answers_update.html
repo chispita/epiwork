@@ -7,15 +7,17 @@
 <form class="survey {% if survey.form.errors %}error{% endif %}" id="survey-{{ survey.id }}" method="POST">
     {% csrf_token %}
 
-    <div class="survey-message">
-        {% trans "Questionnaire for participant" %} {{ person }}
-    </div>
+    <!--div class="survey-message">
+        
+    </div-->
     {% if survey.form.errors %}
     <div class="survey-error-message">
         {% trans "Please check the answers for the highlighted questions." %}
     </div>
     {% endif %}
     {% for question in survey.questions %}
+    {% if question.tags == category or category == "" %}
+
     {% with valor=data|item:question.data_name %} 
     {% if question.is_builtin %}
     <div class="question-wrapper clearfix" style="display:none">
@@ -45,8 +47,9 @@
                 <span class="title">{{ question.translated_title }}</span>
             </p>
             {% if question.is_text %}
+            text
             <input type="text" name="{{ question.data_name }}" id="question-{{ question.id }}-field"
-                   value="{{ valor }}" class="user-field" />
+            value={% if valor %}"{{ valor }}"{%else%}"0"{%endif%} class="user-field" />
             <p class="error-message">{{ question.translated_error_message }}</p>
             <ul class="derived-values">
                 {% for option in question.options %}
@@ -59,6 +62,7 @@
             </ul>
             {% endif %}
             {% if question.is_single_choice %}
+                single_choice
                 {% if question.is_visual_dropdown %}
                 <select class="choices user-field" name="{{ question.data_name }}">
                     {% for option in question.options %}
@@ -96,11 +100,11 @@
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_multiple_choice %}
+            multiple_choice
             <ul class="choices">
                 {% for option in question.options %}
                 {% with value=data|item:option.data_name %}
                 {% if option.is_open %}
-                {{ value }}
                 <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
                         title="{{ option.translated_description }}">
                     <input type="radio" value="{{ option.value }}" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
@@ -128,6 +132,7 @@
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_matrix_select %}
+            matrix select
             <table class="matrix">
             <thead>
                 <tr>
@@ -230,6 +235,8 @@
     </div>
     {% endif %}
     {% endwith %}
+
+    {% endif  %}
     {% endfor %}
     <div class="actions">
 		<input type="submit" id="commentsubmit" value="{% trans "Submit" %}" />
@@ -258,6 +265,7 @@
             var t;
             {% for question in survey.questions %}
             {% if question.is_text %}
+            text
             t = d[{{question.id}}] = [];
             {% for option in question.options %}
             {% if option.virtual_type.js_class %}
