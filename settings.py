@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-	'NAME': 'influenzanet.db', 
+	'NAME': 'influenzanet.db',
         'USER': '',             # Not used with sqlite3.
         'PASSWORD': '',         # Not used with sqlite3.
         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
@@ -51,8 +51,8 @@ LOGGING = {
             'handlers': ['file_userlogins'], # specify what handler to associate
             'level': 'DEBUG',                 # specify the logging level
             'propagate': True,
-        },     
-    }       
+        },
+    }
 }
 
 
@@ -278,7 +278,7 @@ CACHES = {
 
 # SEO Settings
 
-GOOGLE_ANALYTICS_ACCOUNT = None
+GOOGLE_ANALYTICS_ACCOUNT = 'UA-36076688-6'
 CMS_SEO_FIELDS = True
 
 SESSION_COOKIE_AGE = 60 * 60 * 2
