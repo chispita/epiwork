@@ -59,6 +59,32 @@
         });
     }
 
+    function DecimalType() {
+        var self = this;
+        this._regex = /^[0-9]+((\.|,)[0-9][0-9]?)?$/ 
+
+        // Public methods.
+
+        $.extend(this, {
+            // Check value against the regex instruction
+            check: function($field) {
+                var value = $field.val();
+                if (value && self._regex)
+                    return self._regex.test(value);
+                else
+                    return true;
+            },
+            bind: function($field) {
+                $field
+                    .change(function(evt){
+                        var $this = $(this);
+                        var value = $this.val().replace(/,/g, '.')
+                        $this.val(value);
+                    });
+            }
+        });
+    }
+
     function NumericType() {
         var self = this;
         this._regex = /^[0-9]+$/;
@@ -189,6 +215,7 @@
     window.wok.pollster.datatypes = {
         "Text": TextType,
         "Numeric": NumericType,
+        "Decimal": DecimalType,
         "PostalCode": PostalCodeType,
         "Date": DateType,
         "YearMonth": YearMonthType,

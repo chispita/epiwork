@@ -49,6 +49,32 @@
     NumericRangeType.isRange = true;
     NumericRangeType.isRegularExpression = false;
 
+    function DecimalRangeType(option, inf, sup, regex) {
+        var self = this;
+
+        // Public methods.
+
+        $.extend(this, {
+            option: option,
+            match: function(val) {
+                val = parseFloat(val);
+                inf = parseFloat(inf);
+                sup = parseFloat(sup);
+                if (isNaN(inf) && isNaN(sup))
+                    return false;
+                else if (isNaN(inf))
+                    return val <= sup;
+                else if (isNaN(sup))
+                    return inf <= val;
+                else
+                    return inf <= val && val <= sup;
+            }
+        });
+    }
+
+    DecimalRangeType.isRange = true;
+    DecimalRangeType.isRegularExpression = false;
+
     function DateRangeType(option, inf, sup, regex) {
         var self = this;
 
@@ -173,6 +199,7 @@
     window.wok.pollster.virtualoptions = {
         "TextRange": TextRangeType,
         "NumericRange": NumericRangeType,
+        "DecimalRange": DecimalRangeType,
         "DateRange": DateRangeType,
         "RegularExpression": RegularExpressionType,
         "DateYearsAgo": DateYearsAgoType,
