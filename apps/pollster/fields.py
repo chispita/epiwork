@@ -42,7 +42,7 @@ class YearMonthField(CharField):
     def clean(self, value):
         """
         Validate month and year values.
-        
+
         Returns a string object in YYYY-MM format.
         """
         if value in validators.EMPTY_VALUES:
@@ -71,7 +71,7 @@ class DateField(CharField):
     def clean(self, value):
         """
         Validate month and year values.
-        
+
         Returns a string object in YYYY-MM-DD format.
         """
         if value in validators.EMPTY_VALUES:
