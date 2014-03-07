@@ -151,7 +151,7 @@ def survey_test(request, id, language=None):
         data = request.POST.copy()
         data['user'] = user_id
         data['global_id'] = global_id
-        data['user_id'] = survey_user.id
+        data['user_id'] = 1000
         data['timestamp'] = datetime.datetime.now()
 
         form = survey.as_form()(data)
@@ -160,6 +160,8 @@ def survey_test(request, id, language=None):
                 next_url = _get_next_url(request, reverse(survey_test, kwargs={'id':id, 'language': language}))
             else:
                 next_url = _get_next_url(request, reverse(survey_test, kwargs={'id':id}))
+
+            form.save()
             return HttpResponseRedirect(next_url)
         else:
             survey.set_form(form)
@@ -187,8 +189,6 @@ def pollster_update(request, shortname='intake', category="", id=0):
     logger.info('%s' % function)
     logger.info('%s - shortname:%s category:%s' % (function, shortname, category))
 
-
-
     survey = get_object_or_404(models.Survey, shortname=shortname, status='PUBLISHED')
     language = get_language()
     locale_code = locale.locale_alias.get(language)
@@ -209,31 +209,28 @@ def pollster_update(request, shortname='intake', category="", id=0):
         data['user'] = user_id
         data['timestamp'] = datetime.datetime.now()
         form = survey.as_form()(data)
-        logger.debug('%s - form:%s' % (function, form))
         if form.is_valid():
             # como no podía actualizar el campo se borra el registro y
             # lo vuelve a crear
-            logger.info('%s - Save Delete' % function)
             query.delete()
-            logger.info('%s - Save Update' % function)
             form.save()
 
             messages.info(request, _("Your survey has been updated"))
             #return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
             return render(request, 'survey/survey_management.html')
-
         else:
+	    logger.debug('%s - no es valido' % function)
             survey.set_form(form)
 
     if query is None:
         logger.error('%s: No data' % function)
-        messages.error(request, 'Unable to find data with this survey.')
+        messages.error(request, _("Initial questionnaire has not been filled in. Please, fill the initial questionnare in within the section 'My account' or 'Your energy profile'."))
         return request_render_to_response(request, 'pollster/messages.html')
 
     #encoder = json.JSONEncoder(ensure_ascii=False, indent=2)
     #last_participation_data_json = encoder.encode(last_participation_data)
 
-    return request_render_to_response(request, 'pollster/pollster_update.html', {
+    return request_render_to_response(request, 'pollster/pollster_run.html', {
         "language": language,
         "locale_code": locale_code,
         "survey": survey,
@@ -405,11 +402,17 @@ def survey_chart_list_or_add(request, id):
 
 @staff_member_required
 def survey_chart_edit(request, id, shortname):
-    function = 'def survey_chart_edit'
-    logger.info('%s' % function)
+    function = 'survey_chart_edit'
+    logger.debug(function)
     survey = get_object_or_404(models.Survey, pk=id)
+    logger.debug('%s - survey:%s:' % (function, survey))
+
     chart = get_object_or_404(models.Chart, survey=survey, shortname=shortname)
+    logger.debug('%s - chart:%s:' % (function, chart))
+
     form_chart = forms.SurveyChartEditForm(instance=chart)
+    logger.debug('%s - form_chart:%s:' % (function, form_chart))
+
     if request.method == 'POST':
         form_chart = forms.SurveyChartEditForm(request.POST, instance=chart)
         if form_chart.is_valid():
@@ -433,29 +436,11 @@ def survey_chart_data(request, id, shortname):
     logger.debug(function)
     logger.debug('%s - pk:%s shortname:%s' % (function, id, shortname))
 
-    #survey = get_object_or_404(models.Survey, id=id)
-
-    try:
-        survey = models.Survey.get(pk=id)
-        logger.debug('%s - survey:' % (function, survey))
-    except models.Survey.DoesNotExits:
-        logger.debug('%s - No existe' % function)
-        raise Http404
-
-
-    logger.debug('%s - aqui estamos:' % function)
-
-
+    survey = get_object_or_404(models.Survey, pk=id)
     chart = get_object_or_404(models.Chart, survey=survey, shortname=shortname)
-    logger.debug('%s - chart:' % (function, chart))
-
     survey_user = _get_active_survey_user(request)
-    logger.debug('%s - survey_user:' % (function, survey_user))
-
     user_id = request.user.id
     global_id = survey_user and survey_user.global_id
-    logger.debug('%s - global_id:' % (function, global_id))
-
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
 @staff_member_required
@@ -531,7 +516,7 @@ def pollster_data(request, shortname, id=0):
 
     if data is None:
         logger.error('%s: No data' % function)
-        messages.error(request, 'Unable to find data with this survey.')
+        messages.error(request, "Initial questionnaire has not been filled in. Please, fill the initial questionnare in within the section 'My account' or 'Your energy profile'.")
         return request_render_to_response(request, 'pollster/messages.html')
 
     if (request.method == 'POST'):
@@ -579,28 +564,28 @@ def survey_import(request):
 
 def chart_data(request, survey_shortname, chart_shortname):
     function = 'chart_data'
-    #logger.debug(function)
+    logger.debug(function)
     chart = None
     if request.user.is_active and request.user.is_staff:
-        #logger.debug('%s is_staff' % function)
+        logger.debug('%s is_staff' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname)
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname)
     else:
-        #logger.debug('%s is_currito' % function)
+        logger.debug('%s is_currito' % function)
         survey = get_object_or_404(models.Survey, shortname=survey_shortname, status='PUBLISHED')
         chart = get_object_or_404(models.Chart, survey=survey, shortname=chart_shortname, status='PUBLISHED')
 
-    #logger.debug('%s - survey:%s' % (function, survey))
-    #logger.debug('%s - chart:%s' % (function, chart))
+    logger.debug('%s - survey:%s' % (function, survey))
+    logger.debug('%s - chart:%s' % (function, chart))
 
     survey_user = _get_active_survey_user(request)
-    #logger.debug('%s - survey_user:%s' % (function, survey_user))
+    logger.debug('%s - survey_user:%s' % (function, survey_user))
 
     user_id = request.user.id
-    #logger.debug('%s - user_id:%s' % (function, user_id))
+    logger.debug('%s - user_id:%s' % (function, user_id))
 
     global_id = survey_user and survey_user.global_id
-    #logger.debug('%s - global_id:%s' % (function, global_id))
+    logger.debug('%s - global_id:%s' % (function, global_id))
 
     return HttpResponse(chart.to_json(user_id, global_id), mimetype='application/json')
 
@@ -673,7 +658,7 @@ def urls(request, prefix=''):
 
 def _get_active_survey_user(request):
     function = 'def get_active_survey_user'
-    logger.debug(function)
+    #logger.debug(function)
 
     gid = request.GET.get('gid', None)
     if gid is None or not request.user.is_active:
