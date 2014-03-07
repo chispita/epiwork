@@ -2,16 +2,249 @@
 {% block add_js %}<script type="text/javascript" src="{{ MEDIA_URL }}pollster/js/qtip.js"></script>{% endblock add_js %}
 
 {% load i18n %}
+{% load pollster_extras %}
+
 <form class="survey {% if survey.form.errors %}error{% endif %}" id="survey-{{ survey.id }}" method="POST">
     {% csrf_token %}
-    <div class="survey-message">
-        {% trans "Questionnaire for participant" %} {{ person }}
-    </div>
+    <!--div class="survey-message">
+        <{% trans "Questionnaire for participant" %} {{ person }}>
+    </div-->
     {% if survey.form.errors %}
     <div class="survey-error-message">
         {% trans "Please check the answers for the highlighted questions." %}
     </div>
     {% endif %}
+
+    <!-- If we pass throught data -->
+    {% if data %}
+    {% for question in survey.questions %}
+
+
+    {% with valor=data|item:question.data_name %} 
+    {% if question.is_builtin %}
+    <div class="question-wrapper clearfix" style="display:none">
+        <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
+             data-question-type="{{ question.type }}" data-data-type="{{ question.data_type.id }}" data-tags="{{ question.tags }}"
+             data-regex="{{ question.regex|default:'' }}">
+            <input type="hidden" name="{{ question.data_name }}" id="question-{{ question.id }}-field" disabled="disabled" />
+            <ul class="derived-values">
+                {% for option in question.options %}
+                <li id="option-{{ option.id }}"
+                    data-type="{{ option.virtual_type.id }}"
+                    data-inf="{{ option.virtual_inf }}" data-sup="{{ option.virtual_sup }}" data-regex="{{ option.virtual_regex }}">
+                    <div class="info"><input class="derived" type="checkbox" disabled="disabled"/></div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <!-- Hide questions if they must not be displayed -->
+    <div class="question-wrapper clearfix" style="display:{% if question.tags == category %}run-in{% else %}none{% endif %}">
+        <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
+             data-question-type="{{ question.type }}" data-data-type="{{ question.data_type.id }}" data-tags="{{ question.tags }}"
+             data-regex="{{ question.regex|default:'' }}">
+	        <div id="hoverinfo">{% if question.translated_description %}<img src="{{ MEDIA_URL }}pollster/img/info.gif" class="hoverinfo" title="{{ question.translated_description }}" alt="" />{% endif %}</div>
+            <p class="data">
+                {% if question.is_mandatory %}<span class="star">*</span>{% endif %}
+                <span class="title">{{ question.translated_title }}</span>
+            </p>
+            {% if question.is_text %}
+            <!-- Debug -> text-->
+            <input type="text" name="{{ question.data_name }}" id="question-{{ question.id }}-field"
+            value={% if valor %}"{{ valor }}"{%else%}"0"{%endif%} class="user-field" />
+            <p class="error-message">{{ question.translated_error_message }}</p>
+            <ul class="derived-values">
+                {% for option in question.options %}
+                <li id="option-{{ option.id }}"
+                    data-type="{{ option.virtual_type.id }}"
+                    data-inf="{{ option.virtual_inf }}" data-sup="{{ option.virtual_sup }}" data-regex="{{ option.virtual_regex }}">
+                    <div class="info"><input class="derived" type="checkbox" disabled="disabled"/></div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% if question.is_single_choice %}
+                <!-- Debug -> single_choice-->
+                {% if question.is_visual_dropdown %}
+                <select class="choices user-field" name="{{ question.data_name }}">
+                    {% for option in question.options %}
+                    <option id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %}"
+                    value="{{ option.value }}" {% if option.value = valor|slugify %}selected="selected"{% endif %}
+                         title="{{ option.translated_description }}">
+                        {{ option.translated_text }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <ul class="choices">
+                    {% for option in question.options %}
+                    {% if option.is_open %}
+                    <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
+                        title="{{ option.translated_description }}">
+                        <input type="radio" value="{{ option.value }}" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
+                            {% if option.form_is_checked %}checked="checked"{% endif %} class="user-field" />
+                        <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
+                        <input type="text" name="{{ option.open_option_data_name }}" class="user-field open-option-data {{ option.open_option_data_type.css_class }}"
+                            id="option-{{ option.id }}-field-open"
+                            value="{{ option.open_option_data_form_value }}" id="option-{{ option.id }}-field-open" />
+                    </li>
+                    {% else %}
+                    <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %}"
+                        title="{{ option.translated_description }}">
+                        <input type="radio" value="{{ option.value }}" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
+                            {% if option.form_is_checked %}checked="checked"{% endif %} class="user-field" />
+                        <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            <p class="error-message">{{ question.translated_error_message }}</p>
+            {% endif %}
+            {% if question.is_multiple_choice %}
+            <!-- Debug -> multiple_choice -->
+            <ul class="choices">
+                {% for option in question.options %}
+                {% with value=data|item:option.data_name %}
+                {% if option.is_open %}
+                <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
+                        title="{{ option.translated_description }}">
+                    <input type="radio" value="{{ option.value }}" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
+                        {% if value %}checked="checked"{% endif %} class="user-field" />
+                        <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
+                        {% with key=option.data_name|add_underscore:"open" %}
+                        {% with subkey=data|item:key %}
+                        <input type="text" name="{{ option.open_option_data_name }}" class="user-field open-option-data {{ option.open_option_data_type.css_class }}" 
+                            id="option-{{ option.id }}-field-open"
+                            value={%if subkey %}{{ subkey }}{%else%}0{%endif%} id="option-{{ option.id }}-field-open" />
+                        {% endwith %}
+                        {% endwith %}
+                </li>
+                {% else %}
+                <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %}"
+                    title="{{ option.translated_description }}">
+                    <input type="checkbox" value="1" name="{{ option.data_name }}" id="option-{{ option.id }}-field"
+                        {% if value %}checked="checked"{% endif %} class="user-field" />
+                    <label for="option-{{ option.id }}-field">{{ option.translated_text }}</label>
+                </li>
+                {% endif %}
+                {% endwith %}
+                {% endfor %}
+            </ul>
+            <p class="error-message">{{ question.translated_error_message }}</p>
+            {% endif %}
+            {% if question.is_matrix_select %}
+            <!-- Debug -> matrix select-->
+            <table class="matrix">
+            <thead>
+                <tr>
+                    <th class="empty"/>
+                    {% for column in question.columns %}
+                    {% if column.translated_title %}
+                    <th>{{ column.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row, columns in question.rows_columns %}
+                <tr>
+                    {% if row.translated_title %}
+                    <th>{{ row.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% with count_row=forloop.counter %}
+                    {% for column in columns %}
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+
+                    <td>
+                        <select name="{{ column.data_name }}" class="user-field">
+                            {% for option in column.options %}
+                            <option value="{{ option.value }}" 
+                                {% if option.value = value|slugify %}selected="selected"{% endif %}
+                                title="{{ option.translated_description }}">{{ option.translated_text }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                        {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% endif %}
+            {% if question.is_matrix_entry %}
+            <!-- Debug -> matrix entry-->
+            <table class="matrix">
+            <thead>
+                <tr>
+                    <th class="empty"/>
+                    {% for column in question.columns %}
+                    {% if column.translated_title %}
+                    <th>{{ column.translated_title }}</th>
+                    {% else %}
+                    <th class="empty"/>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row, columns in question.rows_columns %}
+                <tr>
+                    {% if row.translated_title %}
+                        <th>{{ row.translated_title }}</th>
+                    {% else %}
+                        <th class="empty"/>
+                    {% endif %}
+                    {% with count_row=forloop.counter %}
+                    {% for column in columns %}
+                    <td>
+                        {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
+                        {% with value=data|item:key %}
+                        <input type="text" name="{{ column.data_name }}" class="user-field" 
+                            value={% if value %}{{ value }} {% else %}0{% endif %} />
+                        {% endwith %}
+                        {% endwith %}
+                    </td>
+                    {% endfor %}
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="rules">
+            {% for rule in question.subject_of_rules.all %}
+            <div id="rule-{{ rule.id }}"
+                 data-type="{{ rule.rule_type.id }}"
+                 {% if rule.subject_option.id %}
+                 data-subject-option="option-{{ rule.subject_option.id }}"
+                 {% endif %}
+                 data-object-question="question-{{ rule.object_question.id }}"
+                 data-object-options="{% for option in rule.object_options.all %} option-{{ option.id }} {% endfor %}"
+                 class="rule">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+
+        {% endfor %}
+
+    <!-- if is a new survey -->
+    {% else %}
+
     {% for question in survey.questions %}
     {% if question.is_builtin %}
     <div class="question-wrapper clearfix" style="display:none">
@@ -201,6 +434,7 @@
     </div>
     {% endif %}
     {% endfor %}
+    {% endif %}
     <div class="actions">
 		<input type="submit" id="commentsubmit" value="{% trans "Submit" %}" />
     </div>

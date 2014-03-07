@@ -3,11 +3,11 @@
 {% block title %}{{ survey.translated_title }}{% endblock %}
 
 {% block extrahead %}
-    <link rel="stylesheet" type="text/css" href="/media/pollster/wok/css/wok.pollster.css" media="all" />
     <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.js"></script>
     <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.datatypes.js"></script>
     <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.rules.js"></script>
     <script type="text/javascript" src="/media/pollster/wok/js/wok.pollster.virtualoptions.js"></script>
+    <script type="text/javascript">$(function() { wok.pollster.createPollsterRuntime(null, {}); })</script>
 {% endblock %}
 
 {% block col1 %}
@@ -21,6 +21,6 @@
 </ul>
 {% endif %}
 
-{% include "pollster/answers_update.html" %}
+{% include "pollster/answers_run.html" %}
 </div>
 {% endblock %}

@@ -10,13 +10,19 @@
     <!--div class="survey-message">
         
     </div-->
+
+    {% if category == 'records' %}
+	<div class="survey-message boldgreen">
+        	{% trans "Note you can update home characteristics, in the case they changed recently, in the proper subsection on the left menu." %}
+    	</div>
+    {% endif %}
+
     {% if survey.form.errors %}
     <div class="survey-error-message">
         {% trans "Please check the answers for the highlighted questions." %}
     </div>
     {% endif %}
     {% for question in survey.questions %}
-    {% if question.tags == category or category == "" %}
 
     {% with valor=data|item:question.data_name %} 
     {% if question.is_builtin %}
@@ -37,7 +43,8 @@
         </div>
     </div>
     {% else %}
-    <div class="question-wrapper clearfix">
+    <!-- Hide questions if they must not be displayed -->
+    <div class="question-wrapper clearfix" style="display:{% if question.tags == category %}run-in{% else %}none{% endif %}">
         <div id="question-{{ question.id }}" class="{{ question.css_classes|join:' ' }}"
              data-question-type="{{ question.type }}" data-data-type="{{ question.data_type.id }}" data-tags="{{ question.tags }}"
              data-regex="{{ question.regex|default:'' }}">
@@ -47,7 +54,7 @@
                 <span class="title">{{ question.translated_title }}</span>
             </p>
             {% if question.is_text %}
-            text
+            <!-- Debug -> text-->
             <input type="text" name="{{ question.data_name }}" id="question-{{ question.id }}-field"
             value={% if valor %}"{{ valor }}"{%else%}"0"{%endif%} class="user-field" />
             <p class="error-message">{{ question.translated_error_message }}</p>
@@ -62,7 +69,7 @@
             </ul>
             {% endif %}
             {% if question.is_single_choice %}
-                single_choice
+                <!-- Debug -> single_choice-->
                 {% if question.is_visual_dropdown %}
                 <select class="choices user-field" name="{{ question.data_name }}">
                     {% for option in question.options %}
@@ -100,7 +107,7 @@
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_multiple_choice %}
-            multiple_choice
+            <!-- Debug -> multiple_choice -->
             <ul class="choices">
                 {% for option in question.options %}
                 {% with value=data|item:option.data_name %}
@@ -132,7 +139,7 @@
             <p class="error-message">{{ question.translated_error_message }}</p>
             {% endif %}
             {% if question.is_matrix_select %}
-            matrix select
+            <!-- Debug -> matrix select-->
             <table class="matrix">
             <thead>
                 <tr>
@@ -179,7 +186,7 @@
             </table>
             {% endif %}
             {% if question.is_matrix_entry %}
-            matrix entry
+            <!-- Debug -> matrix entry-->
             <table class="matrix">
             <thead>
                 <tr>
@@ -236,7 +243,6 @@
     {% endif %}
     {% endwith %}
 
-    {% endif  %}
     {% endfor %}
     <div class="actions">
 		<input type="submit" id="commentsubmit" value="{% trans "Submit" %}" />
