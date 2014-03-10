@@ -26,6 +26,7 @@ urlpatterns = patterns('',
 
 
     url(r'^monthly/(?P<id>\d+)/$', views.survey_data_monthly ,name='survey_data_monthly'),
+
     url(r'^monthly/(?P<id>\d+)/update/$', views.survey_update_monthly ,name='survey_update_monthly'),
 
     url(r'^thanks_profile/$', views.thanks_profile, name='profile_thanks'),
