@@ -45,12 +45,13 @@ POLLSTER_ZIP_CODE_DB_VALIDATION_MODE = 'NONE'
 
 # The shortname of the survey containing the user profile data
 # By default for InfluenzaNet websites this is the 'intake' survey
-POLLSTER_USER_PROFILE_SURVEY = 'intake'
+#POLLSTER_USER_PROFILE_SURVEY = 'intake'
+POLLSTER_USER_PROFILE_SURVEY = 'pollster_results_intake'
 
 # The data name of the question in the user profile survey
 # used to find a match in the pollster_zip_codes table
 # on the zip_code_key column
-POLLSTER_USER_ZIP_CODE_DATA_NAME = 'QUESTION_3'
+POLLSTER_USER_ZIP_CODE_DATA_NAME = 'QUESTION_1'
 
 # The data name of the question in the user profile survey
 # used to match the zip code for the right country
@@ -62,11 +63,9 @@ ADMINS = (
 )
 
 SECRET_KEY = '82f9904a-f8e6-11e0-8eff-0026b9f57fd2'
-#EMAIL_HOST = '155.210.135.164'
 EMAIL_HOST = '155.210.135.164'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_FILE_PATH = '/tmp/app-messages'
-DEFAULT_FROM_EMAIL = 'info@socientize.eu'
+DEFAULT_FROM_EMAIL = 'info@ibercivis.es'
 EMAIL_SUBJECT_PREFIX = '[SavingEnergy@home]'
 
 #USE_I18N = True
