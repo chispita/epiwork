@@ -41,6 +41,15 @@
                                 <p><input type="text" id="searchfield" name="q"/><input type="submit" id="searchsubmit" value="{% trans "Search" %}" /></p>
                             </form>
                         </div>
+			
+			<div id="logosection">
+				<a href="{% trans "http://bifi.es/en/" %}">
+					<img  src="{{ MEDIA_URL }}uploads/logobifi.png" alt="Bifi Logo">
+				</a>
+				<a href="http://gee.unizar.es/">
+                                        <img  src="{{ MEDIA_URL }}uploads/logogee.JPG" alt="GEE Logo">
+                                </a>
+                        </div>
 
                         {% block col3 %}{% placeholder "Right bar" %}{% endblock col3 %}
                     </div> 
