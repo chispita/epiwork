@@ -30,19 +30,18 @@
             {% endif %}
 
             {% if question.is_multiple_choice %}
+            <!--multiple_choice-->
             <ul class="choices sortable">
                 {% for option in question.options %}
                     {% with value=data|item:option.data_name %}
-                        {% if value %}
-                            {% with key=option.data_name|add_underscore:"open" %}
-                            {% with subkey=data|item:key %}
-                            <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
-                                title="{{ option.translated_description }}">
-                            <div class="value">{{ option.translated_text }}: {{subkey}}</div>
-                            </li>
-                            {% endwith %}         
-                            {% endwith %}
-                        {% endif %}
+                    {% with key=option.data_name|add_underscore:"open" %}
+                    {% with subkey=data|item:key %}
+                    <li id="option-{{ option.id }}" class="{% if option.starts_hidden %} starts-hidden {% endif %} open"
+                        title="{{ option.translated_description }}">
+                        <div class="value">{{ option.translated_text }}:{{subkey}}</div>
+                    </li>
+                    {% endwith %}         
+                    {% endwith %}
                     {% endwith %}
                 {% endfor %}
             </ul>
