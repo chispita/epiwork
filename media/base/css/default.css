@@ -36,6 +36,7 @@ ul.archive {
 
 img {
  border: 0;
+ margin: 0 auto;
 }
 
 .left {
@@ -1453,10 +1454,29 @@ div#page {
  display: none;
 }
 
+.survey-chart rect{
+ width: 20px;
+}
+
 /* Cookie Consent */
 
 #cc-notification h2 span,
 #cc-notification a {
  font-size: 12pt !important;
+}
+
+#energyCalcTable {
+ border: 2px solid #EFCC6C;
+ text-align: center;
+}
+
+#energyCalcTable th {
+ border: 1px solid #EFCC6C;
+ background-color: #FFD561;
+}
+
+#energyCalcTable td {
+ border: 1px solid #EFCC6C;
+ padding: 0 15px 0 15px;
 }
 
