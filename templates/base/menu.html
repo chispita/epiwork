@@ -1,4 +1,5 @@
 {% load menu_tags %}
+{% load i18n cms_tags %}
 {% if children %}
 <ul id="menubar">
     {% for child in children %}
@@ -9,6 +10,15 @@
         </a>
     </li>
     {% endfor %}
+
+    <!-- In case the user is logged in, it displays a new button to bring him to the profile section -->
+    {% block authentication %}
+        {% if user.is_authenticated %}
+                <li class="{% if child.selected %}selected{% endif %}{% if child.ancestor %}ancestor{% endif %}{% if child.sibling %}sibling{% endif %}{% if child.descendant %}descendant{% endif %}">
+                        <a href="/survey/main/">{% trans "Your energy profile" %}</a>
+                 </li>
+        {% endif %}
+    {% endblock authentication %}
 </ul>
 {% endif %}
 
