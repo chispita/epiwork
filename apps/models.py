@@ -12,6 +12,9 @@ from .db.utils import get_db_type, convert_query_paramstyle
 import os, re, shutil, warnings, datetime, csv
 from django.conf import settings
 
+import logging
+logger = logging.getLogger('logview.userlogins')  #
+
 DEG_TO_RAD = pi/180
 RAD_TO_DEG = 180/pi
 
@@ -25,7 +28,7 @@ except:
     except ImportError:
         mapnik_version = None
         warnings.warn("No working version for library 'mapnik' found. Continuing without mapnik")
-        
+
 
 SURVEY_STATUS_CHOICES = (
     ('DRAFT', 'Draft'),
@@ -76,51 +79,51 @@ SURVEY_EXTRA_SQL = {
                            and ("Q1_5" or "Q1_6" or "Q1_7")
                               then 'ILI'
 
-                          when 
+                          when
                             (
-                                (not "Q1_1") and (not "Q1_2") 
-                                and (("Q6d" = 0) or ("Q6d" is null)) 
+                                (not "Q1_1") and (not "Q1_2")
+                                and (("Q6d" = 0) or ("Q6d" is null))
                                 and ("Q1_3" or "Q1_4" or "Q1_14")
                                 and ("Q11" = 2)
                             ) and (
-                                case true when "Q1_17" then 1 else 0 end + 
-                                case true when "Q1_15" then 1 else 0 end + 
-                                case true when "Q1_16" then 1 else 0 end + 
+                                case true when "Q1_17" then 1 else 0 end +
+                                case true when "Q1_15" then 1 else 0 end +
+                                case true when "Q1_16" then 1 else 0 end +
                                 case true when "Q1_18" then 1 else 0 end >= 2
                             ) then 'ALLERGY-or-HAY-FEVER-and-GASTROINTESTINAL'
 
-                          when (not "Q1_1") and (not "Q1_2") 
-                           and (("Q6d" = 0) or ("Q6d" is null)) 
+                          when (not "Q1_1") and (not "Q1_2")
+                           and (("Q6d" = 0) or ("Q6d" is null))
                            and ("Q1_3" or "Q1_4" or "Q1_14")
                            and ("Q11" = 2)
-                              then 'ALLERGY-or-HAY-FEVER' 
+                              then 'ALLERGY-or-HAY-FEVER'
 
                           when
                             (
-                                case true when "Q1_3" then 1 else 0 end + 
-                                case true when "Q1_4" then 1 else 0 end + 
-                                case true when "Q1_6" then 1 else 0 end + 
+                                case true when "Q1_3" then 1 else 0 end +
+                                case true when "Q1_4" then 1 else 0 end +
+                                case true when "Q1_6" then 1 else 0 end +
                                 case true when "Q1_5" then 1 else 0 end >= 2
                                   -- note: common cold after all allergy-related branches
                             ) and (
-                                case true when "Q1_17" then 1 else 0 end + 
-                                case true when "Q1_15" then 1 else 0 end + 
-                                case true when "Q1_16" then 1 else 0 end + 
+                                case true when "Q1_17" then 1 else 0 end +
+                                case true when "Q1_15" then 1 else 0 end +
+                                case true when "Q1_16" then 1 else 0 end +
                                 case true when "Q1_18" then 1 else 0 end >= 2
                             ) then 'COMMON-COLD-and-GASTROINTESTINAL'
 
-                          when 
-                            case true when "Q1_3" then 1 else 0 end + 
-                            case true when "Q1_4" then 1 else 0 end + 
-                            case true when "Q1_6" then 1 else 0 end + 
+                          when
+                            case true when "Q1_3" then 1 else 0 end +
+                            case true when "Q1_4" then 1 else 0 end +
+                            case true when "Q1_6" then 1 else 0 end +
                             case true when "Q1_5" then 1 else 0 end >= 2
                               -- note: common cold after all allergy-related branches
                               then 'COMMON-COLD'
 
-                          when 
-                            case true when "Q1_17" then 1 else 0 end + 
-                            case true when "Q1_15" then 1 else 0 end + 
-                            case true when "Q1_16" then 1 else 0 end + 
+                          when
+                            case true when "Q1_17" then 1 else 0 end +
+                            case true when "Q1_15" then 1 else 0 end +
+                            case true when "Q1_16" then 1 else 0 end +
                             case true when "Q1_18" then 1 else 0 end >= 2
                               then 'GASTROINTESTINAL'
 
@@ -143,51 +146,51 @@ SURVEY_EXTRA_SQL = {
                            and (Q1_5 or Q1_6 or Q1_7)
                               then 'ILI'
 
-                          when 
+                          when
                             (
-                                (not Q1_1) and (not Q1_2) 
-                                and ((Q6d = 0) or (Q6d is null)) 
+                                (not Q1_1) and (not Q1_2)
+                                and ((Q6d = 0) or (Q6d is null))
                                 and (Q1_3 or Q1_4 or Q1_14)
                                 and (Q11 = 2)
                             ) and (
-                                case true when Q1_17 then 1 else 0 end + 
-                                case true when Q1_15 then 1 else 0 end + 
-                                case true when Q1_16 then 1 else 0 end + 
+                                case true when Q1_17 then 1 else 0 end +
+                                case true when Q1_15 then 1 else 0 end +
+                                case true when Q1_16 then 1 else 0 end +
                                 case true when Q1_18 then 1 else 0 end >= 2
                             ) then 'ALLERGY-or-HAY-FEVER-and-GASTROINTESTINAL'
 
-                          when (not Q1_1) and (not Q1_2) 
-                           and ((Q6d = 0) or (Q6d is null)) 
+                          when (not Q1_1) and (not Q1_2)
+                           and ((Q6d = 0) or (Q6d is null))
                            and (Q1_3 or Q1_4 or Q1_14)
                            and (Q11 = 2)
-                              then 'ALLERGY-or-HAY-FEVER' 
+                              then 'ALLERGY-or-HAY-FEVER'
 
                           when
                             (
-                                case true when Q1_3 then 1 else 0 end + 
-                                case true when Q1_4 then 1 else 0 end + 
-                                case true when Q1_6 then 1 else 0 end + 
+                                case true when Q1_3 then 1 else 0 end +
+                                case true when Q1_4 then 1 else 0 end +
+                                case true when Q1_6 then 1 else 0 end +
                                 case true when Q1_5 then 1 else 0 end >= 2
                                   -- note: common cold after all allergy-related branches
                             ) and (
-                                case true when Q1_17 then 1 else 0 end + 
-                                case true when Q1_15 then 1 else 0 end + 
-                                case true when Q1_16 then 1 else 0 end + 
+                                case true when Q1_17 then 1 else 0 end +
+                                case true when Q1_15 then 1 else 0 end +
+                                case true when Q1_16 then 1 else 0 end +
                                 case true when Q1_18 then 1 else 0 end >= 2
                             ) then 'COMMON-COLD-and-GASTROINTESTINAL'
 
-                          when 
-                            case true when Q1_3 then 1 else 0 end + 
-                            case true when Q1_4 then 1 else 0 end + 
-                            case true when Q1_6 then 1 else 0 end + 
+                          when
+                            case true when Q1_3 then 1 else 0 end +
+                            case true when Q1_4 then 1 else 0 end +
+                            case true when Q1_6 then 1 else 0 end +
                             case true when Q1_5 then 1 else 0 end >= 2
                               -- note: common cold after all allergy-related branches
                               then 'COMMON-COLD'
 
-                          when 
-                            case true when Q1_17 then 1 else 0 end + 
-                            case true when Q1_15 then 1 else 0 end + 
-                            case true when Q1_16 then 1 else 0 end + 
+                          when
+                            case true when Q1_17 then 1 else 0 end +
+                            case true when Q1_15 then 1 else 0 end +
+                            case true when Q1_16 then 1 else 0 end +
                             case true when Q1_18 then 1 else 0 end >= 2
                               then 'GASTROINTESTINAL'
 
@@ -956,7 +959,7 @@ class Chart(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=255, default='DRAFT', choices=CHART_STATUS_CHOICES)
     geotable = models.CharField(max_length=255, default='pollster_zip_codes', choices=settings.GEOMETRY_TABLES)
-    
+
     class Meta:
         ordering = ['survey', 'shortname']
         unique_together = ('survey', 'shortname')
@@ -1027,6 +1030,8 @@ class Chart(models.Model):
         return json.dumps(result)
 
     def get_map_tile(self, user_id, global_id, z, x, y):
+        function = ' get_map_tile'
+        logger.debug( function )
         filename = self.get_map_tile_filename(z, x, y)
         if self.sqlfilter == "USER" and user_id:
             filename = filename + "_user_" + str(user_id)
@@ -1067,6 +1072,8 @@ class Chart(models.Model):
             im.save(str(filename), "png")
 
     def generate_mapnik_map(self, user_id, global_id):
+        logger.debug('def generate_mapnik_map')
+
         m = mapnik.Map(256, 256)
 
         style = self.generate_mapnik_style(user_id, global_id)
@@ -1103,6 +1110,7 @@ class Chart(models.Model):
     def create_mapnik_datasource(self, user_id, global_id):
         # First create the SQL query that is a join between pollster_zip_codes and
         # the chart query as created by the user; then create an appropriate datasource.
+        logger.debug('def create_mapnik_datasource')
 
         if global_id and re.findall('[^0-9A-Za-z-]', global_id):
             raise Exception("invalid global_id "+global_id)
@@ -1113,6 +1121,7 @@ class Chart(models.Model):
         elif self.sqlfilter == 'PERSON':
             table += """ WHERE "user" = %d AND global_id = '%s'""" % (user_id, global_id)
         table = "(" + table + ") AS ZIP_CODES"
+        logger.debug('table: %s' % table)
 
         if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
             name = settings.DATABASES["default"]["NAME"]
@@ -1129,9 +1138,11 @@ class Chart(models.Model):
                 geometry_field="geometry", estimate_extent=False, table=table)
 
     def get_map_tile_base(self):
+        logger.debug('get_map_tile_base')
         return "%s/_pollster_tile_cache/survey_%s/%s" % (settings.POLLSTER_CACHE_PATH, self.survey.id, self.shortname)
 
     def get_map_tile_filename(self, z, x, y):
+        logger.debug('get_map_tile_filename')
         filename = "%s/%s/%s_%s" % (self.get_map_tile_base(), z, x, y)
         pathname = os.path.dirname(filename)
         if not os.path.exists(pathname):
@@ -1160,7 +1171,7 @@ class Chart(models.Model):
         if table_query:
             table = self.get_table_name()
             view = self.get_view_name()
-            
+
             if re.search(r'\bzip_code_country\b', table_query):
                 view_query = """SELECT A.*, B.id AS OGC_FID, B.geometry
                                   FROM %s B, (SELECT * FROM %s) A
@@ -1279,14 +1290,14 @@ class GoogleProjection:
             self.zc.append((e,e))
             self.Ac.append(c)
             c *= 2
-                
+
     def fromLLtoPixel(self,ll,zoom):
          d = self.zc[zoom]
          e = round(d[0] + ll[0] * self.Bc[zoom])
          f = min(max(sin(DEG_TO_RAD * ll[1]),-0.9999),0.9999)
          g = round(d[1] + 0.5*log((1+f)/(1-f))*-self.Cc[zoom])
          return (e,g)
-     
+
     def fromPixelToLL(self,px,zoom):
          e = self.zc[zoom]
          f = (px[0] - e[0])/self.Bc[zoom]
