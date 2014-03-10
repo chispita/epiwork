@@ -24,8 +24,6 @@
 {% endblock add_js %}
 
 {% block col1 %}
-<h1>{% trans "Electric Surveys" %}</h1>
-<p>{% trans "Aqu&iacute encontraras un listado de las &uacuteltimas encuentas que has completado y las que te quedan por completar." %}</p>
 
 {% for message in messages  %}
     <div class="usermessage"><span class="boldgreen">{{ message }}</span><br/>
@@ -33,15 +31,10 @@
     <br />
 {% endfor %}
 
-{% if last_survey %}
-<div class="usermessage">{% trans "The last survey was submitted for" %} {{ person }}<br />{% trans "on" %} {{ last_survey.timestamp }}</div>
-<br />
-{% endif %}
-
 {% placeholder "Main content" %}
 
 <br>
-<form action="" method="POST" name="groupmanage">{% csrf_token %}
+<!--form action="" method="POST" name="groupmanage">{% csrf_token %}
     <div id="groupwrapper">
         <div id="groupheader">
             <p>{% trans "Survey" %}</p>
@@ -60,17 +53,6 @@
                 </div>
             {% endfor %}
 
-            {% for item in monthly %}
-                <div class="accordionButton" {% if person.global_id == gid %}id="open"{% endif %}>
-                    <p><a href="{% url survey_monthly id=item.id %}" class="noslide">
-                        <i class="icon-list-ul"></i> {% trans "Monthly" %}</a></p>
-
-                    <p><a href="{% url survey_monthly_update id=item.id %}" class="noslide">
-                        <i class="icon-list-ul"></i> {% trans "Closed" %}</a></p>
-
-                    <p>{{ item.timestamp|date:"Y-b-d H:m:s" }}</p>
-                </div>
-            {% endfor %}
         </div>
     </div>
 </form>
@@ -83,16 +65,15 @@ var setLastSelected = function(element) {
 $("select").each(function () {
    setLastSelected(this);
 });
-</script>
+</script-->
 
 
-<p>{% trans "Bla bla bla bla bla <strong>bla bla</strong>. Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla."%}</p>
 {% endblock %}
 
 {% block col2 %}
 
 {% include "accounts/partials/usermenu.html" %}
-{% include "accounts/partials/usermap.html" %}
+<!--{% include "accounts/partials/usermap.html" %}-->
 
 {% placeholder "Left bar" %}
 
