@@ -251,7 +251,13 @@ def survey_intake(request, next=next):
     logger.debug('%s' % function)
     logger.debug('%s: user.id:%s user.username:%s' % (function, request.user.id, request.user.username))
 
-    messages.info(request, _("You need to complete the initial survey, please."))
+    # Check user has not filled in the intake survey, in such a case do not display the message
+    survey = pollster.models.Survey.get_by_shortname('intake')
+    last = survey.get_last_participation_data(request.user.id)
+    if last:
+	pass
+    else:
+	messages.info(request, _("You need to complete the initial survey, please."))
 
     logger.debug('%s: survey_user(1)' % function)
     return pollster_views.pollster_run(request, 'intake' , next=next)
@@ -324,12 +330,24 @@ def index(request):
     last = survey.get_last_participation_data(request.user.id)
     if last:
         datenow = datetime.now()
-        datenow = datetime.strptime(str('2014-06-15'), '%Y-%m-%d')
+
+        #datenow = datetime.strptime(str('2014-06-15'), '%Y-%m-%d')
 
         if datenow.month != last['timestamp'].month:
             logger.debug('%s - shortname: %s' % (function, survey.shortname))
             logger.debug('%s: survey_user(2)' % function)
-            return pollster_views.pollster_run(request, survey.shortname, next=next)
+
+	    # Since we want to redirect monthly survey queries to intake
+            # questionnaire update so data is updated there, we check if
+            # the shortname is monthly and in that case redirect to the
+            # update of intake questionnaire
+#	    if survey.shortname == 'monthly':
+#			# Redirection to intake update
+#			return pollster_views.pollster_update(request, 'intake', 'records', 0)
+#	    else:
+#	        	return pollster_views.pollster_run(request, survey.shortname, next=next)
+	    logger.debug('Display records')
+	    return survey_intake_update(request, "records")
         else:
             messages.info(request, _("You have done the survey in course, please come back in few days and you will complete a new one."))
             return show_message(request)
@@ -337,7 +355,16 @@ def index(request):
         logger.debug('%s - shortname(2): %s' % (function, survey.shortname))
 
         logger.debug('%s: survey_user(3)' % function)
-        return pollster_views.pollster_run(request, survey.shortname, next=next)
+
+	# Since we want to redirect monthly survey queries to intake
+	# questionnaire update so data is updated there, we check if
+	# the shortname is monthly and in that case redirect to the
+	# update of intake questionnaire
+	if survey.shortname == 'monthly':
+		# Redirection to intake update
+        	return pollster_views.pollster_update(request, 'intake', 'records', 0)
+	else:
+              	return pollster_views.pollster_run(request, survey.shortname, next=next)
 
 def query_to_dicts(query_string, *query_args):
     """Run a simple query and produce a generator
