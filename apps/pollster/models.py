@@ -30,6 +30,7 @@ except:
         mapnik_version = 1
     except ImportError:
         mapnik_version = None
+        logger.debug("Mapnik: No working version for library 'mapnik' found. Continuing without mapnik")
         warnings.warn("No working version for library 'mapnik' found. Continuing without mapnik")
 
 
@@ -989,7 +990,7 @@ class Chart(models.Model):
             return True
 
     def to_json(self, user_id, global_id):
-        function ='def to_json'
+        function ='def to_json (model.py pollster)'
         logger.debug(function)
         data = {}
         if self.type.shortname == "google-charts":
@@ -998,31 +999,23 @@ class Chart(models.Model):
             data[ "chartType"] = "Table"
             if self.chartwrapper:
                 data = json.loads(self.chartwrapper)
-                logger.debug('%s - data:%s' % (function, data))
-
-            logger.debug('%s - sqlsource:%s' % (function, self.sqlsource))
             descriptions, cells = self.load_data(user_id, global_id)
-
-            logger.debug('%s - cells:%s' % (function, cells))
-
             cols = [{"id": desc[0], "label": desc[0], "type": "number"} for desc in descriptions]
-            logger.debug('%s - description:%s' % (function, cols))
-
             rows = [{"c": [{"v": v} for v in c]} for c in cells]
-            logger.debug('%s - rows:%s' % (function, rows))
-
             data["dataTable"] = { "cols": cols, "rows": rows }
 
         else:
             if self.chartwrapper:
-                logger.debug('%s - chartwrapper:%s' % (function, self.chartwrapper))
                 data["bounds"] = json.loads(self.chartwrapper)
-            try:
-                logger.debug('%s - No chartwrapp' % function )
-                shortname = settings.POLLSTER_USER_PROFILE_SURVEY
-                survey = Survey.objects.get(shortname=shortname, status='PUBLISHED')
 
-                lpd = survey.get_last_participation_data(survey.user, global_id)
+            try:
+                shortname = settings.POLLSTER_USER_PROFILE_SURVEY
+                #survey = Survey.objects.get(shortname=shortname, status='PUBLISHED')
+                survey = ResultsIntake.objects.all()
+
+                lpd = survey.get_last_participation_data(user_id, global_id)
+
+
                 if lpd and hasattr(settings, 'POLLSTER_USER_ZIP_CODE_DATA_NAME'):
                     zip_code = lpd.get(settings.POLLSTER_USER_ZIP_CODE_DATA_NAME)
                     if zip_code is not None:
@@ -1032,14 +1025,13 @@ class Chart(models.Model):
                         country = lpd.get(settings.POLLSTER_USER_COUNTRY_DATA_NAME)
                         if country is not None:
                             country = str(country).upper()
-                    data["center"] = self.load_zip_coords(zip_code, country)
+                        data["center"] = self.load_zip_coords(zip_code, country)
+
             except:
                 pass
-
         return json.dumps(data)
 
     def get_map_click(self, lat, lng):
-        #logger.debug('def get_map_click')
         data = {}
         result = {}
         skip_cols = ("ogc_fid", "color", "geometry")
@@ -1051,19 +1043,29 @@ class Chart(models.Model):
         return json.dumps(result)
 
     def get_map_tile(self, user_id, global_id, z, x, y):
-        #logger.debug('def get_map_tile')
+        function = 'def get_map_tile'
+        logger.debug(function)
+
         filename = self.get_map_tile_filename(z, x, y)
         if self.sqlfilter == "USER" and user_id:
             filename = filename + "_user_" + str(user_id)
         elif self.sqlfilter == "PERSON" and global_id:
             filename = filename + "_gid_" + global_id
-        logger.debug(filename)
+        logger.debug('%s 01 - filename:%s' % (function, filename))
+
         if not os.path.exists(filename):
-            self.generate_map_tile(self.generate_mapnik_map(user_id, global_id), filename, z, x, y)
+            try:
+                self.generate_map_tile(self.generate_mapnik_map(user_id, global_id), filename, z, x, y)
+            except:
+                logger.debug('%s 07 - error en mapnik' % (function))
+
+        logger.debug('%s 08 - error en mapnik' % (function))
         return open(filename).read()
 
     def generate_map_tile(self, m, filename, z, x, y):
-        #logger.debug('def generate_map_tile')
+        function = 'def generate_map_tile'
+        logger.debug(function)
+
         # Code taken from OSM generate_tiles.py
         proj = GoogleProjection()
         mprj = mapnik.Projection(m.srs)
@@ -1085,24 +1087,26 @@ class Chart(models.Model):
 
         im = mapnik.Image(256, 256)
         mapnik.render(m, im)
+
         # See https://github.com/mapnik/mapnik/wiki/OutputFormats for output
         # formats and special parameters. The default here is 32 bit PNG with 8
         # bit per component and alpha channel.
+
         if mapnik_version == 2:
             im.save(str(filename), "png32")
         else:
             im.save(str(filename), "png")
 
     def generate_mapnik_map(self, user_id, global_id):
-        #logger.debug('def generate_mapnik_map')
+        function = 'def generate_mapnik_map'
+        logger.debug(function)
+
         m = mapnik.Map(256, 256)
 
         style = self.generate_mapnik_style(user_id, global_id)
-
         m.background = mapnik.Color("transparent")
         m.append_style("ZIP_CODES STYLE", style)
         m.srs = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over"
-
         layer = mapnik.Layer('ZIP_CODES')
         layer.datasource = self.create_mapnik_datasource(user_id, global_id)
         layer.styles.append("ZIP_CODES STYLE")
@@ -1111,7 +1115,8 @@ class Chart(models.Model):
         return m
 
     def generate_mapnik_style(self, user_id, global_id):
-        #logger.debug('def generate_mapnik_style')
+        function = 'def generate_mapnik_style'
+        logger.debug(function)
         style = mapnik.Style()
         for color in self.load_colors(user_id, global_id):
             # If the color can't be parsed, use red.
@@ -1126,13 +1131,16 @@ class Chart(models.Model):
             rule = mapnik.Rule()
             rule.filter = mapnik.Filter(str("[color] = '%s'" % (color,)))
             rule.symbols.extend([poly,line])
+
             style.rules.append(rule)
         return style
 
     def create_mapnik_datasource(self, user_id, global_id):
-        #logger.debug('def create_mapnki_datasource')
         # First create the SQL query that is a join between pollster_zip_codes and
         # the chart query as created by the user; then create an appropriate datasource.
+        function = 'def create_mapnik_datasource'
+        logger.debug(function)
+
 
         if global_id and re.findall('[^0-9A-Za-z-]', global_id):
             raise Exception("invalid global_id "+global_id)
@@ -1143,7 +1151,8 @@ class Chart(models.Model):
         elif self.sqlfilter == 'PERSON':
             table += """ WHERE "user" = %d AND global_id = '%s'""" % (user_id, global_id)
         table = "(" + table + ") AS ZIP_CODES"
-        logger.debug(table)
+
+
         if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
             name = settings.DATABASES["default"]["NAME"]
             return mapnik.SQLite(file=filename, wkb_format="spatialite",
@@ -1186,7 +1195,6 @@ class Chart(models.Model):
 
     def update_table(self):
         logger.debug('def update_table')
-        logger.debug(self.sqlsource)
         table_query = self.sqlsource
         geo_table = self.geotable
         if table_query:
@@ -1220,7 +1228,6 @@ class Chart(models.Model):
 
     def update_data(self):
         logger.debug('def update_data')
-        logger.info(self.sqlsource)
         table_query = self.sqlsource
         if table_query:
             table = self.get_table_name()
@@ -1235,21 +1242,16 @@ class Chart(models.Model):
     def load_data(self, user_id, global_id):
         function = 'def load_data'
         logger.debug(function)
-        logger.debug('%s - user_id:%s global_id:%s' % (function, user_id,global_id))
         #table = self.get_table_name()
         #query = "SELECT * FROM %s" % (table,)
 
         query = self.sqlsource
-        logger.debug('%s - sqlsource:%s' % (function, self.sqlsource))
-        logger.debug('%s - sqlfilter:%s' % (function, self.sqlfilter))
         if self.sqlfilter == 'USER' :
             query += """ WHERE "user" = %(user_id)s"""
         elif self.sqlfilter == 'PERSON':
             query += """ WHERE "user" = %(user_id)s AND global_id = %(global_id)s"""
 
-        logger.debug('%s - query:%s' % (function, query))
         params = { 'user_id': user_id, 'global_id': global_id }
-        logger.debug('%s - params:%s'  % (function, params))
         #table = self.get_table_name()
         query = convert_query_paramstyle(connection, query, params)
         try:
@@ -1267,7 +1269,6 @@ class Chart(models.Model):
             query += """ WHERE "user" = %(user_id)s"""
         elif self.sqlfilter == 'PERSON':
             query += """ WHERE "user" = %(user_id)s AND global_id = %(global_id)s"""
-        logger.debug(query)
         params = { 'user_id': user_id, 'global_id': global_id }
         query = convert_query_paramstyle(connection, query, params)
         try:
@@ -1292,12 +1293,14 @@ class Chart(models.Model):
             return (None, [])
 
     def load_zip_coords(self, zip_code_key, zip_code_country=None):
+        function = 'load_zip_coords'
+        logger.debug(function)
+
         geo_table = self.geotable
         if zip_code_country:
-            query = """SELECT ST_Y(ST_Centroid(geometry)) AS lat, ST_X(ST_Centroid(geometry)) AS lng
-                         FROM """ + geo_table + """ WHERE zip_code_key = %s AND country = %s"""
+            query = 'SELECT ST_Y(ST_Centroid(geometry)) AS lat, ST_X(ST_Centroid(geometry)) AS lng '
+            query = query + 'FROM ' + geo_table + ' WHERE zip_code_key = %s AND country = %s'
             args = (zip_code_key, zip_code_country)
-
         else:
             query = """SELECT ST_Y(ST_Centroid(geometry)) AS lat, ST_X(ST_Centroid(geometry)) AS lng
                          FROM """ + geo_table + """ WHERE zip_code_key = %s"""
@@ -1352,160 +1355,209 @@ class ResultsIntake(models.Model):
     TITLE_1 = models.TextField(blank=True, default='')
     NOTE_1 = models.TextField(blank=True, default='')
     TITLE_2 = models.TextField(blank=True, default='')
-    QUESTION_3 = models.CharField(max_length=30, null=True)
-    QUESTION_4_0= models.BooleanField(default=False)
-    QUESTION_4_0_open= models.IntegerField(default=0,blank=True)
-    QUESTION_4_1= models.BooleanField(default=False)
-    QUESTION_4_1_open= models.IntegerField(default=0,blank=True)
-    QUESTION_4_2= models.BooleanField(default=False)
-    QUESTION_4_2_open= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row1_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_5_multi_row2_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_6= models.IntegerField(default=0,blank=True)
-    QUESTION_7= models.IntegerField(default=0,blank=True)
-    QUESTION_8= models.IntegerField(default=0,blank=True)
+
     QUESTION_1 = models.TextField(blank=True, default='')
-    TITLE_3 = models.TextField(blank=True, default='')
+
     QUESTION_2_multi_row1_col1 = models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row1_col2 = models.IntegerField(default=0,blank=True)
     QUESTION_2_multi_row1_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row8_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row8_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row8_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row9_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row9_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row9_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row10_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row10_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row10_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row11_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row11_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row11_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row12_col1 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row12_col2 = models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row12_col3 = models.IntegerField(default=0,blank=True)
-    QUESTION_9_0= models.BooleanField(default=False)
-    QUESTION_9_0_open= models.IntegerField(default=0,blank=True)
-    QUESTION_9_1= models.BooleanField(default=False)
-    QUESTION_9_1_open= models.IntegerField(default=0,blank=True)
-    QUESTION_9_2= models.BooleanField(default=False)
-    QUESTION_9_2_open= models.IntegerField(default=0,blank=True)
-    QUESTION_9_3= models.BooleanField(default=False)
-    QUESTION_9_3_open= models.IntegerField(default=0,blank=True)
-    QUESTION_9_4= models.BooleanField(default=False)
-    QUESTION_9_4_open= models.IntegerField(default=0,blank=True)
-    QUESTION_10_multi_row1_col1= models.BooleanField(default=False)
-    QUESTION_10_multi_row2_col1= models.BooleanField(default=False)
-    QUESTION_10_multi_row3_col1= models.BooleanField(default=False)
-    QUESTION_10_multi_row4_col1= models.BooleanField(default=False)
-    QUESTION_11= models.BooleanField(default=False)
-    QUESTION_12_multi_row1_col1= models.BooleanField(default=False)
-    QUESTION_12_multi_row2_col1= models.BooleanField(default=False)
-    QUESTION_12_multi_row3_col1= models.BooleanField(default=False)
-    QUESTION_12_multi_row4_col1= models.BooleanField(default=False)
-    QUESTION_12_multi_row5_col1= models.BooleanField(default=False)
-    QUESTION_13_multi_row1_col1= models.BooleanField(default=False)
-    QUESTION_13_multi_row2_col1= models.BooleanField(default=False)
-    QUESTION_13_multi_row3_col1= models.BooleanField(default=False)
-    QUESTION_13_multi_row4_col1= models.BooleanField(default=False)
-    QUESTION_13_multi_row5_col1= models.BooleanField(default=False)
-    QUESTION_14_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row1_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row1_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row2_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row2_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row3_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row3_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row4_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row4_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row5_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_14_multi_row5_col4= models.IntegerField(default=0,blank=True)
-    TITLE_7= models.BooleanField(default=False)
+
+    QUESTION_3_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row2_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row2_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row2_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row2_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_3_multi_row2_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_4= models.IntegerField(default=0,blank=True)
+    QUESTION_5= models.IntegerField(default=0,blank=True)
+    QUESTION_6= models.IntegerField(default=0,blank=True)
+    QUESTION_7= models.IntegerField(default=0,blank=True)
+    QUESTION_8= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+
+    QUESTION_9_0 = models.BooleanField(default=False)
+    QUESTION_9_0_open = models.IntegerField(default=0,blank=True)
+    QUESTION_9_1 = models.BooleanField(default=False)
+    QUESTION_9_1_open = models.IntegerField(default=0,blank=True)
+    QUESTION_9_2 = models.BooleanField(default=False)
+    QUESTION_9_2_open = models.IntegerField(default=0,blank=True)
+    QUESTION_9_3 = models.BooleanField(default=False)
+    QUESTION_9_3_open = models.IntegerField(default=0,blank=True)
+    QUESTION_9_4 = models.BooleanField(default=False)
+    QUESTION_9_4_open = models.IntegerField(default=0,blank=True)
+
+    QUESTION_10_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_10_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_10_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_10_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_10_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_10a_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_10a_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_10a_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_10a_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_10a_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_10b_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_10b_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_10b_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_10b_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_10b_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_11_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_11_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_11_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_11_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_11_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_12_multi_row1_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row1_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row1_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row1_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row1_col5 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row2_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row2_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row2_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row2_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row2_col5 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row3_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row3_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row3_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row3_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row3_col5 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row4_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row4_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row4_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row4_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row4_col5 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row5_col1 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row5_col2 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row5_col3 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row5_col4 = models.IntegerField(default=0,blank=True)
+    QUESTION_12_multi_row5_col5 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_13_0 = models.BooleanField(default=False)
+    QUESTION_13_0_open = models.IntegerField(default=0,blank=True)
+    QUESTION_13_1 = models.BooleanField(default=False)
+    QUESTION_13_1_open = models.IntegerField(default=0,blank=True)
+    QUESTION_13_2 = models.BooleanField(default=False)
+    QUESTION_13_3 = models.BooleanField(default=False)
+    QUESTION_13_4 =  models.BooleanField(default=False)
+    QUESTION_13_5 =  models.BooleanField(default=False)
+
+    QUESTION_14= models.IntegerField(default=0,blank=True)
+
     QUESTION_15= models.IntegerField(default=0,blank=True)
-    QUESTION_16= models.IntegerField(default=0,blank=True)
-    QUESTION_17= models.IntegerField(default=0,blank=True)
-    QUESTION_18_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_18_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_18_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_19= models.IntegerField(default=0,blank=True)
-    QUESTION_20_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_20_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_20_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_21= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_22_multi_row6_col2= models.IntegerField(default=0,blank=True)
+
+    TITLE_3 = models.TextField(blank=True, default='')
+    TITLE_4 = models.TextField(blank=True, default='')
+
+    QUESTION_16 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_17 = models.TextField(blank=True, default='')
+
+    QUESTION_18 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_19_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_19_multi_row5_col2= models.IntegerField(default=0,blank=True)
+
+    QUESTION_20 = models.IntegerField(default=0,blank=True)
+
+    TITLE_5 = models.TextField(blank=True, default='')
+
+    QUESTION_21 = models.IntegerField(default=0,blank=True)
+
+    QUESTION_22 = models.IntegerField(default=0,blank=True)
+
+    TITLE_6 = models.TextField(blank=True, default='')
+
     QUESTION_23= models.IntegerField(default=0,blank=True)
-    QUESTION_24= models.IntegerField(default=0,blank=True)
+
+    QUESTION_24 = models.TextField(blank=True, default='')
+    QUESTION_24a = models.TextField(blank=True, default='')
+
     QUESTION_25= models.IntegerField(default=0,blank=True)
-    TITLE_8= models.BooleanField(default=False)
-    QUESTION_26= models.IntegerField(default=0,blank=True)
-    QUESTION_27_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_27_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_27_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    TITLE_9= models.BooleanField(default=False)
-    QUESTION_28= models.SmallIntegerField(default=0,blank=True)
-    QUESTION_29= models.BooleanField(default=False)
-    QUESTION_30_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_30_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_31= models.IntegerField(default=0,blank=True)
-    QUESTION_32= models.IntegerField(default=0,blank=True)
-    QUESTION_33= models.IntegerField(default=0,blank=True)
-    QUESTION_34= models.IntegerField(default=0,blank=True)
+
+    QUESTION_26_multi_row1_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row1_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row2_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row2_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row3_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row4_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row4_col2= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row5_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_26_multi_row5_col2= models.IntegerField(default=0,blank=True)
+
+    TITLE_7 = models.TextField(blank=True, default='')
+    TITLE_8 = models.TextField(blank=True, default='')
+    TITLE_9 = models.TextField(blank=True, default='')
+
+    QUESTION_27= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+
+    QUESTION_28= models.IntegerField(default=0,blank=True)
+
+    QUESTION_29_multi_row1_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row1_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row2_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row2_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row3_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row3_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row4_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row4_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row5_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row5_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row6_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row6_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row7_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row7_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row8_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row8_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row9_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row9_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row10_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row10_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row11_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row11_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row12_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_29_multi_row12_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+
+    QUESTION_30_multi_row1_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row1_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row2_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row2_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row3_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row3_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row4_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row4_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row5_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row5_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row6_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row6_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row7_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row7_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row8_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row8_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row9_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row9_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row10_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row10_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row11_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row11_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row12_col1= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
+    QUESTION_30_multi_row12_col2= models.DecimalField(default=0,blank=True,max_digits=5,decimal_places=2)
 
     class Meta:
         managed = False
@@ -1533,88 +1585,13 @@ class ResultsMonthly(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Date")
 
     NOTE_1 = models.TextField(blank=True, default='')
-    TITLE_1 = models.TextField(blank=True, default='')
 
-    QUESTION_1_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_1_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_1_multi_row3_col1= models.IntegerField(default=0,blank=True)
+    QUESTION_1 = models.IntegerField(default=0,blank=True)
+    QUESTION_2 = models.IntegerField(default=0,blank=True)
+    QUESTION_3 = models.IntegerField(default=0,blank=True)
 
-    QUESTION_2_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row1_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row1_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row1_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row1_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row2_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row3_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row4_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row5_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row6_col6= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col3= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col4= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col5= models.IntegerField(default=0,blank=True)
-    QUESTION_2_multi_row7_col6= models.IntegerField(default=0,blank=True)
-    TITLE_2 = models.TextField(blank=True, default='')
-    QUESTION_3= models.IntegerField(default=0,blank=True)
     QUESTION_4_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row1_col2= models.IntegerField(default=0,blank=True)
     QUESTION_4_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_4_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_5= models.IntegerField(default=0,blank=True)
-    QUESTION_6= models.IntegerField(default=0,blank=True)
-    QUESTION_7= models.IntegerField(default=0,blank=True)
-    TITLE_3 = models.TextField(blank=True, default='')
-    QUESTION_8= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row1_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row1_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row2_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row2_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row3_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row3_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row4_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row4_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row5_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row5_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row6_col1= models.IntegerField(default=0,blank=True)
-    QUESTION_9_multi_row6_col2= models.IntegerField(default=0,blank=True)
-    QUESTION_10= models.IntegerField(default=0,blank=True)
-    QUESTION_11= models.IntegerField(default=0,blank=True)
-    QUESTION_12= models.IntegerField(default=0,blank=True)
 
     class Meta:
         managed = False
