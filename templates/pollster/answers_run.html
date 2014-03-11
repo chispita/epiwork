@@ -4,6 +4,14 @@
 {% load i18n %}
 {% load pollster_extras %}
 
+<script>
+        function replaceComma(id){
+                var x=document.getElementById(id);
+                x.value=x.value.replace(/,/g, '.');
+        }
+</script>
+
+
 <form class="survey {% if survey.form.errors %}error{% endif %}" id="survey-{{ survey.id }}" method="POST">
     {% csrf_token %}
     <!--div class="survey-message">
@@ -209,7 +217,7 @@
                     <td>
                         {% with key=question.data_name|add:"_multi_row"|add:count_row|add:"_col"|add:forloop.counter %}
                         {% with value=data|item:key %}
-                        <input type="text" name="{{ column.data_name }}" class="user-field" 
+                        <input type="text" name="{{ column.data_name }}" id="{{question.data_name }}-{{column.data_name}}-{{count_row}}" onchange="replaceComma(id)" class="user-field" 
                             value={% if value %}{{ value }} {% else %}0{% endif %} />
                         {% endwith %}
                         {% endwith %}
