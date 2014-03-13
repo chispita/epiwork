@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -657,8 +658,8 @@ msgid "Log out"
 msgstr "Salir"
 
 #: templates/accounts/partials/usermenu.html:25
-msgid "To leave feedback or get support,"
-msgstr "Para comunicarse con el equipo de SavingEnergy@home, recibir información, enviar sugerencias, etc, envía un mail a <a href=\"mailto:info@socientize.eu\">info@socientize.eu</a>"
+msgid "To get in touch with the team of SavingEnergy@home, get information, send suggestions, etc, send a mail to <a href=\"mailto:info@socientize.eu\">info@socientize.eu</a>."
+msgstr "Para comunicarse con el equipo de SavingEnergy@home, recibir información, enviar sugerencias, etc, envía un mail a <a href=\"mailto:info@socientize.eu\">info@socientize.eu</a>."
 
 #: templates/accounts/partials/usermenu.html:25
 #: templates/registration/activate.html:9
@@ -1353,3 +1354,227 @@ msgstr "Configuración cookies"
 
 msgid "Thanks - your diagnosis:"
 msgstr "¡Gracias! tu estado gripal es:"
+
+
+
+#: apps/pollster/templates/energyCalc_plugin.html:8
+msgid "Your consumption in kilograms of CO<sub>2</sub> was of "
+msgstr "Tu consumo en kilogramos de CO<sub>2</sub> fue de "
+
+#: apps/pollster/templates/energyCalc_plugin.html:8
+msgid ", while the estimated consumption of the tool for your home is "
+msgstr ", mientras que el consumo estimado por la herramienta para tu casa es de "
+
+#: apps/pollster/templates/energyCalc_plugin.html:9
+msgid "Therefore, you can still improve your consumption. Take a look at the 'My consumption reduction' section where you may find some customized tips to improve your energy efficiency at home."
+msgstr "Así que, aún puedes mejorar tu consumo. Echa un vistazo a la sección 'Reducir mi consumo' donde encontrarás consejos personalizados para mejorar la eficiencia energética en tu casa."
+
+#: apps/pollster/templates/energyCalc_plugin.html:9
+msgid "Congratulations! You are doing a great work in what concerns to energy efficiency at your home!"
+msgstr "¡Enhorabuena! ¡Estás haciendo un buen trabajo en la eficiencia energética en tu casa!"
+
+#: apps/pollster/templates/energyCalc_plugin.html:11
+msgid "In the following a table with some estimations is presented in what, according to your home characteristics, your consumption for Domestic Hot Water (DHW), heating and cooling should be. Those estimations are approximated, mainly regarding to money since it depends on the current energy source fare."
+msgstr "A continuación se presenta una tabla con las estimaciones, según las características de tu vivienda, sobre el consumo de Agua Caliente Sanitaria (ACS), calefacción y refrigeración debería ser. Estas estimaciones son aproximadas, principalmente en lo que respecta al dinero ya que depende en gran medida del precio actual de la fuente de energía."
+
+#: apps/pollster/templates/energyCalc_plugin.html:15
+msgid "Aspect"
+msgstr "Aspecto"
+
+#: apps/pollster/templates/energyCalc_plugin.html:16
+msgid "Consumption"
+msgstr "Consumo"
+
+#: apps/pollster/templates/energyCalc_plugin.html:17
+msgid "Money"
+msgstr "Dinero"
+
+#: apps/pollster/templates/energyCalc_plugin.html:20
+msgid "Heating"
+msgstr "Calefacción"
+
+#: apps/pollster/templates/energyCalc_plugin.html:25
+msgid "Cooling"
+msgstr "Refrigeración"
+
+#: apps/pollster/templates/energyCalc_plugin.html:30
+msgid "DHW"
+msgstr "ACS"
+
+#: apps/pollster/templates/energyCalc_plugin.html:5
+msgid "Initial questionnaire has not been filled in. Thus, there are not results to provide. Please, fill the initial questionnare in within the section 'My account' or 'Your energy profile'."
+msgstr "No se ha rellenado el cuestionario inicial. Por tanto, no se pueden proporcionar información sobre los resultados. Por favor, rellena el cuestionario inicial en la sección 'Perfil' o 'Tu perfil energético'."
+
+#: templates/base/sitebase.html:18
+msgid "Your energy profile"
+msgstr "Tu perfil energético"
+
+#: apps/pollster/views.py:230
+#: apps/pollster/views.py:534
+msgid "Initial questionnaire has not been filled in. Please, fill the initial questionnare in within the section 'My account' or 'Your energy profile'."
+msgstr "No se ha rellenado el cuestionario inicial. Por favor, rellena el cuestionario inicial en la sección 'Perfil' o 'Tu perfil energético'."
+
+#: apps/survey/views.py:254
+msgid "You need to complete the initial survey, please."
+msgstr "Por favor, rellene el cuestionario inicial."
+
+#: apps/pollster/templates/energyCalc_plugin.html:8
+msgid "There is no data about your recent energy consumption. Thus, there are not results to provide. Please, complete in the section 'My account' or 'Your energy profile', 'Consumption Records' subsection, the data of the recent energy consumptions."
+msgstr "No hay datos sobre tu consumo energético reciente. Por ello, no hay resultados que mostrar. Por favor, completa en la sección 'Perfil' o 'Tu perfil energético', apartado 'Histórico de consumos', la información correspondiente al consumo energético reciente."
+
+#: templates/accounts/partials/usermenu.html:14
+msgid "General Data"
+msgstr "Datos generales"
+
+#: templates/accounts/partials/usermenu.html:15
+msgid "Energy Data"
+msgstr "Datos energéticos"
+
+#: templates/accounts/partials/usermenu.html:18
+msgid "Consumption Records"
+msgstr "Histórico de consumos"
+
+#: templates/pollster/answers_update.html:16
+msgid "Note you can update home characteristics, in the case they changed recently, in the proper subsection on the left menu."
+msgstr "Recuerda que puedes modificar las características de tu vivienda, en el caso que hayan cambiado recientemente, en el apartado adecuado en el menú de la izquierda."
+
+#: apps/pollster/views.py:221
+msgid "Your survey has been updated"
+msgstr "Tu cuestionario se ha actualizado"
+
+#: apps/pollster/templates/tips_plugin.html:15
+msgid "recommendation1"
+msgstr "Según el año de construcción, su vivienda no cuenta con ningún tipo de aislamiento térmico, por lo que en invierno se enfriará rápidamente y puede tener condensaciones en el interior, mientras que en verano se calentará más de lo debido y en menos tiempo, lo cual hará no se alcance adecuadamente el confort y que tenga altos consumos de calefacción y refrigeración. Además, las cubiertas de las viviendas de últimas plantas, si no cuentan con un buen aislamiento, suponen la mayor superficie de pérdidas hacia el exterior, superando incluso a las paredes de fachada, y este es el caso de su vivienda.<br>Realizar mejoras en el aislamiento, podrían suponerle ahorros en sus facturas de hasta un 50%, por lo que merece la pena que valore esta opción. Para ello es necesarios que proteja perfectamente con materiales aislantes las paredes que dan al exterior.<br><br>Existe diversidad de materiales para este fin como son las placas de madera, el poliestireno expandido o la lana de roca, entre otros. En <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>esta página del IDAE</a> podrá obtener más información sobre cómo aislar su vivienda."
+
+#: apps/pollster/templates/tips_plugin.html:18
+msgid "recommendation2"
+msgstr "Según el año de construcción, su vivienda no cuenta con ningún tipo de aislamiento térmico, por lo que en invierno se enfriará rápidamente y puede tener condensaciones en el interior, mientras que en verano se calentará más de lo debido y en menos tiempo, lo cual hará no se alcance adecuadamente el confort y que tenga altos consumos de calefacción y refrigeración.<br>Realizar mejoras en el aislamiento, pueden suponerle ahorros en sus facturas de hasta el 40%, por lo que merece la pena que valore esta opción. Para ello es necesarios que proteja perfectamente con materiales aislantes las paredes que dan al exterior.<br>Existen diversidad de materiales para este fin como son las placas de madera, el poliestireno expandido o la lana de roca, entre otros. En <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>esta página del IDAE</a> podrá obtener más información al respecto."
+
+#: apps/pollster/templates/tips_plugin.html:21
+msgid "recommendation3"
+msgstr "Según el año de construcción, su vivienda no cuenta con el aislamiento térmico adecuado para cubrir las necesidades de confort. En invierno se enfriará con mayor rapidez, mientras que en verano se calentará más de lo debido y en menos tiempo, lo cual hará que tenga consumos de calefacción y refrigeración mayores de lo razonable. Además, las cubiertas de las viviendas de últimas plantas, si no cuentan con un buen aislamiento, suponen la mayor superficie de pérdidas hacia el exterior, superando incluso a las paredes de fachada, y este es el caso de su vivienda.<br>Realizar mejoras en el aislamiento, pueden suponerle ahorros en sus facturas de hasta el 30%, por lo que merece la pena que valore esta opción. Para ello es necesarios que proteja perfectamente con materiales aislantes las paredes que dan al exterior.<br>Existen diversidad de materiales para este fin como son las placas de madera, el poliestireno expandido o la lana de roca, entre otros. En <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>esta página del IDAE</a> podrá obtener más información sobre cómo aislar su vivienda."
+
+#: apps/pollster/templates/tips_plugin.html:24
+msgid "recommendation4"
+msgstr "Según el año de construcción, su vivienda no cuenta con el aislamiento térmico adecuado para cubrir las necesidades de confort. En invierno se enfriará con mayor rapidez, mientras que en verano se calentará más de lo debido y en menos tiempo, lo cual hará que tenga consumos de calefacción y refrigeración mayores de lo razonable.<br>Realizar mejoras en el aislamiento, pueden suponerle ahorros en sus facturas de hasta el 20%, por lo que merece la pena que valore esta opción. Para ello es necesarios que proteja perfectamente con materiales aislantes las paredes que dan al exterior.<br>Existen diversidad de materiales para este fin como son las placas de madera, el poliestireno expandido o la lana de roca, entre otros. En <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>esta página del IDAE</a> podrá obtener más información sobre como aislar su vivienda."
+
+#: apps/pollster/templates/tips_plugin.html:27
+msgid "recommendation5"
+msgstr "Según ha indicado, las ventanas de su vivienda son de tipo doble, con vidrio doble, lo cual indica una calidad energética alta, siempre y cuando el tipo de marcos tengan “rotura de puente térmico”, es decir, cuenten con material aislante en su interior, lo cual reduce gran parte de las pérdidas producidas a través de las ventanas. Si no fuera así y tiene pensado cambiarlas dentro de poco, asegúrese de que las nuevas tengan marcos de este tipo, ya que mejorará en confort y en su factura de calefacción.<br>Si no tiene pensada una reforma de este tipo a corto plazo, puede reducir algo las pérdidas térmicas de sus ventanas actuales cubriéndolas durante la noche y en días fríos con cortinas o estores, e instalando burletes y juntas para evitar la entrada de aire exterior. Procure también que los cajetines de sus persianas no tengan rendijas y estén convenientemente sellados y aislados para evitar infiltraciones indeseadas. Para tapar las posibles rendijas, puede emplear medios sencillos y baratos como la silicona o la masilla."
+
+#: apps/pollster/templates/tips_plugin.html:30
+msgid "recommendation6"
+msgstr "Según ha indicado, las ventanas de su vivienda son de tipo simple, con vidrio doble, lo cual indica una calidad energética media-baja, y por tanto mejorable, teniendo en cuenta que las superficies acristaladas son uno de los principales puntos de pérdidas térmicas en el hogar. Una opción interesante para reducir su factura de calefacción sería sustituirlas por otras más eficientes.<br>Colocando sistemas de doble ventana con vidrio doble, con marcos denominados “de rotura de puente térmico”, que cuentan con material aislante en su interior, podría reducir en un 60% las pérdidas térmicas que presentan sus ventanas actuales, lo cual le haría ahorrar en su factura de calefacción, sobre todo si cuenta con gran cantidad de  superficie acristalada en su vivienda.<br>Si ahora mismo no puede asumir una reforma de este tipo, puede reducir algo las pérdidas térmicas de sus ventanas actuales cubriéndolas durante la noche y en días fríos con cortinas o estores, e instalando burletes y juntas para evitar la entrada de aire exterior. Procure también que los cajetines de sus persianas no tengan rendijas y estén convenientemente sellados y aislados para evitar infiltraciones indeseadas. Para tapar las posibles rendijas, puede emplear medios sencillos y baratos como la silicona o la masilla."
+
+#: apps/pollster/templates/tips_plugin.html:33
+msgid "recommendation7"
+msgstr "Según ha indicado, las ventanas de su vivienda son de tipo doble, con vidrio simple, lo cual indica una calidad energética media, pero aun así mejorable, teniendo en cuenta que las superficies acristaladas son uno de los principales puntos de pérdidas térmicas en el hogar. Una opción interesante para reducir su factura de calefacción sería sustituirlas por otras más eficientes.<br>Colocando sistemas de doble ventana con vidrio doble, con marcos denominados “de rotura de puente térmico”, que cuentan con material aislante en su interior, podría reducir en un 40% las pérdidas térmicas que presentan sus ventanas actuales, lo cual le haría ahorrar en su factura de calefacción, sobre todo si cuenta con gran cantidad de  superficie acristalada en su vivienda.<br>Si ahora mismo no puede asumir una reforma de este tipo, puede reducir algo las pérdidas térmicas de sus ventanas actuales cubriéndolas durante la noche y en días fríos con cortinas o estores, e instalando burletes y juntas para evitar la entrada de aire exterior. Procure también que los cajetines de sus persianas no tengan rendijas y estén convenientemente sellados y aislados para evitar infiltraciones indeseadas. Para tapar las posibles rendijas, puede emplear medios sencillos y baratos como la silicona o la masilla."
+
+#: apps/pollster/templates/tips_plugin.html:36
+msgid "recommendation8"
+msgstr "Según ha indicado, las ventanas de su vivienda son de tipo simple, con vidrio sencillo, lo cual indica una baja calidad energética y, por tanto, suponen focos de pérdidas térmicas en su hogar.   Así pues, una opción interesante para reducir su factura de calefacción sería sustituirlas por otras más eficientes.<br>Colocando sistemas de doble ventana con vidrio doble, con marcos denominados “de rotura de puente térmico”, que cuentan con material aislante en su interior, podría reducir en un 75% las pérdidas térmicas que presentan sus ventanas actuales, lo cual le haría ahorrar en su factura de calefacción, sobre todo si cuenta con gran cantidad de  superficie acristalada en su vivienda.<br>Si ahora mismo no puede asumir una reforma de este tipo, puede reducir algo las pérdidas térmicas de sus ventanas actuales cubriéndolas durante la noche y en días fríos con cortinas o estores, e instalando burletes y juntas para evitar la entrada de aire exterior. Procure también que los cajetines de sus persianas no tengan rendijas y estén convenientemente sellados y aislados para evitar infiltraciones indeseadas. Para tapar las posibles rendijas, puede emplear medios sencillos y baratos como la silicona o la masilla."
+
+#: apps/pollster/templates/tips_plugin.html:39
+msgid "recommendation9"
+msgstr "Su vivienda cuenta con calefacción individual suministrada por una caldera  antigua con bajo rendimiento, por lo que un modo de reducir consumo energético sería su sustitución por una más eficiente, como una de condensación de gas natural o la opción de cambiar a una de biomasa (combustible renovable), las cuales le harían ahorrar hasta un 35% de energía respecto a su vieja caldera. Aunque este cambio supone una inversión inicial alta, la reducción del consumo y por tanto el ahorro en su factura merecerá la pena a la larga, por lo que debería ser una opción interesante a valorar.<br>Si ahora mismo no puede afrontar un cambio de caldera, asegúrese al menos de realizar un mantenimiento y limpieza adecuados de la actual, ya que si su caldera está sucia tendrá dificultades para la combustión y, por tanto, consumirá más energía de la necesaria para satisfacer las demandas."
+
+#: apps/pollster/templates/tips_plugin.html:42
+msgid "recommendation10"
+msgstr "Su vivienda cuenta con calefacción individual suministrada por una caldera  antigua con bajo rendimiento, por lo que un modo de reducir consumo energético sería <b>su sustitución por una más eficiente, como una de condensación de gasoil, las de baja Tª de gasoil</b> o la opción de cambiar a una de biomasa (combustible renovable), las cuales le harían ahorrar hasta un 35% de energía respecto a su vieja caldera. Aunque este cambio supone una inversión inicial alta, la reducción del consumo y por tanto el ahorro en su factura merecerá la pena a la larga, por lo que debería ser una opción interesante a valorar.<br>Si ahora mismo no puede afrontar un cambio de caldera, asegúrese al menos de realizar un mantenimiento y limpieza adecuados de la actual, ya que si su caldera está sucia tendrá dificultades para la combustión y, por tanto, consumirá más energía de la necesaria para satisfacer las demandas."
+
+#: apps/pollster/templates/tips_plugin.html:45
+msgid "recommendation11"
+msgstr "Su vivienda cuenta con calefacción central suministrada por una caldera  antigua con bajo rendimiento, por lo que un modo de reducir consumo energético, y el del resto de sus vecinos, sería su sustitución por una más eficiente, como una de condensación de gas natural o la opción de cambiar a una de biomasa (combustible renovable), las cuales les harían ahorrar hasta un 35% de energía respecto a su vieja caldera. Aunque este cambio os supondría una inversión inicial alta, la reducción del consumo y por tanto el ahorro en su factura merecería la pena a la larga, por lo que debería ser una opción interesante a valorar con sus vecinos.<br>Si ahora mismo su comunidad no puede afrontar un cambio de este tipo, asegúrese al menos de realizar un mantenimiento y limpieza adecuados de su caldera actual, ya que si está sucia tendrá dificultades para la combustión y, por tanto, consumirá más energía de la necesaria para satisfacer las demandas."
+
+#: apps/pollster/templates/tips_plugin.html:48
+msgid "recommendation12"
+msgstr "Su vivienda cuenta con calefacción central suministrada por una caldera  antigua con bajo rendimiento, por lo que un modo de reducir consumo energético, y el del resto de sus vecinos, sería <b>su sustitución por una más eficiente, como una de condensación de gasoil, una de baja Tª de gasoil</b> o la opción de cambiar a una de biomasa (combustible renovable), las cuales les harían ahorrar hasta un 35% de energía respecto a su vieja caldera. Aunque este cambio os supondría una inversión inicial alta, la reducción del consumo y por tanto el ahorro en su factura merecería la pena a la larga, por lo que debería ser una opción interesante a valorar con sus vecinos.<br>Si ahora mismo su comunidad no puede afrontar un cambio de este tipo, asegúrese al menos de realizar un mantenimiento y limpieza adecuados de su caldera actual, ya que si está sucia tendrá dificultades para la combustión y, por tanto, consumirá más energía de la necesaria para satisfacer las demandas."
+
+#: apps/pollster/templates/tips_plugin.html:51
+msgid "recommendation13"
+msgstr "Para garantizar el correcto funcionamiento de su caldera, y que trabaje a alto rendimiento, es aconsejable que se le realice un mantenimiento adecuado. Es aconsejable una revisión anual al inicio de la temporada de calefacción, ya que si está sucia tendrá dificultades para la combustión y, por tanto, consumirá más energía de la necesaria para satisfacer las demandas, lo cual se reflejará en sus facturas."
+
+#: apps/pollster/templates/tips_plugin.html:54
+msgid "recommendation14"
+msgstr "La instalación de válvulas termostáticas en los radiadores de su vivienda, es una solución de bajo coste y de fácil colocación, que puede suponerle ahorros en calefacción en torno al 10-15%. Esos dispositivos permiten mantener el radiador de cada una de las estancias a una temperatura distinta adecuada al uso y ocupación.<br>Es importante también la adecuada localización de estos radiadores para garantizar el confort adecuado en su vivienda.  La mejor ubicación es debajo de las ventanas, haciendo coincidir la longitud de los radiadores con la de las ventanas, para favorecer la correcta difusión del aire caliente por la habitación.<br>También se debe evitar tapar u obstruir los radiadores para aprovechar al máximo el calor que emiten. No es recomendable que estén incrustados en el muro o en el interior de hornacinas si queremos sacar el máximo partido a nuestra calefacción, ya que el consumo será mayor y por tanto la factura.<br>En el caso de darse esta situación, puede conseguir mejoras colocando elementos reflectantes, como cartones de tetrabriks, detrás de los radiadores para redirigir el calor hacia el interior de la vivienda."
+
+#: apps/pollster/templates/tips_plugin.html:57
+msgid "recommendation28"
+msgstr "La calefacción eléctrica mediante elementos individuales (radiadores eléctricos, convectores, etc.), es el sistema menos eficiente desde el punto de vista energético. Es la que más consume y la que menos confort proporciona. Y según ha indicado es su caso.<br>La mejor opción para mejorar el confort en su vivienda y reducir sus facturas energéticas, sería la instalación de un sistema de calefacción de gas natural o gasoil, con caldera de alta eficiencia y radiadores por agua caliente en las distintas estancias.<br>Si no puede hacer frente a la inversión que esto supone, una opción más económica que le hará mejorar en confort y en la factura, será la adquisición estufas de butano repartidas en varias estancias de la casa. Ésta es una opción menos cómoda que la anterior, pero proporciona un calor rápido y duradero a bajo coste."
+
+#: apps/pollster/templates/tips_plugin.html:57
+msgid "recommendation15"
+msgstr "El sol es un gran aliado en la época de invierno, ya que la radiación solar incidente en las ventanas con buenas orientaciones calienta la vivienda de forma gratuita, lo cual  permite ahorrar en calefacción.<br>Su vivienda cuenta con habitaciones con buenas orientaciones, así que aprovéchelo. Para ello, durante el día suba del todo las persianas de estas estancias y abra bien las cortinas para dejar entrar todo el calor del sol, el cual proporcionará temperaturas agradables en estos espacios reduciendo así sus necesidades de calefacción en los días soleados. Sin embargo, en días muy nublados y fríos, no interesará que despeje las cortinas de de ninguna estancia, ya que las pérdidas térmicas a través de las ventanas serán mayores que el calor que llegue a captar del sol.<br>Además, al anochecer, recuerde siempre cerrar las cortinas y bajar las persianas de todas las estancias, para que no pierda el calor acumulado durante el día, tanto procedente de la captación solar como de la calefacción."
+
+#: apps/pollster/templates/tips_plugin.html:60
+msgid "recommendation16"
+msgstr "El sol es un gran aliado en la época de invierno, ya que la radiación solar incidente en las ventanas con buenas orientaciones calienta la vivienda de forma gratuita, lo cual  permite ahorrar en calefacción.<br>Desgraciadamente su vivienda no cuenta con ventanas  con buenas orientaciones así que no puede aprovechar este calor solar pasivo. Sin embargo, una buena costumbre para reducir su factura de calefacción es que en días muy nublados y fríos, no despeje demasiado las cortinas o estores de sus ventanas, sobre todo las de sus habitaciones orientadas al Norte, Noreste y Noroeste que son las peor orientadas, para reducir las pérdidas térmicas a través de sus acristalamiento. Además, al anochecer recuerde siempre  cerrar bien las cortinas y bajar por completo las persianas de todas las ventanas, para que no pierda durante la noche el calor acumulado durante el día procedente de la calefacción."
+
+#: apps/pollster/templates/tips_plugin.html:63
+msgid "recommendation17"
+msgstr "La temperatura a la que programe la calefacción condicionará el consumo de energía y por tanto sus facturas de calefacción. Por cada grado que aumente la temperatura, incrementará el consumo de energía en torno al 5-10%.<br>Por lo que ha indicado, usted coloca su termostato <b>a una temperatura de 23ºC o mayor</b>.Aunque la sensación de confort sea subjetiva, si regula a una temperatura de 21ºC  será suficiente para que se sienta cómodo en su hogar. Recuerde que tener calefacción en casa no implica que parezca verano, es mejor ponerse un jersey que llevarse un susto con la factura.<br>Si su vivienda no dispone de termostato que le indique su temperatura interior, es conveniente que adquiera uno, ya que le resultará más sencillo mantener la calefacción a la temperatura óptima durante todo el día permitiéndole así reducir su consumo en un 10-15%."
+
+#: apps/pollster/templates/tips_plugin.html:63
+msgid "recommendation18"
+msgstr "Aunque la sensación de confort sea subjetiva, la temperatura recomendable en verano para colocar el termostato de su equipo de aire acondicionado está en torno a 25-26º. Para que no se dispare su factura eléctrica, recuerde que por cada grado que disminuya el termostato estará consumiendo entre un 5 y un 8% más de energía.<br>Por ello, si su aparato de aire acondicionado no tiene incorporado termostato o sospecha que no es demasiado preciso,  es conveniente que instale un termostato adicional, situado en un lugar representativo de la estancia, alejado de fuentes de calor, para asegurarse de que la temperatura alcanzada es la adecuada, y no está consumiendo más de lo deseado.<br>Otra medida para reducir la factura de su equipo de aire acondicionado puede ser <b>sustituirlo por un equipo más eficiente, como puede ser la bomba de calor</b>, o bien el uso complementario de ventiladores de techo. Estos sistemas de ventilación mecánica, son de gran ayuda para mejorar la sensación de confort cuando las temperaturas interiores están por debajo de los 27ºC, y es que el movimiento del aire en una estancia puede producir una sensación de menor temperatura de entre 2-3º C.<br>Además, son poco ruidosos y consumen poca energía, a la vez que reparten el aire por la habitación de forma uniforme. Cuanto más grandes sean sus aspas, más eficaz será el efecto de frescor.<br>Así, en caso de disponer de los dos tipos de equipos, los ventiladores pueden ser suficientes para mantener el confort interior durante la mayor parte del día, limitando el uso del aire acondicionado de forma intermitente en los casos  en los que las  temperaturas superen los 27ºC."
+
+#: apps/pollster/templates/tips_plugin.html:69
+msgid "recommendation19"
+msgstr "Si tiene habitaciones vacías o que se usen poco, puede ser conveniente que coloque rejillas practicables en estas estancias que puedan cerrarse e impedir el paso del aire acondicionado, y cierre además las puertas, lo cual evitará que consuma energía innecesariamente para enfriar estos espacios.<br>Además, para evitar perder la frescura conseguida con la refrigeración, evite abrir puertas y ventanas exteriores del espacio que está climatizando. En este sentido, es importante que estas puertas y ventanas estén adecuadamente selladas para evitar también excesivas filtraciones de aire caliente exterior hacia el interior de la vivienda, que le harán consumir más refrigeración."
+
+#: apps/pollster/templates/tips_plugin.html:72
+msgid "recommendation20"
+msgstr "Si tiene habitaciones vacías o que se usen poco, puede ser conveniente que cierre las puertas, lo cual evitará que consuma energía innecesariamente para enfriar estos espacios.<br>Además, para evitar perder la frescura conseguida con la refrigeración, evite abrir puertas y ventanas exteriores del espacio que está climatizando. En este sentido, es importante que estas puertas y ventanas estén adecuadamente selladas para evitar también excesivas filtraciones de aire caliente exterior hacia el interior de la vivienda, que le harán consumir más refrigeración."
+
+#: apps/pollster/templates/tips_plugin.html:75
+msgid "recommendation21"
+msgstr "Si en verano, durante el día pasa excesivo calor en su vivienda, una opción que puede plantearse es la instalación de equipos de aire acondicionado de alta eficiencia, como es el caso de las bombas de calor.<br>Otra opción más económica sería la colocación de ventiladores de techo. Estos sistemas de ventilación mecánica, son de gran ayuda para mejorar la sensación de confort cuando las temperaturas interiores están por debajo de los 27ºC, y es que el movimiento del aire en una estancia puede producir una sensación de menor temperatura de entre 2-3º C.<br>Además, son poco ruidosos y consumen poca energía, a la vez que reparten el aire por la habitación de forma uniforme. Mientras más grandes sean sus aspas, más echas será el efecto de frescor.<br>Además, para evitar en lo posible que su vivienda se caliente en exceso, procure no abrir puertas y ventanas exteriores, y es importante que éstas estén adecuadamente selladas para evitar en lo posible que se produzcan filtraciones de aire caliente exterior en la vivienda."
+
+#: apps/pollster/templates/tips_plugin.html:78
+msgid "recommendation22"
+msgstr "Salvo en casos de frío extremo, debería apagar la calefacción mientras duerme, ya que el calor acumulado en la vivienda durante el día (sobre todo si al anochecer se han cerrado bien persianas y cortinas) debería ser más que suficiente para mantener una temperatura interior de <b>16-18ºC</b> que nos deje dormir bien sin pasar calor, consiguiendo además reducir el gasto de calefacción de forma considerable."
+
+#: apps/pollster/templates/tips_plugin.html:81
+msgid "recommendation23"
+msgstr "Si durante el día va a salir de casa unas horas, no deje la calefacción encendida. La falsa creencia de que es mejor dejarla puesta, aunque sea a baja temperatura, hará que gastemos calefacción tontamente. Es mejor que la apague al ausentarse y la encienda al regresar si lo ve necesario.<br>Además otra medida para reducir la factura puede ser el ajuste de la calefacción al uso de cada estancia. Si tiene habitaciones vacías o que se use poco, puede ser conveniente que baje su temperatura termostática o incluso que cierre la válvula del radiador y cierre la puerta, lo cual evitará que consuma energía innecesariamente."
+
+#: apps/pollster/templates/tips_plugin.html:84
+msgid "recommendation24"
+msgstr "Salvo en noches de calor extremo, debería apagar la Refrigeración mientras duerme, ya que la ventilación nocturna producida al dejar abiertas las ventanas de su vivienda debería ser suficiente para alcanzar una temperatura adecuada que le permita dormir de forma placentera, consiguiendo además reducir su gasto en aire acondicionado de forma considerable."
+
+#: apps/pollster/templates/tips_plugin.html:87
+msgid "recommendation25"
+msgstr "Si durante el día va a salir de casa unas horas, no deje el aire acondicionado encendido. La falsa creencia de que es mejor dejarlo puesto, aunque sea a alta temperatura, hará que gaste electricidad tontamente. Es mejor que lo apague al ausentarse y lo encienda al regresar si lo ve necesario.<br>Desconéctelo también cuando no haya nadie en la habitación que está refrigerando, pocos minutos son suficientes para obtener el frescor deseado."
+
+#: apps/pollster/templates/tips_plugin.html:90
+msgid "recommendation26"
+msgstr "Es importante que ventile todos los días las diferentes habitaciones para mantener la higiene en su vivienda, sin embargo, durante la época de calefacción, es suficiente con que abra las ventanas alrededor de <b>10-15 minutos</b>. El que tenga las ventanas abiertas más tiempo no resultará más higiénico, sino que lo que conseguirá es que se enfríe su vivienda y que tenga que gastar más energía posteriormente para volver a calentarla."
+
+#: apps/pollster/templates/tips_plugin.html:93
+msgid "recommendation27"
+msgstr "Según los datos introducidos,  todavía dispone en su vivienda de bombillas incandescentes y/o fluorescentes.<br>Dado su alto consumo respecto a otras opciones en el mercado para la misma luminosidad aportada, sería aconsejable que las sustituyera por otras de bajo consumo o de tipo LED. Aunque la inversión inicial es alta, compensa a la larga, ya que consumen hasta un 75% menos energía eléctrica que las convencionales, además de durar unas 8  veces más.<br>Si no puede asumir ahora un cambio total de bombillas, puede ir haciéndolo gradualmente, empezando por las habitaciones que más tiempo ocupe, según se vayan fundiendo y necesiten cambiarse.<br>Cuando se disponga a realizar la sustitución, analice primero las necesidades reales de luz de cada estancia. No todas las habitaciones requieren de la misma cantidad de iluminación, adecúe el número y tipo de luminarias según el uso y ocupación que tenga cada una, dando preferencia a la iluminación localizada. Es más eficiente usar luz focal o regulable, como para coser o leer, que iluminar brillantemente toda una habitación. Así, además de ahorrar electricidad conseguirá ambientes más confortables.<br>Además, siempre que sea posible aproveche la iluminación natural entrante a través de sus ventanas. Para ello, evite el uso de cortinas o estores muy opacos, ya que oscurecerán el ambiente y tendrá que encender la luz artificial antes de lo necesario.<br>El uso de colores claros en paredes y techos también ayudará a reducir las necesidades de iluminación, y por tanto, de la potencia de iluminación necesaria, al reflejar y expandir mejor la luz en el interior."
+
+#: apps/pollster/templates/tips_plugin.html:96
+msgid "recommendation29"
+msgstr "El sol es un gran aliado en invierno, pero en verano en necesario protegernos bien de él, ya que puede generar importantes ganancias de calor en la vivienda, sobre todo a través de los acristalamientos en los que incide directamente.<br>En su caso, las ventanas que presentarán este problema son las de salón durante las horas centrales del día (si está al Sur), desde la mañana hasta la hora de comer (si al SE), desde la hora de comer hasta final de la tarde (si al SO), o durante la tarde (si O). Por lo que para reducir este problema sería aconsejable la colocación de elementos sombreantes por el exterior de las ventanas de ésta/s estancia/s, como pueden ser toldos, o las más económica persianas enrollables o venecianas (preferiblemente de colores claros) que evitarán buena parte de las ganancias de calor que entrarían en su vivienda, mejorando su confort y reduciendo  su factura de aire acondicionado.<br>El uso de cortinas, estores o las persianas interiores será una opción menos eficaz, ya que no evitará que se calienten  sus ventanas, como hace el sombreamiento desde el exterior. Sin embargo, siempre será una opción interesante ante la falta de elementos que sombreen desde fuera, o como ayuda adicional a éstos."
+
+#: apps/pollster/templates/tips_plugin.html:114
+#: apps/pollster/templates/tips_plugin.html:114
+msgid "recommendation30"
+msgstr "Las tarifas eléctricas de la reciente Reforma Energética han aumentado la parte fija de la factura, que depende de la potencia contratada en su hogar y no del consumo energético que usted tenga. Por tanto, sus esfuerzos por ahorrar en consumo de luz no se verán tan reflejados en la factura si este valor de potencia contratada es mayor de lo necesario."
+
+#: apps/pollster/templates/tips_plugin.html:115
+msgid "recommendation31"
+msgstr "Según ha indicado su vivienda cuenta con la potencia, según sus datos de consumos y equipos eléctricos, que parece ser la más adecuada. Aun así, compruebe que esto es correcto en <a href='http://www.bajatelapotencia.org/la-potencia-que-necesitas/' target='_blank'>este link</a>."
+
+#: apps/pollster/templates/tips_plugin.html:118
+msgid "recommendation32"
+msgstr "Según ha indicado su vivienda cuenta con una potencia, según los datos de consumos y equipos eléctricos, que puede estar por encima de lo necesario. Compruebe cuál es el valor más adecuado de potencia en <a href='http://www.bajatelapotencia.org/la-potencia-que-necesitas/' target='_blank'>este link</a>."
+
+#: apps/pollster/templates/base/threecol.html:46
+msgid "http://bifi.es/en/"
+msgstr "http://bifi.es/es/"
+
+
+
+

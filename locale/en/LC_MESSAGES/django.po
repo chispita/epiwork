@@ -635,7 +635,7 @@ msgstr ""
 
 #: templates/accounts/partials/usermenu.html:25
 msgid "To leave feedback or get support,"
-msgstr ""
+msgstr "To get in touch with the team of SavingEnergy@home, get information, send suggestions, etc, send a mail to <a href=\"mailto:info@socientize.eu\">info@socientize.eu</a>."
 
 #: templates/accounts/partials/usermenu.html:25
 #: templates/registration/activate.html:9
@@ -1113,9 +1113,6 @@ msgstr ""
 #: templates/survey/thanks.html:22
 msgid "Thanks for taking the time to fill out this survey."
 msgstr ""
-"Thanks for taking the time to fill out this survey.</p><p>Had your flu jab "
-"recently? Click on <strong>Change background information</strong> below to "
-"let us know."
 
 #: templates/survey/thanks.html:25
 msgid ""
@@ -1294,3 +1291,134 @@ msgstr ""
 
 msgid "Cookie settings"
 msgstr ""
+
+#: apps/pollster/templates/tips_plugin.html:15
+msgid "recommendation1"
+msgstr "According to the building year, your home does not count with any kind of thermal isolation. Therefore, in winter it gets cold quickly and might have condensations inside, while in summer it gets warmer than expected in less time. That means comfort is not reached properly and higher consumptions in heating and cooling. Moreover, roofs of latest floors suffers of greater losses of energy, if not properly isolated, because of counting with more surface in contact with outside.<br>Carrying out improvements in isolation may mean savings in your bills of the 50%. Thus, this option is whorthwhile. Exterior walls must be perfectly protected with insulation materials.<br><br>There are a wide diversity of materials for such aim like wooden plates, styrofoam or the rockwool, among others. In <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>this page of IDAE (Spanish)</a>, you will find further information about how to isolate your home."
+
+#: apps/pollster/templates/tips_plugin.html:18
+msgid "recommendation2"
+msgstr "According to the building year, your home does not count with any kind of thermal isolation. Therefore, in winter it gets cold quickly and might have condensations inside, while in summer it gets warmer than expected in less time. That means comfort is not reached properly and higher consumptions in heating and cooling.<br>Carrying out improvements in isolation may mean savings in your bills of the 40%. Thus, this option is whorthwhile. Exterior walls must be perfectly protected with insulation materials.<br>There are a wide diversity of materials for such aim like wooden plates, styrofoam or the rockwool, among others. In <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>this page of IDAE (Spanish)</a>, you will find further information on this topic."
+
+#: apps/pollster/templates/tips_plugin.html:21
+msgid "recommendation3"
+msgstr "According to the building year, your home does not count with any kind of thermal isolation. Therefore, in winter it gets cold quickly and might have condensations inside, while in summer it gets warmer than expected and in less time. That means comfort is not reached properly and higher consumptions in heating and cooling. Moreover, if roofs of latest floors are not properly isolated, they become the highest losses surface towards the exterior. Even higher than the facade. This is the case of your home.<br>Carrying out improvements in isolation may mean savings in your bills of the 30%. Thus, this option is whorthwhile. Exterior walls must be perfectly protected with insulation materials.<br>There are a wide diversity of materials for such aim like wooden plates, styrofoam or the rockwool, among others. In <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>this page of IDAE (Spanish)</a>, you will find further information about how to isolate your home."
+
+#: apps/pollster/templates/tips_plugin.html:24
+msgid "recommendation4"
+msgstr "According to the building year, your home does not count with a proper thermal isolation to comply with the confort needs.Therefore, in winter it gets cold quickly, while in summer it gets warmer than expected in less time. That means comfort is not reached properly and higher consumptions in heating and cooling.<br>Carrying out improvements in isolation may mean savings in your bills of the 20%. Thus, this option is whorthwhile. Exterior walls must be perfectly protected with insulation materials.<br>There are a wide diversity of materials for such aim like wooden plates, styrofoam or the rockwool, among others. In <a href='http://www.idae.es/index.php/relcategoria.1030/id.48/relmenu.349/mod.pags/mem.detalle' target='_blank'>this page of IDAE (Spanish)</a>, you will find further information about how to isolate your home."
+
+#: apps/pollster/templates/tips_plugin.html:27
+msgid "recommendation5"
+msgstr "As you indicated, windows at your home are of type double with double glass. This is a high energy quality whenever frames count with thermal bridge system, that is, they count with insulation materials inside. That reduce most of the losses coming through the windows. Otherwise, if you have in mind to change them soon, ensure new frames are of such type since comfort will improve and, so, the billing will.<br>If you do not have in mind that kind of change in a short term period, you can reduce slightly the thermal losses of the current windows covering them up during the night and cold days through curtains and installing draught excluder and junctions in order to avoid air entrance from outside. You should also put attention to the appearance of slits in your shutters case and ensure they are properly sealed and isolated to avoid unexpected infiltrations. In order to cover slits up, silicone or filler may be used."
+
+#: apps/pollster/templates/tips_plugin.html:30
+msgid "recommendation6"
+msgstr "As you indicated, windows at your home are of type simple with double glass. This is a medium-low energy quality. That may be improvable since glazed surfaces are one of the main thermal loss points at home. A good option to reduce your heating billing could be to replace them for a more efficient ones.<br>Placing double type windows with double glass and frames counting with thermal bridge system that contain insulation materials inside, current thermal losses might be reduced up to the 60%. And consequently, a significant saving in the current billing.<br>If the remodelig is not affordable at the moment, you can reduce slightly the thermal losses of the current windows covering them up during the night and cold days through curtains and installing draught excluder and junctions in order to avoid air entrance from outside. You should also put attention to the appearance of slits in your shutters case and ensure they are properly sealed and isolated to avoid unexpected infiltrations. In order to cover slits up, silicone or filler may be used."
+
+#: apps/pollster/templates/tips_plugin.html:33
+msgid "recommendation7"
+msgstr "As you indicated, windows at your home are of type double with simple glass. This is a medium energy quality, but still improvable since glazed surfaces are one of the main thermal loss points at home. A good option to reduce your heating billing could be to replace them for a more efficient ones.<br>Placing double type windows with double glass and frames counting with thermal bridge system that contain insulation materials inside, current thermal losses might be reduced up to the 40%. And consequently, a significant saving in the current billing.<br>If the remodelig is not affordable at the moment, you can reduce slightly the thermal losses of the current windows covering them up during the night and cold days through curtains and installing draught excluder and junctions in order to avoid air entrance from outside. You should also put attention to the appearance of slits in your shutters case and ensure they are properly sealed and isolated to avoid unexpected infiltrations. In order to cover slits up, silicone or filler may be used."
+
+#: apps/pollster/templates/tips_plugin.html:36
+msgid "recommendation8"
+msgstr "As you indicated, windows at your home are of type simple with simple glass. This is a low energy quality and, so, they are a source of thermal losses in your home. A good option to reduce your heating billing could be to replace them for a more efficient ones.<br>Placing double type windows with double glass and frames counting with thermal bridge system that contain insulation materials inside, current thermal losses might be reduced up to the 75%. And consequently, a significant saving in the current billing.<br>If the remodelig is not affordable at the moment, you can reduce slightly the thermal losses of the current windows covering them up during the night and cold days through curtains and installing draught excluder and junctions in order to avoid air entrance from outside. You should also put attention to the appearance of slits in your shutters case and ensure they are properly sealed and isolated to avoid unexpected infiltrations. In order to cover slits up, silicone or filler may be used."
+
+#: apps/pollster/templates/tips_plugin.html:39
+msgid "recommendation9"
+msgstr "Your home has an individual heating provided by an old low efficiency boiler. Therefore, a way to reduce the energy consumption might be to replace it by another one more efficient such us a boiler of natural gas condensation or moving to a biomass one (renewable combustible). Those will make you save up to a 35% of energy with respect to the old one. Besides this change requires an initial high investment, consumption reduction will make that the saving will be worthwhile in the long term.<br>If you cannot afford that change currently, ensure you carry out a proper maintenance and cleaning of the boiler, since if your boiler is dirty, it will have difficulties for burning and, consequently, it will consume more energy than needed."
+
+
+#: apps/pollster/templates/tips_plugin.html:42
+msgid "recommendation10"
+msgstr "Your home has an individual heating provided by an old low efficiency boiler. Therefore, a way to reduce the energy consumption might be <b>to replace it by another one more efficient such as a boiler of diesel condensation, diesel low temperature</b> or moving to a biomass one (renewable combustible). Those will make you save up to a 35% of energy with respect to the old one. Besides this change requires an initial high investment, consumption reduction will make that the saving will be worthwhile in the long term.<br>If you cannot afford that change currently, ensure you carry out a proper maintenance and cleaning of the boiler, since if your boiler is dirty, it will have difficulties for burning and, consequently, it will consume more energy than needed."
+
+#: apps/pollster/templates/tips_plugin.html:45
+msgid "recommendation11"
+msgstr "Your home has a central heating provided by an old low efficiency boiler. Therefore, a way to reduce the energy consumption might be to replace it by another one more efficient such us a boiler of natural gas condensation or moving to a biomass one (renewable combustible). Those will make you and your neighbours save up to a 35% of energy with respect to the old one. Besides this change requires an initial high investment, consumption reduction will make that the saving will be worthwhile in the long term.<br>If your neighborhood association cannot afford that change currently, ensure that a proper maintenance and cleaning of the boiler is carried out, since if the boiler is dirty, it will have difficulties for burning and, consequently, it will consume more energy than needed."
+
+#: apps/pollster/templates/tips_plugin.html:48
+msgid "recommendation12"
+msgstr "Your home has a central heating provided by an old low efficiency boiler. Therefore, a way to reduce the energy consumption might be <b>to replace it by another one more efficient such as a boiler of diesel condensation, diesel low temperature</b> or moving to a biomass one (renewable combustible). Those will make you and your neighbours save up to a 35% of energy with respect to the old one. Besides this change requires an initial high investment, consumption reduction will make that the saving will be worthwhile in the long term.<br>If your neighborhood association cannot afford that change currently, ensure that a proper maintenance and cleaning of the boiler is carried out, since if the boiler is dirty, it will have difficulties for burning and, consequently, it will consume more energy than needed."
+
+#: apps/pollster/templates/tips_plugin.html:51
+msgid "recommendation13"
+msgstr "In order to ensure the boiler is working in a proper and highly efficient way, it is advisable to carry out the suitable maintenance. At least, a revision must be done yearly at the beginning of the heating time, since if it is dirty, it will have difficulties for burning. That will be translated into more energy consumption and, consequently, higher bills."
+
+#: apps/pollster/templates/tips_plugin.html:54
+msgid "recommendation14"
+msgstr "The installation of thermostatic valves in the radiators of your home is a low-cost, easy setting solution that might lead to heating savings between the 10 and 15%. Those devices let adjust the temperature of the radiators of every room separately. That means that room's temperature can be set according to its use and occupation.<br>It is significant the suitable placement of those radiators in order to ensure the comfort at home. The best place is below the windows making match the length of the radiators with the one of the windows. Thus, hot air circulation in the room is fostered.<br>Avoid cover up or obstruct radiators to take advantage of the heat they produce. It is not advisable they are embedded within the wall or alcoves since consumption will be bigger and, so, the billing.<br>In that case, reflective elements like milk packaging cardboard, that can redirect the heat towards the interior of your home, can get some improvements."
+
+#: apps/pollster/templates/tips_plugin.html:57
+msgid "recommendation28"
+msgstr "Electric heating through individual elements (electric radiators, convectors, etc.), is the less efficient system from the energy point of view. In addition to be the most consuming one, it is the one that provides less comfort. You indicated that it is the one you have at home.<br>Best option to improve the comfort at home and reduce your billling is the installation of a new heating system of natural gas or diesel with high efficiency boiler and radiators by hot water in the different rooms.<br>If not possible to face that investment, a cheaper option is to get butane heater placed in several rooms. That is a less comfortable option than the previous one, but they provide heat quickly and cheap."
+
+#: apps/pollster/templates/tips_plugin.html:57
+msgid "recommendation15"
+msgstr "Sun is a great partner in winter time, since solar radiation affects windows with good orientations heating the whole home and, thus, saving in heating.<br>Your home have rooms with good orientations, so take advantage of it. During the day lift the shutters and curtains up in order to let the heat of the sun go in. That provides pleasant temperatures in those spaces reducing heating needs in sunny days. However, in cloudy and cold days, do not lift up any curtain at all since thermal losses through the windows are bigger than the heat gathered from the sun.<br>Moreover, in the evening, remember to close always curtains and shutters in all the rooms in order not to loose the heat accumulated during the day either from solar radiation and the heating."
+
+#: apps/pollster/templates/tips_plugin.html:60
+msgid "recommendation16"
+msgstr "Sun is a great partner in winter time, since solar radiation affects windows with good orientations heating the whole home and, thus, saving in heating.<br>Unfortunately, your home does not have windows with good orientations, so you cannot take advantage of that passive solar heat. However, a good habit to reduce your heating bill is not to lift curtains up too much in cloudy and cold days in the rooms oriented to the North, North-East and North-West, that are the worst oriented. Then, you can reduce thermal losses through your glasses. Moreover, in the evening, remember to close curtains and shutters completely of the whole windows in order not to loose the heat accumulated during the day."
+
+#: apps/pollster/templates/tips_plugin.html:63
+msgid "recommendation17"
+msgstr "The temperature at which heating is programmed will condition energy consumption and, thus, the billing. Every extra grade increases energy consumption between 5 and 10%.<br>According to what you indicated, you adjust your thermostat to <b>a temperature greater than 22ºC</b>. Besides comfort feeling might be subjective, 21ºC is enough to feel comfortable at home. Note that heating usage does not mean to make the summer come to your home. It is better to use a jumper instead of getting a big bill.<br>If your home does not count with a thermostat that let you know the temperature at home, it is convenient that you get one. Therefore, you will be able to keep the optimal temperature during the whole day saving between 10 to 15% of your energy consumption."
+
+#: apps/pollster/templates/tips_plugin.html:63
+msgid "recommendation18"
+msgstr "Besides comfort feeling is subjective, it is advisable to adjust the air conditioning thermostat during summer time from 25 to 26ºC. If you do not want your bill to shoot up, remember that for every grade that you decrease in the thermostat means between 5 and 8% more of energy consumption.<br>Therefore, if your air conditioning system does not have a thermostat or you think it is not enough accurate, it is convenient to install an additional thermostat in a suitable place of the room, distant from heat sources, in order to be sure the temperature reached is the proper one and not extra consumption is used.<br>Another measure to reduce the billing of your air conditioning can be <b>the replacement for a more efficient one such as a heat pump</b>, or the use ceiling fans as a complement. These systems of mechanical air circulation are a great help to increase the comfort feeling when temperatures are below 27ªC since air movement in a room may get a feeling of cooler temperature between 2 and 3ºC.<br>Moreover, they are noiseless and consume not that much energy. They distribute the air around the room in an uniform way. The bigger the blades, the more effective the freshness effect.<br>Thus, in case of counting with the two types of systems, fans may be enough to keep the comfort during the most of the day limiting the use of the air conditioning to the moments when temperature exceeds 27ºC."
+
+#: apps/pollster/templates/tips_plugin.html:69
+msgid "recommendation19"
+msgstr "If you have empty rooms or barely used ones, it may be convenient to place grilles that can be closed avoiding the pass of the air conditioning. That, in addition to close the door, will avoid an unnecesary energy consumption to cool these rooms.<br>Moreover, in order not to loose the freshness obtained through refrigeration, avoid opening exterior doors and windows of the room being climatized. At this regard, it is important that these doors and windows are properly sealed in order to avoid excessive filtrations of hot air from the exterior that will make you use consume more refrigeration."
+
+#: apps/pollster/templates/tips_plugin.html:72
+msgid "recommendation20"
+msgstr "If you have empty rooms or barely used ones, it may be convenient to place grilles that can be closed avoiding the pass of the air conditioning. That, in addition to close the door, will avoid an unnecesary energy consumption to cool these rooms.<br>Moreover, in order not to loose the freshness obtained through refrigeration, avoid opening exterior doors and windows of the room being climatized. At this regard, it is important that these doors and windows are properly sealed in order to avoid excessive filtrations of hot air from the exterior that will make you use consume more refrigeration."
+
+#: apps/pollster/templates/tips_plugin.html:75
+msgid "recommendation21"
+msgstr "If during summer time, your home is excessively hot, an option you may take into account is the installation of a high efficiency air conditioning system such as a heat pump.<br>A cheaper option is to place celing fans. These systems of mechanical air circulation are a great help to increase the comfort feeling when temperatures are below 27ªC since air movement in a room may get a feeling of cooler temperature between 2 and 3ºC.<br>Moreover, they are noiseless and consume not that much energy. They distribute the air around the room in an uniform way. The bigger the blades, the more effective the freshness effect.<br>In order to avoid your home to heat excesively, do not open exterior doors and windows. It is also important that these doors and windows are properly sealed in order not to have hot air filtrations from outside."
+
+#: apps/pollster/templates/tips_plugin.html:78
+msgid "recommendation22"
+msgstr "Except in cases of extreme cold, heating should be turned off while sleeping since heat accumulated in the home during the day (mainly if curtains and shutters have been closed properly in the evening) is enough to keep a temperature inside between <b>16-18ºC</b> that will allow us to sleep not being hot and reduce significally the heating consumption."
+
+#: apps/pollster/templates/tips_plugin.html:81
+msgid "recommendation23"
+msgstr "If during the day you will be away from home for some hours, do not leave the heating turned on. It is wrongly believed that it is better to keep it turned on set to a low temperature. Nevertheless, that will make us spend money uselessly. Heating should be turned off if nobody is at home.<br>Another measure to reduce the billing can be adjust the heating to the use of each room. If there are empty rooms or barely used ones, it may be convenient to lower their temperature or even close the radiator valve and the door. That will avoid an unnecessary energy consumption."
+
+#: apps/pollster/templates/tips_plugin.html:84
+msgid "recommendation24"
+msgstr "Unless a extremely hot night, cooling should be turned off while sleeping since night air out as a result of opening the windows is enough to reach an appropriate temperature that allow to sleep tight and reduce air conditioning energy consumption."
+
+
+#: apps/pollster/templates/tips_plugin.html:87
+msgid "recommendation25"
+msgstr "If during the day you will be away from home for some hours, do not leave the cooling turned on. It is wrongly believed that it is better to keep it turned on set to a high temperature. Nevertheless, that will make us spend money uselessly. Cooling should be turned off if nobody is at home.<br>Turn it off also when nobody is in the room being cooling, since a few minutes are enough to reach the wished freshness."
+
+#: apps/pollster/templates/tips_plugin.html:90
+msgid "recommendation26"
+msgstr "It is important to air out every day the different rooms to keep the cleanliness at home. However, during the winter time, it is enough with airing out for <b>10-15 minutes</b>. The fact of keeping more time the windows open do not help to improve cleanliness, but make the home get colder and need for more energy to heat it up again."
+
+#: apps/pollster/templates/tips_plugin.html:93
+msgid "recommendation27"
+msgstr "According to the data inserted, you still use incandescent and/or fluorescent bulbs at your home.<br>Given its high consumption in relation to other options in the market for the same brightness provided, it is advisable you replace them for others of low consumption or LED. Besides initial investment is high, it is worhtwhile in the long term since they consume up to 75% less than the conventional ones. Moreover, they last 8 times more.<br>If you cannot afford a complete change of bulbs, you can do it gradually, starting with the rooms where you spend more time, as they burn out and need to be changed.<br>When you decide to do the replacement, analyse the actual needs of light of every room. Different rooms may need different lighting, thus, select the number and type of lights according to the use and occupation of them. Try to priorize located lighting. It is more efficient to use focal or adjustable light to read or sew instead of illuminating the whole room. Therefore, in addition to save energy you will find a more comfortable environment.<br>If possible, take advantage of the natural light coming through the windows. Avoid using curtains too much opaque since they obscure the environment and you will have to switch the artificial light on before than needed.<br>Use of light colours in walls and ceilings also helps to reduce illumination needs since they reflect and expand better the light inside."
+
+#: apps/pollster/templates/tips_plugin.html:96
+msgid "recommendation29"
+msgstr "Sun is a great partner in winter time, but in summer we must protect ourselves from it. Otherwise, it can generate significant increase of heat in your home through glasses directly exposed to it.<br>Windows can suffer this problem during noon time (if oriented to South), in the morning (if oriented to South East), during the early afternoon (if oriented to South West) or during the afternoon (if oriented to the West). To reduce this problem, you may place shading elements out of the windows of these rooms such as sunshades or venetian or roll-up shutters (ligth colours) that avoid most of the heat increases of your home.<br>Use of curtains or interior shutters is a less efficient option since they do not avoid your windows to heat them up, as exterior shading does. However, it is a useful option if lacking of shading elements outside or as an additional help to them."
+
+#: apps/pollster/templates/tips_plugin.html:114
+#: apps/pollster/templates/tips_plugin.html:114
+msgid "recommendation30"
+msgstr "Electricty companies tend to increase the fixed part of the billing that depends on the power hired at home instead of the consumption. Therefore, efforts to save money in electricity consumption might not be reflected in the bill if the power hired is greater than needed."
+
+#: apps/pollster/templates/tips_plugin.html:115
+msgid "recommendation31"
+msgstr "According to the information that you provided, consumption data and electrical appliances; the power hired at your home seems to be the appropriate. Still, check which is the most suitable power value for your home <a href='http://www.bajatelapotencia.org/la-potencia-que-necesitas/' target='_blank'>in this link (Spanish)</a>."
+
+#: apps/pollster/templates/tips_plugin.html:118
+msgid "recommendation32"
+msgstr "According to the information that you provided, consumption data and electrical appliances; the power hired at your home seems to be above the needed. Check which is the most suitable power value for your home <a href='http://www.bajatelapotencia.org/la-potencia-que-necesitas/' target='_blank'>in this link (Spanish)</a>."
