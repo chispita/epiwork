@@ -408,7 +408,7 @@ msgstr ""
 
 #: apps/reminder/templates/reminder/unsubscribe.html:7
 msgid ""
-"You may unsubscribe from the SaveyEnergy@Home reminder/newsletter by pressing "
+"You may unsubscribe from the SavingEnergy@Home reminder/newsletter by pressing "
 "the button below."
 msgstr ""
 
@@ -788,8 +788,7 @@ msgstr ""
 #: templates/registration/activate.html:17
 #: templates/registration/activation_complete.html:18
 #: templates/registration/registration_complete.html:18
-msgid ""
-"Be part of a project to improve the electric consumption. "
+msgid "Be part of a project to improve the electric consumption."
 msgstr ""
 
 #: templates/registration/activate.html:18
@@ -1141,7 +1140,7 @@ msgstr ""
 
 #: templates/survey/thanks.html:95
 msgid ""
-"Regions in which we currently have reports of electric consumption- "
+"Regions in which we currently have reports of electric consumption"
 msgstr ""
 
 #: templates/survey/thanks.html:104

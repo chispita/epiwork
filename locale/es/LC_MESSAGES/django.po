@@ -414,9 +414,9 @@ msgstr "Cancelar suscripción"
 
 #: apps/reminder/templates/reminder/unsubscribe.html:7
 msgid ""
-"You may unsubscribe from the Influenzanet reminder/newsletter by pressing "
+"You may unsubscribe from the SavingEnergy@Home reminder/newsletter by pressing "
 "the button below."
-msgstr "Puedes cancelar tu suscripción al boletín semanal de GripeNet pulsando el siguiente botón"
+msgstr "Puedes cancelar la subscription de la lista de correos de SavingEnergy@Home pulsando el boton."
 
 #: apps/reminder/templates/reminder/unsubscribe_successful.html:7
 msgid "You have been successfully unsubscribed from the mailing list"
@@ -460,7 +460,7 @@ msgstr "Síntomas desconocidos"
 
 #: apps/survey/views.py:222
 msgid ""
-"Before we take you to the symptoms questionnaire, please complete the short "
+"Before we take you to the savingenergy questionnaire, please complete the short "
 "background questionnaire below. You will only have to complete this once."
 msgstr ""
 "AVISO: \n"
@@ -611,23 +611,6 @@ msgstr "Password"
 msgid "Your neighbourhood"
 msgstr "Tus alrededores"
 
-#: templates/accounts/partials/usermap.html:9
-msgid ""
-"Regions in which we currently have reports of influenza-like illness are "
-"<strong class=\"flu\">▸ red</strong>, and ones in which none of our "
-"participants currently report influenza-like illness are <strong class="
-"\"nosymptoms\">▸ gray</strong>. Reports of gastrointestinal infections are "
-"<strong class=\"gastro\">▸ yellow</strong> and common cold reports are "
-"displayed in <strong class=\"cold\">▸ blue</strong>."
-msgstr "El color en el mapa indica el nivel de incidencia actual en cada área: "
-"verde indica incidencia menor al 1%, amarillo entre el 1% y el 15%, "
-"naranja claro entre el 15% y el 25%; naranja oscuro entre el 25% y el "
-"50% y rojo, más del 50%."
-#msgstr "Regiones en las cuales existen usuarios reportando síntomas compatibles con síndromes gripales se representan en "
-#"<strong class=\"flu\">▸ rojo</strong>, mientras que aquellas en las cuales ningún usuario reporta tales síntomas aparecen en "
-#"<strong class=\"nosymptoms\">▸ gris</strong>. Regiones con usuarios reportando síntomas gastrointestinales "
-#"aparecen en <strong class=\"gastro\">▸ amarillo</strong> mientras que el catarro común se representa en "
-#"<strong class=\"cold\">▸ azul</strong>."
 
 # translations should reflect however often maps are updated
 #: templates/accounts/partials/usermap.html:10 templates/survey/thanks.html:96
@@ -814,15 +797,13 @@ msgstr ""
 #: templates/registration/password_reset_done.html:15
 #: templates/registration/password_reset_form.html:23
 #: templates/registration/registration_complete.html:16
-msgid "Influenza virus"
-msgstr "Virus de la gripe"
+msgid "SavingEnergy@Home"
+msgstr ""
 
 #: templates/registration/activate.html:17
 #: templates/registration/activation_complete.html:18
 #: templates/registration/registration_complete.html:18
-msgid ""
-"Be part of a Europe-wide project to improve our understanding of how flu "
-"spreads."
+msgid "Be part of a project to improve the electric consumption."
 msgstr "Participa en un proyecto científico europeo y ayúdanos a comprender cómo se propaga la gripe."
 
 #: templates/registration/activate.html:18
@@ -1147,8 +1128,8 @@ msgid "Group members"
 msgstr "Miembros del grupo"
 
 #: templates/survey/thanks.html:31 templates/survey/thanks.html.py:106
-msgid "Health status"
-msgstr "Estado de salud"
+msgid "SavingEnergy status"
+msgstr "Estado del consumo energetico"
 
 #: templates/survey/thanks.html:33 templates/survey/thanks.html.py:35
 msgid "Manage "
@@ -1159,8 +1140,8 @@ msgid "Change name"
 msgstr "Cambiar nombre"
 
 #: templates/survey/thanks.html:44
-msgid "Enter symptoms"
-msgstr "Introducir síntomas"
+msgid "Enter enery consumption"
+msgstr "Introducir consumo energetico"
 
 #: templates/survey/thanks.html:46
 msgid "Remove"
@@ -1169,11 +1150,9 @@ msgstr "Eliminar"
 # translations should reflect whatever can be seen on the map of the thanks page
 #: templates/survey/thanks.html:95
 msgid ""
-"Regions in which we currently have reports of influenza-like illness are "
-"red, and ones in which none of our participants currently report influenza-"
-"like illness are blue."
+"Regions in which we currently have reports of electric consumption"
 msgstr ""
-"Las regiones en las cuales no tenemos informes de síndromes gripales aparecen en azul; mientras que las regiones rojas son aquellas en las que alguno de nuestros usuarios padece un síndrome gripal"
+"Las regiones en las cuales tenemos datos de consumo electrico"
 
 #: templates/survey/thanks.html:104
 msgid "Fill out date"
@@ -1192,8 +1171,8 @@ msgid "Please, if you have not already done so, fill in"
 msgstr "Te invitamos, si no lo has hecho aún, a rellenar"
 
 #: templates/survey/thanks_profile.html:18
-msgid "the symptoms questionaire"
-msgstr "el cuestionario de síntomas"
+msgid "the SavingEnery@Home questionaire"
+msgstr "el cuestionario de consumo electrico"
 
 msgid "Next status"
 msgstr "Síntomas desconocidos"
@@ -1232,7 +1211,7 @@ msgstr ""
 "\n"
 "http://%(site)s/accounts/activate/%(activation_key)s/\n"
 "\n"
-"Esta dirección expirará en %(expiration_days)s días."
+"Este enlace expirará en %(expiration_days)s días."
 
 msgid "Activate your account! %(site)s"
 msgstr "¡Activa tu cuenta! %(site)s"
