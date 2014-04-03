@@ -408,7 +408,7 @@ msgstr ""
 
 #: apps/reminder/templates/reminder/unsubscribe.html:7
 msgid ""
-"You may unsubscribe from the Influenzanet reminder/newsletter by pressing "
+"You may unsubscribe from the SaveyEnergy@Home reminder/newsletter by pressing "
 "the button below."
 msgstr ""
 
@@ -454,7 +454,7 @@ msgstr ""
 
 #: apps/survey/views.py:222
 msgid ""
-"Before we take you to the symptoms questionnaire, please complete the short "
+"Before we take you to the savingenergy questionnaire, please complete the short "
 "background questionnaire below. You will only have to complete this once."
 msgstr ""
 
@@ -598,12 +598,7 @@ msgstr ""
 
 #: templates/accounts/partials/usermap.html:9
 msgid ""
-"Regions in which we currently have reports of influenza-like illness are "
-"<strong class=\"flu\">▸ red</strong>, and ones in which none of our "
-"participants currently report influenza-like illness are <strong class="
-"\"nosymptoms\">▸ gray</strong>. Reports of gastrointestinal infections are "
-"<strong class=\"gastro\">▸ yellow</strong> and common cold reports are "
-"displayed in <strong class=\"cold\">▸ blue</strong>."
+"Regions in which we currently have reports of savingenery reports. "
 msgstr ""
 
 #: templates/accounts/partials/usermap.html:10 templates/survey/thanks.html:96
@@ -787,15 +782,14 @@ msgstr ""
 #: templates/registration/password_reset_done.html:15
 #: templates/registration/password_reset_form.html:23
 #: templates/registration/registration_complete.html:16
-msgid "Influenza virus"
+msgid "SavingEnergy@Home"
 msgstr ""
 
 #: templates/registration/activate.html:17
 #: templates/registration/activation_complete.html:18
 #: templates/registration/registration_complete.html:18
 msgid ""
-"Be part of a Europe-wide project to improve our understanding of how flu "
-"spreads."
+"Be part of a project to improve the electric consumption. "
 msgstr ""
 
 #: templates/registration/activate.html:18
@@ -1125,7 +1119,7 @@ msgid "Group members"
 msgstr ""
 
 #: templates/survey/thanks.html:31 templates/survey/thanks.html.py:106
-msgid "Health status"
+msgid "SavingEnergy status"
 msgstr ""
 
 #: templates/survey/thanks.html:33 templates/survey/thanks.html.py:35
@@ -1138,7 +1132,7 @@ msgid "Change name"
 msgstr "Change background information"
 
 #: templates/survey/thanks.html:44
-msgid "Enter symptoms"
+msgid "Enter enery consumption"
 msgstr ""
 
 #: templates/survey/thanks.html:46
@@ -1147,9 +1141,7 @@ msgstr ""
 
 #: templates/survey/thanks.html:95
 msgid ""
-"Regions in which we currently have reports of influenza-like illness are "
-"red, and ones in which none of our participants currently report influenza-"
-"like illness are blue."
+"Regions in which we currently have reports of electric consumption- "
 msgstr ""
 
 #: templates/survey/thanks.html:104
@@ -1169,7 +1161,7 @@ msgid "Please, if you have not already done so, fill in"
 msgstr ""
 
 #: templates/survey/thanks_profile.html:18
-msgid "the symptoms questionaire"
+msgid "the SavingEnery@Home questionaire"
 msgstr ""
 
 msgid "This account is inactive."
@@ -1190,20 +1182,20 @@ msgid ""
 msgstr ""
 "Dear participant,\n"
 "\n"
-"Thank you for registering for the Flusurvey.\n"
+"Thank you for registering in Saving Energy.\n"
 "\n"
 "To activate your account, please click on the following link or copy and "
 "paste it into your internet browser:\n"
 "\n"
 "http://%(site)s/accounts/activate/%(activation_key)s/\n"
 "\n"
-"You will then be able to start taking part in the Flusurvey, helping us "
-"to track the spread of flu across the UK.\n"
+"You will then be able to start taking part in Saving Energy, helping us "
+"to track the electric consumption.\n"
 "\n"
 "This activation URL will expire in %(expiration_days)s days.\n"
 "\n"
 "Best wishes,\n"
-"The Flusurvey team\n"
+"The SurveyEnergy team\n"
 "%(site)s"
 
 # ##########################
